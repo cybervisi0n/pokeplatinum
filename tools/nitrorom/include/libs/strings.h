@@ -65,6 +65,8 @@ int strnequ(const string a, const string b, long n);
 /*
  * Evaluate a case-insensitive comparison between two strings.
  */
+#ifndef _WIN32
 int stricmp(const string a, const string b);
+#endif
 
 #endif // STRINGS_H
