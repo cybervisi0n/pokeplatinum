@@ -182,6 +182,7 @@ uint8_t *TxtToSbnk(FILE *txt, uint32_t *sbnkSize)
             else
             {
                 s = strtok(NULL, delimiter);
+                s[strcspn(s, "\n")] = 0;
                 if (s == NULL)
                 {
                     continue;
