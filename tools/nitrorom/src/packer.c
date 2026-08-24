@@ -111,7 +111,11 @@ static int comparefnames(const void *a, const void *b) // NOLINT
         unsigned char tterm1 = tcomp1.tail.len > 0 ? tcomp1.head.s[tcomp1.head.len] : '\0';
         unsigned char tterm2 = tcomp2.tail.len > 0 ? tcomp2.head.s[tcomp2.head.len] : '\0';
 
+        #ifdef _WIN32
+        result = tterm1 == tterm2 ? stricmp(tcomp1.head.s, tcomp2.head.s) : tterm1 == '\0' ? -1 : 1;
+        #else
         result = tterm1 == tterm2 ? stricmp(tcomp1.head, tcomp2.head) : tterm1 == '\0' ? -1 : 1;
+        #endif
         tpath1 = tcomp1.tail;
         tpath2 = tcomp2.tail;
     } while (tpath1.len > 0 && tpath2.len > 0 && result == 0);
