@@ -478,7 +478,7 @@ Overlay overlay5
 	Object main.nef.p/src_overlay005_field_menu.c.o
 	Object main.nef.p/src_overlay005_script_message.c.o
 	Object main.nef.p/src_overlay005_map_name_popup.c.o
-	Object main.nef.p/src_overlay005_ov5_021DDAE4.c.o
+	Object main.nef.p/src_overlay005_enable_poketch_task.c.o
 	Object main.nef.p/src_overlay005_encounter_effect.c.o
 	Object main.nef.p/src_overlay005_field_effect_manager.c.o
 	Object main.nef.p/src_overlay005_ov5_021DFB54.c.o
@@ -1406,7 +1406,7 @@ Overlay cutscenes
 	Object main.nef.p/src_cutscenes_boat_cutscene_snowpoint_ship.c.o
 }
 
-Overlay overlay94
+Overlay gts_application
 {
 	After battle_anim
 	Object main.nef.p/src_gts_application_networking.c.o
@@ -1424,18 +1424,18 @@ Overlay overlay94
 	Object main.nef.p/src_gts_application_screens_wfc_init.c.o
 }
 
-Overlay overlay95
+Overlay trade_sequence
 {
-	After overlay94
-	Object main.nef.p/src_overlay095_ov95_02246C20.c.o
-	Object main.nef.p/src_overlay095_ov95_022476F0.c.o
-	Object main.nef.p/src_overlay095_ov95_02247B6C.c.o
-	Object main.nef.p/src_overlay095_ov95_02248590.c.o
-	Object main.nef.p/src_overlay095_ov95_02249740.c.o
-	Object main.nef.p/src_overlay095_ov95_02249F90.c.o
-	Object main.nef.p/src_overlay095_ov95_0224A390.c.o
-	Object main.nef.p/src_overlay095_ov95_0224ABC0.c.o
-	Object main.nef.p/src_overlay095_ov95_0224B3D8.c.o
+	After gts_application
+	Object main.nef.p/src_cutscenes_trade_sequence_main.c.o
+	Object main.nef.p/src_cutscenes_trade_sequence_3d_scene.c.o
+	Object main.nef.p/src_cutscenes_trade_sequence_send_phase.c.o
+	Object main.nef.p/src_cutscenes_trade_sequence_tube_phase.c.o
+	Object main.nef.p/src_cutscenes_trade_sequence_ball_flyby_phase.c.o
+	Object main.nef.p/src_cutscenes_trade_sequence_wormhole_phase.c.o
+	Object main.nef.p/src_cutscenes_trade_sequence_receive_ball_phase.c.o
+	Object main.nef.p/src_cutscenes_trade_sequence_pokemon_reveal_phase.c.o
+	Object main.nef.p/src_cutscenes_trade_sequence_receive_phase.c.o
 }
 
 Overlay wifi_battle_tower
@@ -1475,7 +1475,7 @@ Overlay main_menu
 
 Overlay overlay98
 {
-	After overlay94
+	After gts_application
 	Object main.nef.p/src_overlay098_ov98_02246C20.c.o
 	Object main.nef.p/src_overlay098_ov98_022471C8.c.o
 	Object main.nef.p/src_overlay098_ov98_022499C8.c.o
@@ -1551,14 +1551,14 @@ Overlay overlay104
 	Object main.nef.p/src_overlay104_frscrcmd_sound.c.o
 	Object main.nef.p/src_overlay104_frscrcmd_battle_tower.c.o
 	Object main.nef.p/src_overlay104_ov104_022394A4.c.o
-	Object main.nef.p/src_overlay104_ov104_022395F0.c.o
-	Object main.nef.p/src_overlay104_ov104_02239C58.c.o
+	Object main.nef.p/src_overlay104_frscrcmd_wfc_facility_selector.c.o
+	Object main.nef.p/src_overlay104_wfc_facility_selector.c.o
 	Object main.nef.p/src_overlay104_ov104_0223A0C4.c.o
 	Object main.nef.p/src_overlay104_battle_factory_helpers.c.o
 	Object main.nef.p/src_overlay104_battle_hall_helpers.c.o
 	Object main.nef.p/src_overlay104_battle_castle_helpers.c.o
 	Object main.nef.p/src_overlay104_battle_arcade_helpers.c.o
-	Object main.nef.p/src_overlay104_ov104_0223C164.c.o
+	Object main.nef.p/src_overlay104_wfc_facility_selector_helpers.c.o
 	Object main.nef.p/src_overlay104_frontier_graphics.c.o
 	Object main.nef.p/src_overlay104_frontier_particle_system.c.o
 	Object main.nef.p/src_overlay104_ov104_0223D768.c.o
