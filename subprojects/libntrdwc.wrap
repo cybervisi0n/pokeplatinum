@@ -2,7 +2,7 @@
 url = https://github.com/cybervisi0n/libntrdwc.git
 revision = main
 depth = 1
-directory = NitroDWC-2.2.30008
+directory = libntrdwc
 
 [provide]
 dependency_names = NitroDWC

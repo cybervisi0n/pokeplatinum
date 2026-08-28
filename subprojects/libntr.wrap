@@ -2,7 +2,7 @@
 url = https://github.com/cybervisi0n/libntr.git
 revision = main
 depth = 1
-directory = NitroSDK-4.2.30001
+directory = libntr
 
 [provide]
 dependency_names = NitroSDK
