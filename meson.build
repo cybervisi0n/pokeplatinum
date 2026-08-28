@@ -180,6 +180,12 @@ endif
 ############################################################
 ###                     DEPENDENCIES                     ###
 ############################################################
+libntr_prj = subproject('libntr',
+    default_options: [
+        'card_game_code=CPUE',
+        'card_maker_code=01'
+    ])
+
 nitrosdk_dep = dependency('NitroSDK',
     default_options: {
         'mwrap_sdk': '2.0/sp1p2',
