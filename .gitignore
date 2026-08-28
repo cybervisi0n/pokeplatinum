@@ -12,11 +12,15 @@
 /metroskrew-*.7z
 
 # Subproject folders
-/subprojects/libvct-*/
+/subprojects/libvct/
 /subprojects/NitroDWC-*/
 /subprojects/NitroSDK-*/
 /subprojects/NitroSystem-*/
 /subprojects/NitroWiFi-*/
+/subprojects/libntr/
+/subprojects/libntrsystem/
+/subprojects/libntrwifi/
+/subprojects/libntrdwc/
 /subprojects/nitrogfx/
 /subprojects/libpng-*/
 /subprojects/zlib-*/

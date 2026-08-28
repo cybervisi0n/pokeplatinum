@@ -6,7 +6,7 @@ word_bank_object = custom_target(
         arm_none_eabi_gcc_exe,
         '-I', meson.global_source_root() / 'include',
         '-I', meson.global_build_root(),
-        '-I', meson.global_source_root() / 'subprojects' / 'NitroSDK-4.2.30001' / 'include',
+        '-I', meson.global_source_root() / 'subprojects' / 'libntr' / 'include',
         '-c', '-o', '@OUTPUT@',
         '@INPUT@',
     ],
