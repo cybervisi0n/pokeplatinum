@@ -38,13 +38,14 @@
 #include "struct_defs/seal_case.h"
 #include "struct_defs/special_encounter.h"
 #include "struct_defs/struct_02029C88.h"
-#include "struct_defs/struct_0203E608.h"
 #include "struct_defs/struct_02041DC8.h"
 
+#include "applications/capsule_menu/main.h"
 #include "applications/naming_screen.h"
 #include "applications/party_menu/defs.h"
 #include "applications/pc_boxes/pokemon_storage_session.h"
 #include "applications/pokemon_summary_screen/main.h"
+#include "applications/scratch_off_cards/main.h"
 #include "applications/town_map/main.h"
 #include "cutscenes/boat_cutscene.h"
 #include "field/field_system.h"
@@ -92,6 +93,7 @@
 
 #include "appearance.h"
 #include "bag.h"
+#include "ball_seal_info.h"
 #include "battle_frontier.h"
 #include "bg_window.h"
 #include "binoculars_vista_lighthouse.h"
@@ -150,7 +152,9 @@
 #include "save_player.h"
 #include "savedata.h"
 #include "scrcmd_amity_square.h"
+#include "scrcmd_battle_arcade.h"
 #include "scrcmd_battle_castle.h"
+#include "scrcmd_battle_factory.h"
 #include "scrcmd_battle_hall.h"
 #include "scrcmd_berry.h"
 #include "scrcmd_catching_show.h"
@@ -193,15 +197,12 @@
 #include "tv_segment.h"
 #include "underground.h"
 #include "unk_020298BC.h"
-#include "unk_0202C9F4.h"
 #include "unk_02033200.h"
 #include "unk_020363E8.h"
 #include "unk_02038FFC.h"
 #include "unk_0203D1B8.h"
 #include "unk_020494DC.h"
 #include "unk_0204AEE8.h"
-#include "unk_0204F04C.h"
-#include "unk_0205003C.h"
 #include "unk_020528D0.h"
 #include "unk_020559DC.h"
 #include "unk_0205749C.h"
@@ -212,7 +213,6 @@
 #include "unk_02069BE0.h"
 #include "unk_020722AC.h"
 #include "unk_0207DA28.h"
-#include "unk_02097B18.h"
 #include "unk_020985E4.h"
 #include "unk_02099500.h"
 #include "unk_0209ACF4.h"
@@ -527,7 +527,7 @@ static BOOL ScrCmd_SelectMoveTutorPokemon(ScriptContext *ctx);
 static BOOL ScrCmd_GetSelectedPartySlot(ScriptContext *ctx);
 static BOOL ScrCmd_GetBattleHallSelectedSlots(ScriptContext *ctx);
 static BOOL ScrCmd_GetBattleCastleSelectedSlots(ScriptContext *ctx);
-static BOOL ScrCmd_2DB(ScriptContext *ctx);
+static BOOL ScrCmd_GetBattleArcadeSelectedSlots(ScriptContext *ctx);
 static BOOL ScrCmd_OpenPartyMenuForTrade(ScriptContext *ctx);
 static BOOL ScrCmd_SetMonSummary(ScriptContext *ctx);
 static BOOL ScrCmd_GetMonPartySlot(ScriptContext *ctx);
@@ -712,9 +712,9 @@ static BOOL ScrCmd_SaveExtraData(ScriptContext *ctx);
 static BOOL ScrCmd_CheckIsMiscSaveInit(ScriptContext *ctx);
 static BOOL ScrCmd_PokeMartFrontier(ScriptContext *ctx);
 static BOOL ScrCmd_OpenFrontierRecordsApp(ScriptContext *ctx);
-BOOL ScrCmd_2E2(ScriptContext *ctx);
-BOOL ScrCmd_2E3(ScriptContext *ctx);
-BOOL ScrCmd_2E4(ScriptContext *ctx);
+BOOL ScrCmd_OpenScratchOffCardsApp(ScriptContext *ctx);
+BOOL ScrCmd_FreeScratchOffCardsArgs(ScriptContext *ctx);
+BOOL ScrCmd_GetScratchOffCardsWonItem(ScriptContext *ctx);
 BOOL ScrCmd_GetRandomBattlegroundTrainers(ScriptContext *ctx);
 static u8 GetRandomBattlegroundGymLeaderID(u16 trainer1ID, u16 trainer2ID, u16 trainer3ID, u16 trainer4ID);
 static u8 GetRandomBattlegroundStatTrainerID(u16 trainer1ID, u16 trainer2ID, u16 trainer3ID, u16 trainer4ID);
@@ -2706,36 +2706,36 @@ static BOOL ScrCmd_GetBattleCastleSelectedSlots(ScriptContext *ctx)
     return FALSE;
 }
 
-static BOOL ScrCmd_2DB(ScriptContext *ctx)
+static BOOL ScrCmd_GetBattleArcadeSelectedSlots(ScriptContext *ctx)
 {
-    u16 *v3 = ScriptContext_GetVarPointer(ctx);
-    u16 *v4 = ScriptContext_GetVarPointer(ctx);
-    u16 *v5 = ScriptContext_GetVarPointer(ctx);
-    void **v2 = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PARTY_MANAGEMENT_DATA);
-    PartyMenu *partyMenu = *v2;
+    u16 *selectedSlot1 = ScriptContext_GetVarPointer(ctx);
+    u16 *selectedSlot2 = ScriptContext_GetVarPointer(ctx);
+    u16 *selectedSlot3 = ScriptContext_GetVarPointer(ctx);
+    void **partySelect = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PARTY_MANAGEMENT_DATA);
+    PartyMenu *partyMenu = *partySelect;
 
-    GF_ASSERT(*v2 != 0);
+    GF_ASSERT(*partySelect != NULL);
 
-    int v1 = PartyMenu_GetSelectedSlot(*v2);
+    int slot = PartyMenu_GetSelectedSlot(*partySelect);
 
-    if (v1 == MAX_PARTY_SIZE + 1) {
-        *v3 = PARTY_SLOT_NONE;
-    } else if (v1 == MAX_PARTY_SIZE) {
-        *v3 = partyMenu->selectionOrder[0];
-        *v3 -= 1;
+    if (slot == MAX_PARTY_SIZE + 1) {
+        *selectedSlot1 = PARTY_SLOT_NONE;
+    } else if (slot == MAX_PARTY_SIZE) {
+        *selectedSlot1 = partyMenu->selectionOrder[0];
+        *selectedSlot1 -= 1;
 
-        *v4 = partyMenu->selectionOrder[1];
-        *v4 -= 1;
+        *selectedSlot2 = partyMenu->selectionOrder[1];
+        *selectedSlot2 -= 1;
 
-        *v5 = partyMenu->selectionOrder[2];
+        *selectedSlot3 = partyMenu->selectionOrder[2];
 
-        if (*v5 > 0) {
-            *v5 -= 1;
+        if (*selectedSlot3 > 0) {
+            *selectedSlot3 -= 1;
         }
     }
 
-    Heap_Free(*v2);
-    *v2 = NULL;
+    Heap_Free(*partySelect);
+    *partySelect = NULL;
 
     return FALSE;
 }
@@ -3238,7 +3238,7 @@ static BOOL ScrCmd_StartLibraryTV(ScriptContext *ctx)
 
 static BOOL ScrCmd_OpenSealCapsuleEditor(ScriptContext *ctx)
 {
-    sub_020980DC(ctx->task, ctx->fieldSystem->saveData);
+    CapsuleMenu_StartFieldTask(ctx->task, ctx->fieldSystem->saveData);
     return TRUE;
 }
 
@@ -6721,38 +6721,38 @@ static BOOL ScrCmd_OpenFrontierRecordsApp(ScriptContext *ctx)
     return TRUE;
 }
 
-BOOL ScrCmd_2E2(ScriptContext *ctx)
+BOOL ScrCmd_OpenScratchOffCardsApp(ScriptContext *ctx)
 {
-    void **v0 = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PARTY_MANAGEMENT_DATA);
+    void **args = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PARTY_MANAGEMENT_DATA);
 
-    *v0 = sub_0203E608(ctx->fieldSystem, HEAP_ID_FIELD3);
+    *args = FieldSystem_OpenScratchOffCardsApp(ctx->fieldSystem, HEAP_ID_FIELD3);
     ScriptContext_Pause(ctx, ScriptContext_WaitForApplicationExit);
 
     return TRUE;
 }
 
-BOOL ScrCmd_2E3(ScriptContext *ctx)
+BOOL ScrCmd_FreeScratchOffCardsArgs(ScriptContext *ctx)
 {
     FieldSystem *fieldSystem = ctx->fieldSystem;
 
-    void **v0 = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PARTY_MANAGEMENT_DATA);
-    Heap_Free(*v0);
-    *v0 = NULL;
+    void **args = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PARTY_MANAGEMENT_DATA);
+    Heap_Free(*args);
+    *args = NULL;
 
     return TRUE;
 }
 
-BOOL ScrCmd_2E4(ScriptContext *ctx)
+BOOL ScrCmd_GetScratchOffCardsWonItem(ScriptContext *ctx)
 {
     FieldSystem *fieldSystem = ctx->fieldSystem;
-    u16 v3 = ScriptContext_GetVar(ctx);
-    u16 *v4 = ScriptContext_GetVarPointer(ctx);
-    u16 *v5 = ScriptContext_GetVarPointer(ctx);
+    u16 cardIdx = ScriptContext_GetVar(ctx);
+    u16 *item = ScriptContext_GetVarPointer(ctx);
+    u16 *count = ScriptContext_GetVarPointer(ctx);
 
-    void **v0 = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PARTY_MANAGEMENT_DATA);
-    UnkStruct_0203E608 *v1 = (UnkStruct_0203E608 *)*v0;
-    *v4 = v1->unk_08[v3];
-    *v5 = v1->unk_0E[v3];
+    void **argsPtr = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PARTY_MANAGEMENT_DATA);
+    ScratchOffCardsAppArgs *args = *argsPtr;
+    *item = args->wonItems[cardIdx];
+    *count = args->wonItemsCount[cardIdx];
 
     return FALSE;
 }

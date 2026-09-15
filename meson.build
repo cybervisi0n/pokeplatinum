@@ -13,7 +13,7 @@ build_target = get_option('build_target')
 ############################################################
 ###                    INCLUDE PATHS                     ###
 ############################################################
-public_includes = include_directories('include', 'asm', 'res')
+public_includes = include_directories('include', 'asm')
 toplevel_includes = include_directories('.')
 
 
@@ -641,6 +641,11 @@ test('SBIN Checksums - Shared',
 test('SBIN Checksums - For Revision',
     sha1sum,
     args: ['-c', '--quiet', sbins_for_rev_sha1]
+)
+
+test('SBIN Checksums - ARM7',
+    sha1sum,
+    args: ['-c', '--quiet', sbins_arm7_sha1]
 )
 
 test('Filesystem Checksums',

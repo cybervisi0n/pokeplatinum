@@ -127,12 +127,12 @@ Static main
 	Object main.nef.p/src_journal.c.o
 	Object main.nef.p/src_trainer_case_save_data.c.o
 	Object main.nef.p/src_wifi_history_save_data.c.o
-	Object main.nef.p/src_unk_0202C9F4.c.o
+	Object main.nef.p/src_ball_seal_info.c.o
 	Object main.nef.p/src_play_time.c.o
 	Object main.nef.p/src_chatot_cry.c.o
 	Object main.nef.p/src_game_records.c.o
 	Object main.nef.p/src_wifi_battle_tower_save.c.o
-	Object main.nef.p/src_unk_0202D778.c.o
+	Object main.nef.p/src_ribbon_save_data.c.o
 	Object main.nef.p/src_special_encounter.c.o
 	Object main.nef.p/src_global_trade.c.o
 	Object main.nef.p/src_mystery_gift.c.o
@@ -151,7 +151,7 @@ Static main
 	Object main.nef.p/src_battle_hall_win_records.c.o
 	Object main.nef.p/src_unk_02030A80.c.o
 	Object main.nef.p/src_unk_02030CE8.c.o
-	Object main.nef.p/src_unk_02030EA4.c.o
+	Object main.nef.p/src_wifi_plaza_question_data.c.o
 	Object main.nef.p/src_wireless_manager.c.o
 	Object main.nef.p/src_comm_ring.c.o
 	Object main.nef.p/src_unk_020322D8.c.o
@@ -210,11 +210,10 @@ Static main
 	Object main.nef.p/src_scrcmd_underground_inventory.c.o
 	Object main.nef.p/src_scrcmd_party_mon_moves.c.o
 	Object main.nef.p/src_scrcmd_dummy_23F_242.c.o
-	Object main.nef.p/src_unk_0204F04C.c.o
+	Object main.nef.p/src_scrcmd_battle_factory.c.o
 	Object main.nef.p/src_scrcmd_battle_hall.c.o
 	Object main.nef.p/src_scrcmd_battle_castle.c.o
-	Object main.nef.p/src_unk_0205003C.c.o
-	Object main.nef.p/src_unk_02050548.c.o
+	Object main.nef.p/src_scrcmd_battle_arcade.c.o
 	Object main.nef.p/src_binoculars_vista_lighthouse.c.o
 	Object main.nef.p/src_vars_flags.c.o
 	Object main.nef.p/src_field_task.c.o
@@ -328,7 +327,7 @@ Static main
 	Object main.nef.p/src_contest.c.o
 	Object main.nef.p/src_unk_02094EDC.c.o
 	Object main.nef.p/src_unk_02095AF0.c.o
-	Object main.nef.p/src_unk_02095CD4.c.o
+	Object main.nef.p/src_applications_trade_room_comm.c.o
 	Object main.nef.p/src_unk_02095E98.c.o
 	Object main.nef.p/src_unk_020961E8.c.o
 	Object main.nef.p/src_item_use_pokemon.c.o
@@ -336,7 +335,7 @@ Static main
 	Object main.nef.p/src_berry_data.c.o
 	Object main.nef.p/src_easy_chat_args.c.o
 	Object main.nef.p/src_applications_mail.c.o
-	Object main.nef.p/src_unk_02097B18.c.o
+	Object main.nef.p/src_applications_capsule_menu_main.c.o
 	Object main.nef.p/src_egg_hatch.c.o
 	Object main.nef.p/src_unk_020985E4.c.o
 	Object main.nef.p/src_pokedex_language.c.o
@@ -1272,12 +1271,12 @@ Overlay mail_viewer
 	Object main.nef.p/src_applications_mail_viewer.c.o
 }
 
-Overlay overlay76
+Overlay capsule_menu
 {
 	After battle_anim
-	Object main.nef.p/src_overlay076_ov76_0223B140.c.o
-	Object main.nef.p/src_overlay076_ov76_0223B870.c.o
-	Object main.nef.p/src_overlay076_ov76_0223D338.c.o
+	Object main.nef.p/src_applications_capsule_menu_placement.c.o
+	Object main.nef.p/src_applications_capsule_menu_graphics.c.o
+	Object main.nef.p/src_applications_capsule_menu_manager.c.o
 }
 
 Overlay game_opening
@@ -1369,11 +1368,11 @@ Overlay pc_hall_of_fame
 	Object main.nef.p/src_applications_pc_hall_of_fame_display.c.o
 }
 
-Overlay overlay88
+Overlay trade_room
 {
 	After battle_anim
-	Object main.nef.p/src_overlay088_ov88_0223B140.c.o
-	Object main.nef.p/src_overlay088_ov88_0223E9C4.c.o
+	Object main.nef.p/src_applications_trade_room_application.c.o
+	Object main.nef.p/src_applications_trade_room_helpers.c.o
 }
 
 Overlay dummy6
@@ -1564,7 +1563,7 @@ Overlay overlay104
 	Object main.nef.p/src_overlay104_ov104_0223D768.c.o
 	Object main.nef.p/src_overlay104_ov104_0223D860.c.o
 	Object main.nef.p/src_overlay104_ov104_0223D9E4.c.o
-	Object main.nef.p/src_overlay104_ov104_0223DC7C.c.o
+	Object main.nef.p/src_overlay104_frontier_brain_encounter_effect.c.o
 	Object main.nef.p/src_overlay104_ov104_0223E894.c.o
 }
 
@@ -1623,13 +1622,13 @@ Overlay frontier_records_app
 	Object main.nef.p/src_applications_frontier_records_windows.c.o
 }
 
-Overlay overlay111
+Overlay scratch_off_cards
 {
 	After main
-	Object main.nef.p/src_overlay111_ov111_021D0D80.c.o
-	Object main.nef.p/src_overlay111_ov111_021D2F80.c.o
-	Object main.nef.p/src_overlay111_ov111_021D33F4.c.o
-	Object main.nef.p/src_overlay111_ov111_021D3548.c.o
+	Object main.nef.p/src_applications_scratch_off_cards_main.c.o
+	Object main.nef.p/src_applications_scratch_off_cards_sprite_manager.c.o
+	Object main.nef.p/src_applications_scratch_off_cards_sprites.c.o
+	Object main.nef.p/src_applications_scratch_off_cards_windows.c.o
 }
 
 Overlay overlay112
