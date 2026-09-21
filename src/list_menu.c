@@ -56,11 +56,7 @@ ListMenu *ListMenu_New(const ListMenuTemplate *template, u16 startListPos, u16 s
     return menu;
 }
 
-#ifdef SDK_BUILD_ARM
-u32 ListMenu_ProcessInput(ListMenu *menu)
-#else
-u64 ListMenu_ProcessInput(ListMenu *menu)
-#endif
+list_index_t ListMenu_ProcessInput(ListMenu *menu)
 {
     menu->lastAction = LIST_MENU_ACTION_NONE;
 
@@ -212,7 +208,7 @@ u8 ListMenu_GetLastAction(ListMenu *menu)
     return menu->lastAction;
 }
 
-u32 ListMenu_GetIndexOfChoice(ListMenu *menu, u16 choice)
+list_index_t ListMenu_GetIndexOfChoice(ListMenu *menu, u16 choice)
 {
     return menu->template.choices[choice].index;
 }

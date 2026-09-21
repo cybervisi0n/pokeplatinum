@@ -36,11 +36,7 @@ void StringList_Free(StringList *list)
     Heap_Free(list);
 }
 
-#ifdef SDK_BUILD_ARM
-void StringList_AddFromMessageBank(StringList *list, const MessageLoader *loader, u32 bankEntry, u32 index)
-#else
-void StringList_AddFromMessageBank(StringList *list, const MessageLoader *loader, u32 bankEntry, u64 index)
-#endif
+void StringList_AddFromMessageBank(StringList *list, const MessageLoader *loader, u32 bankEntry, list_index_t index)
 {
     u32 tmp;
     list = FindFirstEmptyEntry(list, &tmp);
@@ -51,11 +47,7 @@ void StringList_AddFromMessageBank(StringList *list, const MessageLoader *loader
     }
 }
 
-#ifdef SDK_BUILD_ARM
-void StringList_AddFromString(StringList *list, const String *string, u32 index)
-#else
-void StringList_AddFromString(StringList *list, const String *string, u64 index)
-#endif
+void StringList_AddFromString(StringList *list, const String *string, list_index_t index)
 {
     u32 heapID;
     list = FindFirstEmptyEntry(list, &heapID);

@@ -1258,11 +1258,7 @@ static u8 ProcessItemListMenuInput(BagController *interface)
         }
     }
 
-    #ifdef SDK_BUILD_ARM
-    u32 selectedItem = ListMenu_ProcessInput(interface->itemList);
-    #else
-    u64 selectedItem = ListMenu_ProcessInput(interface->itemList);
-    #endif
+    menu_selection_t selectedItem = ListMenu_ProcessInput(interface->itemList);
     u16 newCursorScroll, newCursorPos;
     ListMenu_GetListAndCursorPos(interface->itemList, &newCursorScroll, &newCursorPos);
 
