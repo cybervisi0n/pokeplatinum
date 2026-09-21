@@ -100,11 +100,7 @@ struct ListMenu {
 };
 
 ListMenu *ListMenu_New(const ListMenuTemplate *template, u16 startListPos, u16 startCursorPos, u8 heapID);
-#ifdef SDK_BUILD_ARM
-u32 ListMenu_ProcessInput(ListMenu *menu);
-#else
-u64 ListMenu_ProcessInput(ListMenu *menu);
-#endif
+list_index_t ListMenu_ProcessInput(ListMenu *menu);
 void ListMenu_Free(ListMenu *menu, u16 *outListPos, u16 *outCursorPos);
 void ListMenu_Draw(ListMenu *menu);
 void ListMenu_SetTextColors(ListMenu *menu, u8 fg, u8 bg, u8 shadow);
@@ -113,7 +109,7 @@ void ListMenu_SetAltTextColors(ListMenu *menu, u8 fg, u8 bg, u8 shadow);
 void ListMenu_CalcTrueCursorPos(ListMenu *menu, u16 *outPos);
 void ListMenu_GetListAndCursorPos(ListMenu *menu, u16 *outListPos, u16 *outCursorPos);
 u8 ListMenu_GetLastAction(ListMenu *menu);
-u32 ListMenu_GetIndexOfChoice(ListMenu *menu, u16 choice);
+list_index_t ListMenu_GetIndexOfChoice(ListMenu *menu, u16 choice);
 #ifdef SDK_PORT
 u64 ListMenu_GetAttribute(ListMenu *menu, u8 attribute);
 #else

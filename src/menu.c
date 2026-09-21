@@ -64,21 +64,13 @@ void Menu_Free(Menu *menu, u8 *outCursorPos)
     Heap_FreeExplicit(menu->heapID, menu);
 }
 
-#ifdef SDK_BUILD_ARM
-u32 Menu_ProcessInput(Menu *menu)
-#else
-u64 Menu_ProcessInput(Menu *menu)
-#endif
+menu_selection_t Menu_ProcessInput(Menu *menu)
 {
     menu->lastAction = MENU_ACTION_NONE;
 
     if (JOY_NEW(PAD_BUTTON_A)) {
         Sound_PlayEffect(SE_CONFIRM_sseq_3);
-        #ifdef SDK_BUILD_ARM
-        return menu->template.choices[menu->cursorPos].callbackFunction;
-        #else
-        return (u64)menu->template.choices[menu->cursorPos].callbackFunction;
-        #endif
+        return (menu_selection_t)menu->template.choices[menu->cursorPos].callbackFunction;
     }
 
     if (JOY_NEW(menu->cancelKeys)) {
@@ -121,11 +113,7 @@ u64 Menu_ProcessInput(Menu *menu)
     return MENU_NOTHING_CHOSEN;
 }
 
-#ifdef SDK_BUILD_ARM
-u32 Menu_ProcessInputWithSound(Menu *menu, u16 sdatID)
-#else
-u64 Menu_ProcessInputWithSound(Menu *menu, u16 sdatID)
-#endif
+menu_selection_t Menu_ProcessInputWithSound(Menu *menu, u16 sdatID)
 {
     menu->lastAction = MENU_ACTION_NONE;
 
@@ -174,11 +162,7 @@ u64 Menu_ProcessInputWithSound(Menu *menu, u16 sdatID)
     return MENU_NOTHING_CHOSEN;
 }
 
-#ifdef SDK_BUILD_ARM
-u32 Menu_ProcessExternalInput(Menu *menu, u8 input)
-#else
-u64 Menu_ProcessExternalInput(Menu *menu, u8 input)
-#endif
+menu_selection_t Menu_ProcessExternalInput(Menu *menu, u8 input)
 {
     switch (input) {
     case MENU_INPUT_CONFIRM:
@@ -394,17 +378,9 @@ Menu *Menu_MakeYesNoChoice(BgConfig *bgConfig, const WindowTemplate *winTemplate
     return Menu_MakeYesNoChoiceWithCursorAt(bgConfig, winTemplate, borderTileStart, borderPalette, 0, heapID);
 }
 
-#ifdef SDK_BUILD_ARM
-u32 Menu_ProcessInputAndHandleExit(Menu *menu, u32 heapID)
-#else
-u64 Menu_ProcessInputAndHandleExit(Menu *menu, u32 heapID)
-#endif
+menu_selection_t Menu_ProcessInputAndHandleExit(Menu *menu, u32 heapID)
 {
-    #ifdef SDK_BUILD_ARM
-    u32 result = Menu_ProcessInput(menu);
-    #else
-    u64 result = Menu_ProcessInput(menu);
-    #endif
+    menu_selection_t result = Menu_ProcessInput(menu);
     if (result != MENU_NOTHING_CHOSEN) {
         Menu_DestroyForExit(menu, heapID);
     }
@@ -412,17 +388,9 @@ u64 Menu_ProcessInputAndHandleExit(Menu *menu, u32 heapID)
     return result;
 }
 
-#ifdef SDK_BUILD_ARM
-u32 Menu_ProcessExternalInputAndHandleExit(Menu *menu, u8 input, u32 heapID)
-#else
-u64 Menu_ProcessExternalInputAndHandleExit(Menu *menu, u8 input, u32 heapID)
-#endif
+menu_selection_t Menu_ProcessExternalInputAndHandleExit(Menu *menu, u8 input, u32 heapID)
 {
-    #ifdef SDK_BUILD_ARM
-    u32 result = Menu_ProcessExternalInput(menu, input);
-    #else
-    u64 result = Menu_ProcessExternalInput(menu, input);
-    #endif
+    menu_selection_t result = Menu_ProcessExternalInput(menu, input);
     if (result != MENU_NOTHING_CHOSEN) {
         Menu_DestroyForExit(menu, heapID);
     }

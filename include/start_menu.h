@@ -20,7 +20,7 @@ typedef struct StartMenu {
     StringList *menuOptions;
     u16 cursorPos;
     u16 state;
-    u32 input;
+    menu_selection_t input;
     u8 options[MAX_START_MENU_OPTIONS];
     SpriteResourceManager spriteManager;
     ManagedSprite *sprites[MAX_START_MENU_OPTIONS + 1];

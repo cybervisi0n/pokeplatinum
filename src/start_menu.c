@@ -705,9 +705,9 @@ static BOOL StartMenu_Select(FieldTask *fieldTask)
         menu->state = START_MENU_STATE_END;
         break;
     default:
-        if ((u32)sStartMenuActions[menu->input].callback == MENU_CANCEL) {
+        if ((menu_selection_t)sStartMenuActions[menu->input].callback == MENU_CANCEL) {
             menu->state = START_MENU_STATE_END;
-        } else if ((u32)sStartMenuActions[menu->input].callback != MENU_NOTHING_CHOSEN) {
+        } else if ((menu_selection_t)sStartMenuActions[menu->input].callback != MENU_NOTHING_CHOSEN) {
             FieldTaskFunc actionTask = sStartMenuActions[menu->input].callback;
             return actionTask(fieldTask);
         }
