@@ -1,17 +1,15 @@
 #ifndef POKEPLATINUM_MENU_H
 #define POKEPLATINUM_MENU_H
 
+#include <nitro/types.h>
+
 #include "constants/menu.h"
 
 #include "bg_window.h"
 #include "colored_arrow.h"
 #include "string_list.h"
 
-#ifdef SDK_BUILD_ARM
-typedef u32 menu_selection_t;
-#else
-typedef u64 menu_selection_t;
-#endif
+typedef uPtr menu_selection_t;
 
 enum MenuAction {
     MENU_ACTION_NONE = 0,

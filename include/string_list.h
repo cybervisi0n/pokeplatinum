@@ -1,16 +1,14 @@
 #ifndef POKEPLATINUM_STRING_LIST_H
 #define POKEPLATINUM_STRING_LIST_H
 
+#include <nitro/types.h>
+
 #include "message.h"
 #include "string_gf.h"
 
 #define STRING_LIST_TERMINATOR ((void *)0xFFFFFFFF)
 
-#ifdef SDK_BUILD_ARM
-typedef u32 list_index_t;
-#else
-typedef u64 list_index_t;
-#endif
+typedef uPtr list_index_t;
 
 typedef struct StringList {
     void *entry;
