@@ -1119,7 +1119,12 @@ static void SetSelectionMatrixObjects(ChooseStarterApp *app)
 static void ChangePokeballChoice(ChooseStarterApp *app)
 {
     if (gSystem.pressedKeys & PAD_KEY_LEFT) {
-        if (app->cursorPosition - 1 >= 0) {
+        if (
+            #ifndef SDK_BUILD_ARM
+            // Fix an integer underflow
+            (int)
+            #endif
+            app->cursorPosition - 1 >= 0) {
             app->cursorPosition -= 1;
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
         }
