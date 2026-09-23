@@ -230,7 +230,13 @@ int DanceCompetition_Init(ApplicationManager *appMan, int *param1)
     G2_BlendNone();
     G2S_BlendNone();
 
-    Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_23, 0xa0000);
+    Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_23, 
+        #ifdef SDK_BUILD_ARM
+        0xa0000
+        #else
+        0xa0000 * 2
+        #endif
+    );
     v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov17_0224DF54), HEAP_ID_23);
     MI_CpuClear8(v0, sizeof(UnkStruct_ov17_0224DF54));
 

@@ -130,8 +130,19 @@ void ov22_022598F4(UnkStruct_ov22_022597BC *param0, UnkStruct_ov22_022599A0 *par
     v0->unk_04 = *param1;
     v0->unk_34 = param5;
     v0->unk_38 = param4;
+    #ifdef SDK_PORT
+    if(param4 == 0) {
+        v0->unk_3C = 0;
+        v0->unk_40 = 0;
+    } else {
+        v0->unk_3C = param2 / param4;
+        v0->unk_40 = param3 / param4;
+    }
+    #else
     v0->unk_3C = param2 / param4;
     v0->unk_40 = param3 / param4;
+    #endif
+    
     v0->unk_44 = Bg_GetXOffset(param0->unk_00, param0->unk_1C);
     v0->unk_48 = Bg_GetYOffset(param0->unk_00, param0->unk_1C);
 

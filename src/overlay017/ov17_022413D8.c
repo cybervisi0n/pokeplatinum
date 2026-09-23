@@ -1839,7 +1839,15 @@ void ov17_0224331C(UnkStruct_ov17_02246F24 *param0, int param1, int param2, u8 *
 
         ManagedSprite_GetPositionXY(param0->unk_0C.unk_C4[param1][v7], &v5, &v6);
 
+        #ifdef SDK_BUILD_ARM
         v0->unk_1C = (MATH_IAbs(v3 - v5) << 8) / (3 * (*param3));
+        #else
+        if(param3 && (*param3 != 0)) {
+            v0->unk_1C = (MATH_IAbs(v3 - v5) << 8) / (3 * (*param3));
+        } else {
+            v0->unk_1C = 0;
+        }
+        #endif
         v0->unk_18 = v5 << 8;
 
         SysTask_Start(ov17_022434E0, v0, 40000);
