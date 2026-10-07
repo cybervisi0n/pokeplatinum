@@ -803,7 +803,7 @@ pokeplatinum_c = files(
     'applications/capsule_menu/graphics.c',
     'applications/capsule_menu/manager.c',
     'applications/title_screen.c',
-    'game_opening/ov77_021D25B0.c',
+    'game_opening/opening_cutscene.c',
     'game_opening/ov77_021D54B0.c',
     'game_opening/ov77_021D6670.c',
     'game_opening/ov77_021D6C70.c',

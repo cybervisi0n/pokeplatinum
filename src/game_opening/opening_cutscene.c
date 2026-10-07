@@ -122,7 +122,7 @@ typedef struct {
 
 typedef struct {
     enum HeapID heapID;
-    int unk_04;
+    int frameNum;
     BOOL unk_08;
     BgConfig *unk_0C;
     G3DPipelineBuffers *unk_10;
@@ -131,56 +131,56 @@ typedef struct {
     UnkStruct_ov77_021D37C0 unk_34;
     UnkStruct_ov77_021D5308 unk_298;
     u8 unk_2A8;
-} GameOpeningWork;
+} OpeningCutsceneWork;
 
 void EnqueueApplication(FSOverlayID param0, const ApplicationManagerTemplate *param1);
-static int ov77_021D2D08(ApplicationManager *appMan, int *param1);
-static int ov77_021D2D94(ApplicationManager *appMan, int *param1);
-static int ov77_021D2E60(ApplicationManager *appMan, int *param1);
-static BOOL ov77_021D2E9C(GameOpeningWork *param0);
-static BOOL ov77_021D33F0(GameOpeningWork *param0);
-static BOOL ov77_021D5254(GameOpeningWork *param0);
+static int OpeningCutscene_Init(ApplicationManager *appMan, int *state);
+static int OpeningCutscene_Main(ApplicationManager *appMan, int *state);
+static int OpeningCutscene_Exit(ApplicationManager *appMan, int *state);
+static BOOL ov77_021D2E9C(OpeningCutsceneWork *cutsceneWork);
+static BOOL ov77_021D33F0(OpeningCutsceneWork *cutsceneWork);
+static BOOL ov77_021D5254(OpeningCutsceneWork *param0);
 static void ov77_021D2AA0(void);
 static void ov77_021D2C80(void);
 static void ov77_021D2CE8(void);
-static void ov77_021D35B8(GameOpeningWork *param0);
-static void ov77_021D361C(GameOpeningWork *param0, BOOL param1);
-static void ov77_021D2F0C(GameOpeningWork *param0);
+static void ov77_021D35B8(OpeningCutsceneWork *param0);
+static void ov77_021D361C(OpeningCutsceneWork *param0, BOOL param1);
+static void ov77_021D2F0C(OpeningCutsceneWork *param0);
 static void ov77_021D2F38(UnkStruct_ov77_021D2F38 *param0);
 static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1);
-static void ov77_021D3234(GameOpeningWork *param0);
+static void ov77_021D3234(OpeningCutsceneWork *param0);
 static void ov77_021D32A4(SysTask *param0, void *param1);
 static void ov77_021D3300(SysTask *param0, void *param1);
 static void ov77_021D3360(SysTask *param0, void *param1);
 static void ov77_021D33A8(SysTask *param0, void *param1);
-static void ov77_021D34A8(GameOpeningWork *param0);
+static void ov77_021D34A8(OpeningCutsceneWork *param0);
 static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D3A10(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1);
+static void ov77_021D3A10(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1);
 static void ov77_021D3DC4(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D3B5C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1);
+static void ov77_021D3B5C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1);
 static void ov77_021D40B8(UnkStruct_ov77_021D37C0 *param0, int param1);
 static BOOL ov77_021D40DC(UnkStruct_ov77_021D37C0 *param0, int param1);
 static void ov77_021D4188(UnkStruct_ov77_021D37C0 *param0);
-static BOOL ov77_021D4230(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1, const int param2);
+static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1, const int param2);
 static void ov77_021D4B70(UnkStruct_ov77_021D37C0 *param0);
 static void ov77_021D4BE4(UnkStruct_ov77_021D37C0 *param0);
 static void ov77_021D4C04(UnkStruct_ov77_021D37C0 *param0, int param1);
 static void ov77_021D4DC8(UnkStruct_ov77_021D37C0 *param0, int param1);
 static void ov77_021D4E90(UnkStruct_ov77_021D37C0 *param0);
 static void ov77_021D4F38(UnkStruct_ov77_021D37C0 *param0, const int param1);
-static void ov77_021D513C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1, int param2);
-static void ov77_021D36F8(GameOpeningWork *param0);
-static void ov77_021D52C8(GameOpeningWork *param0);
+static void ov77_021D513C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1, int param2);
+static void ov77_021D36F8(OpeningCutsceneWork *param0);
+static void ov77_021D52C8(OpeningCutsceneWork *param0);
 static void ov77_021D5308(UnkStruct_ov77_021D5308 *param0);
 static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1);
-static void ov77_021D5478(GameOpeningWork *param0);
+static void ov77_021D5478(OpeningCutsceneWork *param0);
 
 extern const ApplicationManagerTemplate gTitleScreenAppTemplate;
 
 const ApplicationManagerTemplate gOpeningCutsceneAppTemplate = {
-    ov77_021D2D08,
-    ov77_021D2D94,
-    ov77_021D2E60,
+    OpeningCutscene_Init,
+    OpeningCutscene_Main,
+    OpeningCutscene_Exit,
     0xffffffff
 };
 
@@ -283,7 +283,7 @@ static void ov77_021D25F0(void)
     GXLayers_SetBanks(&vramBanks);
 }
 
-static void ov77_021D2610(GameOpeningWork *param0)
+static void ov77_021D2610(OpeningCutsceneWork *param0)
 {
     param0->unk_0C = BgConfig_New(param0->heapID);
 
@@ -416,7 +416,7 @@ static void ov77_021D2610(GameOpeningWork *param0)
     Bg_MaskPalette(BG_LAYER_SUB_0, 0x0);
 }
 
-static void ov77_021D2724(GameOpeningWork *param0)
+static void ov77_021D2724(OpeningCutsceneWork *param0)
 {
     param0->unk_0C = BgConfig_New(param0->heapID);
 
@@ -562,7 +562,7 @@ static void ov77_021D2724(GameOpeningWork *param0)
     Bg_MaskPalette(BG_LAYER_SUB_0, 0x0);
 }
 
-static void ov77_021D2828(GameOpeningWork *param0)
+static void ov77_021D2828(OpeningCutsceneWork *param0)
 {
     ov77_021D361C(param0, 0);
 
@@ -681,7 +681,7 @@ static void ov77_021D2828(GameOpeningWork *param0)
     param0->unk_34.unk_25A = 1;
 }
 
-static void ov77_021D2900(GameOpeningWork *param0)
+static void ov77_021D2900(OpeningCutsceneWork *param0)
 {
     ov77_021D35B8(param0);
     ov77_021D2828(param0);
@@ -754,7 +754,7 @@ static void ov77_021D2900(GameOpeningWork *param0)
     param0->unk_34.unk_25A = 2;
 }
 
-static void ov77_021D2A00(GameOpeningWork *param0)
+static void ov77_021D2A00(OpeningCutsceneWork *param0)
 {
     param0->unk_0C = BgConfig_New(param0->heapID);
 
@@ -791,7 +791,7 @@ static void ov77_021D2A00(GameOpeningWork *param0)
     Bg_MaskPalette(BG_LAYER_MAIN_2, 0x0);
 }
 
-static void ov77_021D2A58(GameOpeningWork *param0)
+static void ov77_021D2A58(OpeningCutsceneWork *param0)
 {
     NNSGfdTexKey v0;
     NNSGfdPlttKey v1;
@@ -823,14 +823,14 @@ static void ov77_021D2AA0(void)
 
 static void ov77_021D2B30(void *param0)
 {
-    GameOpeningWork *v0 = param0;
+    OpeningCutsceneWork *v0 = param0;
     RenderOam_Transfer();
 }
 
 static void ov77_021D2B38(void *param0)
 {
     int v0;
-    GameOpeningWork *v1 = param0;
+    OpeningCutsceneWork *v1 = param0;
     UnkStruct_ov77_021D37C0 *v2 = &v1->unk_34;
 
     if (v2->unk_25B == 1) {
@@ -899,9 +899,9 @@ static void ov77_021D2CE8(void)
     GXS_SetVisibleWnd(0);
 }
 
-static int ov77_021D2D08(ApplicationManager *appMan, int *param1)
+static int OpeningCutscene_Init(ApplicationManager *appMan, int *state)
 {
-    GameOpeningWork *v0;
+    OpeningCutsceneWork *cutsceneWork;
 
     BrightnessController_ResetAllControllers();
     SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_WHITE);
@@ -913,25 +913,25 @@ static int ov77_021D2D08(ApplicationManager *appMan, int *param1)
     SetAutorepeat(4, 8);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_76, 0xa0000);
 
-    v0 = ApplicationManager_NewData(appMan, sizeof(GameOpeningWork), HEAP_ID_76);
-    memset(v0, 0, sizeof(GameOpeningWork));
+    cutsceneWork = ApplicationManager_NewData(appMan, sizeof(OpeningCutsceneWork), HEAP_ID_76);
+    memset(cutsceneWork, 0, sizeof(OpeningCutsceneWork));
 
-    v0->heapID = HEAP_ID_76;
-    v0->unk_08 = 0;
-    v0->unk_2A8 = 0;
+    cutsceneWork->heapID = HEAP_ID_76;
+    cutsceneWork->unk_08 = 0;
+    cutsceneWork->unk_2A8 = 0;
 
     gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
     GXLayers_SwapDisplay();
-    v0->unk_14 = LCRNG_GetSeed();
+    cutsceneWork->unk_14 = LCRNG_GetSeed();
 
     LCRNG_SetSeed(0);
 
     return 1;
 }
 
-static int ov77_021D2D94(ApplicationManager *appMan, int *param1)
+static int OpeningCutscene_Main(ApplicationManager *appMan, int *state)
 {
-    GameOpeningWork *v0 = ApplicationManager_Data(appMan);
+    OpeningCutsceneWork *v0 = ApplicationManager_Data(appMan);
 
     if ((v0->unk_2A8) && ((gSystem.pressedKeys & PAD_BUTTON_A) || (gSystem.pressedKeys & PAD_BUTTON_START))) {
         v0->unk_08 = 1;
@@ -940,28 +940,28 @@ static int ov77_021D2D94(ApplicationManager *appMan, int *param1)
         SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_BLACK);
     }
 
-    switch (*param1) {
+    switch (*state) {
     case 0:
         v0->unk_18.unk_18 = &v0->unk_2A8;
-        (*param1)++;
+        (*state)++;
         break;
     case 1:
         if (ov77_021D2E9C(v0)) {
-            (*param1)++;
+            (*state)++;
         }
         break;
     case 2:
         if (ov77_021D33F0(v0)) {
-            (*param1)++;
+            (*state)++;
         }
         break;
     case 3:
         if (ov77_021D5254(v0)) {
-            (*param1)++;
+            (*state)++;
         }
         break;
     case 4:
-        if (v0->unk_04 >= 2430) {
+        if (v0->frameNum >= 2430) {
             return 1;
         }
         break;
@@ -974,13 +974,13 @@ static int ov77_021D2D94(ApplicationManager *appMan, int *param1)
         return 1;
     }
 
-    v0->unk_04++;
+    v0->frameNum++;
     return 0;
 }
 
-static int ov77_021D2E60(ApplicationManager *appMan, int *param1)
+static int OpeningCutscene_Exit(ApplicationManager *appMan, int *state)
 {
-    GameOpeningWork *v0 = ApplicationManager_Data(appMan);
+    OpeningCutsceneWork *v0 = ApplicationManager_Data(appMan);
 
     if (IsScreenFadeDone() == FALSE) {
         FinishScreenFade();
@@ -994,37 +994,37 @@ static int ov77_021D2E60(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static BOOL ov77_021D2E9C(GameOpeningWork *param0)
+static BOOL ov77_021D2E9C(OpeningCutsceneWork *cutsceneWork)
 {
-    u8 *v0 = &(param0->unk_18.unk_00);
+    u8 *v0 = &(cutsceneWork->unk_18.unk_00);
 
-    if (param0->unk_08) {
+    if (cutsceneWork->unk_08) {
         (*v0) = 3;
     }
 
     switch (*v0) {
     case 0:
-        ov77_021D2F0C(param0);
+        ov77_021D2F0C(cutsceneWork);
         (*v0)++;
         break;
     case 1:
-        ov77_021D2F38(&param0->unk_18);
+        ov77_021D2F38(&cutsceneWork->unk_18);
         (*v0)++;
         break;
     case 2:
-        if (ov77_021D30D0(&param0->unk_18, param0->unk_04)) {
+        if (ov77_021D30D0(&cutsceneWork->unk_18, cutsceneWork->frameNum)) {
             (*v0)++;
         }
         break;
     case 3:
-        ov77_021D3234(param0);
+        ov77_021D3234(cutsceneWork);
         return 1;
     }
 
     return 0;
 }
 
-static void ov77_021D2F0C(GameOpeningWork *param0)
+static void ov77_021D2F0C(OpeningCutsceneWork *param0)
 {
     ov77_021D25B0();
     ov77_021D2610(param0);
@@ -1138,7 +1138,7 @@ static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
     return 0;
 }
 
-static void ov77_021D3234(GameOpeningWork *param0)
+static void ov77_021D3234(OpeningCutsceneWork *param0)
 {
     SetVBlankCallback(NULL, NULL);
 
@@ -1246,53 +1246,53 @@ static void ov77_021D33A8(SysTask *param0, void *param1)
     G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
 }
 
-static BOOL ov77_021D33F0(GameOpeningWork *param0)
+static BOOL ov77_021D33F0(OpeningCutsceneWork *cutsceneWork)
 {
-    u8 *v0 = &(param0->unk_34.unk_00);
+    u8 *v0 = &(cutsceneWork->unk_34.unk_00);
 
-    if (param0->unk_08) {
+    if (cutsceneWork->unk_08) {
         (*v0) = 4;
     }
 
     switch (*v0) {
     case 0:
-        ov77_021D34A8(param0);
+        ov77_021D34A8(cutsceneWork);
         (*v0)++;
         break;
     case 1:
-        ov77_021D37C0(&param0->unk_34);
+        ov77_021D37C0(&cutsceneWork->unk_34);
         (*v0)++;
         break;
     case 2:
-        if (ov77_021D40DC(&param0->unk_34, 0) == 1) {
-            param0->unk_34.unk_06 = 1;
+        if (ov77_021D40DC(&cutsceneWork->unk_34, 0) == 1) {
+            cutsceneWork->unk_34.unk_06 = 1;
             (*v0)++;
         }
         break;
     case 3:
-        if (ov77_021D4230(param0, &param0->unk_34, param0->unk_04)) {
+        if (ov77_021D4230(cutsceneWork, &cutsceneWork->unk_34, cutsceneWork->frameNum)) {
             (*v0)++;
         }
 
-        ov77_021D6020(param0->unk_34.unk_14);
+        ov77_021D6020(cutsceneWork->unk_34.unk_14);
 
-        if (param0->unk_34.unk_06) {
-            if (param0->unk_34.unk_05 == 0) {
-                ov77_021D4188(&param0->unk_34);
+        if (cutsceneWork->unk_34.unk_06) {
+            if (cutsceneWork->unk_34.unk_05 == 0) {
+                ov77_021D4188(&cutsceneWork->unk_34);
             }
         } else {
-            ov77_021D6E50(param0->unk_34.unk_1C);
+            ov77_021D6E50(cutsceneWork->unk_34.unk_1C);
         }
         break;
     case 4:
-        ov77_021D36F8(param0);
+        ov77_021D36F8(cutsceneWork);
         return 1;
     }
 
     return 0;
 }
 
-static void ov77_021D34A8(GameOpeningWork *param0)
+static void ov77_021D34A8(OpeningCutsceneWork *param0)
 {
     u8 v0;
     int v1;
@@ -1334,7 +1334,7 @@ static void ov77_021D34A8(GameOpeningWork *param0)
     param0->unk_34.unk_02 = 1;
 }
 
-static void ov77_021D35B8(GameOpeningWork *param0)
+static void ov77_021D35B8(OpeningCutsceneWork *param0)
 {
     int v0;
 
@@ -1355,7 +1355,7 @@ static void ov77_021D35B8(GameOpeningWork *param0)
     }
 }
 
-static void ov77_021D361C(GameOpeningWork *param0, BOOL param1)
+static void ov77_021D361C(OpeningCutsceneWork *param0, BOOL param1)
 {
     if (param0->unk_34.unk_02 && (param0->unk_0C != NULL)) {
         if (param0->unk_34.unk_25A == 0) {
@@ -1392,7 +1392,7 @@ static void ov77_021D361C(GameOpeningWork *param0, BOOL param1)
     }
 }
 
-static void ov77_021D36F8(GameOpeningWork *param0)
+static void ov77_021D36F8(OpeningCutsceneWork *param0)
 {
     u8 v0;
 
@@ -1501,7 +1501,7 @@ static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0)
     param0->unk_03 = 1;
 }
 
-static void ov77_021D3A10(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1)
+static void ov77_021D3A10(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1)
 {
     u8 v0;
     NARC *v1;
@@ -1536,7 +1536,7 @@ static void ov77_021D3A10(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *para
     NARC_dtor(v1);
 }
 
-static void ov77_021D3B5C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1)
+static void ov77_021D3B5C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1)
 {
     u8 v0;
     NARC *v1;
@@ -1581,7 +1581,7 @@ static void ov77_021D3B5C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *para
     NARC_dtor(v1);
 }
 
-static void ov77_021D3D4C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1)
+static void ov77_021D3D4C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1)
 {
     u8 v0;
     NARC *v1;
@@ -1805,7 +1805,7 @@ static void ov77_021D4188(UnkStruct_ov77_021D37C0 *param0)
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_W);
 }
 
-static BOOL ov77_021D4230(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1, const int param2)
+static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1, const int param2)
 {
     u8 *v0 = &(param1->unk_01);
 
@@ -2416,7 +2416,7 @@ static void ov77_021D4F38(UnkStruct_ov77_021D37C0 *param0, const int param1)
     }
 }
 
-static void ov77_021D513C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1, int param2)
+static void ov77_021D513C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1, int param2)
 {
     BOOL v0;
 
@@ -2452,7 +2452,7 @@ static void ov77_021D513C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *para
     }
 }
 
-static BOOL ov77_021D5254(GameOpeningWork *param0)
+static BOOL ov77_021D5254(OpeningCutsceneWork *param0)
 {
     u8 *v0 = &(param0->unk_298.unk_00);
 
@@ -2470,7 +2470,7 @@ static BOOL ov77_021D5254(GameOpeningWork *param0)
         (*v0)++;
         break;
     case 2:
-        if (ov77_021D5390(&param0->unk_298, param0->unk_04)) {
+        if (ov77_021D5390(&param0->unk_298, param0->frameNum)) {
             (*v0)++;
         }
         break;
@@ -2482,7 +2482,7 @@ static BOOL ov77_021D5254(GameOpeningWork *param0)
     return 0;
 }
 
-static void ov77_021D52C8(GameOpeningWork *param0)
+static void ov77_021D52C8(OpeningCutsceneWork *param0)
 {
     int v0;
     int v1;
@@ -2560,7 +2560,7 @@ static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1)
     return 0;
 }
 
-static void ov77_021D5478(GameOpeningWork *param0)
+static void ov77_021D5478(OpeningCutsceneWork *param0)
 {
     if (param0->unk_298.unk_02) {
         Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
