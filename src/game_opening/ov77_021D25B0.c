@@ -131,49 +131,49 @@ typedef struct {
     UnkStruct_ov77_021D37C0 unk_34;
     UnkStruct_ov77_021D5308 unk_298;
     u8 unk_2A8;
-} UnkStruct_ov77_021D2E9C;
+} GameOpeningWork;
 
 void EnqueueApplication(FSOverlayID param0, const ApplicationManagerTemplate *param1);
 static int ov77_021D2D08(ApplicationManager *appMan, int *param1);
 static int ov77_021D2D94(ApplicationManager *appMan, int *param1);
 static int ov77_021D2E60(ApplicationManager *appMan, int *param1);
-static BOOL ov77_021D2E9C(UnkStruct_ov77_021D2E9C *param0);
-static BOOL ov77_021D33F0(UnkStruct_ov77_021D2E9C *param0);
-static BOOL ov77_021D5254(UnkStruct_ov77_021D2E9C *param0);
+static BOOL ov77_021D2E9C(GameOpeningWork *param0);
+static BOOL ov77_021D33F0(GameOpeningWork *param0);
+static BOOL ov77_021D5254(GameOpeningWork *param0);
 static void ov77_021D2AA0(void);
 static void ov77_021D2C80(void);
 static void ov77_021D2CE8(void);
-static void ov77_021D35B8(UnkStruct_ov77_021D2E9C *param0);
-static void ov77_021D361C(UnkStruct_ov77_021D2E9C *param0, BOOL param1);
-static void ov77_021D2F0C(UnkStruct_ov77_021D2E9C *param0);
+static void ov77_021D35B8(GameOpeningWork *param0);
+static void ov77_021D361C(GameOpeningWork *param0, BOOL param1);
+static void ov77_021D2F0C(GameOpeningWork *param0);
 static void ov77_021D2F38(UnkStruct_ov77_021D2F38 *param0);
 static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1);
-static void ov77_021D3234(UnkStruct_ov77_021D2E9C *param0);
+static void ov77_021D3234(GameOpeningWork *param0);
 static void ov77_021D32A4(SysTask *param0, void *param1);
 static void ov77_021D3300(SysTask *param0, void *param1);
 static void ov77_021D3360(SysTask *param0, void *param1);
 static void ov77_021D33A8(SysTask *param0, void *param1);
-static void ov77_021D34A8(UnkStruct_ov77_021D2E9C *param0);
+static void ov77_021D34A8(GameOpeningWork *param0);
 static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D3A10(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1);
+static void ov77_021D3A10(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1);
 static void ov77_021D3DC4(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D3B5C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1);
+static void ov77_021D3B5C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1);
 static void ov77_021D40B8(UnkStruct_ov77_021D37C0 *param0, int param1);
 static BOOL ov77_021D40DC(UnkStruct_ov77_021D37C0 *param0, int param1);
 static void ov77_021D4188(UnkStruct_ov77_021D37C0 *param0);
-static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1, const int param2);
+static BOOL ov77_021D4230(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1, const int param2);
 static void ov77_021D4B70(UnkStruct_ov77_021D37C0 *param0);
 static void ov77_021D4BE4(UnkStruct_ov77_021D37C0 *param0);
 static void ov77_021D4C04(UnkStruct_ov77_021D37C0 *param0, int param1);
 static void ov77_021D4DC8(UnkStruct_ov77_021D37C0 *param0, int param1);
 static void ov77_021D4E90(UnkStruct_ov77_021D37C0 *param0);
 static void ov77_021D4F38(UnkStruct_ov77_021D37C0 *param0, const int param1);
-static void ov77_021D513C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1, int param2);
-static void ov77_021D36F8(UnkStruct_ov77_021D2E9C *param0);
-static void ov77_021D52C8(UnkStruct_ov77_021D2E9C *param0);
+static void ov77_021D513C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1, int param2);
+static void ov77_021D36F8(GameOpeningWork *param0);
+static void ov77_021D52C8(GameOpeningWork *param0);
 static void ov77_021D5308(UnkStruct_ov77_021D5308 *param0);
 static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1);
-static void ov77_021D5478(UnkStruct_ov77_021D2E9C *param0);
+static void ov77_021D5478(GameOpeningWork *param0);
 
 extern const ApplicationManagerTemplate gTitleScreenAppTemplate;
 
@@ -231,7 +231,7 @@ const GXRgb Unk_ov77_021D7444[4] = {
 
 static void ov77_021D25B0(void)
 {
-    GXBanks v0 = {
+    GXBanks vramBanks = {
         GX_VRAM_BG_128_B,
         GX_VRAM_BGEXTPLTT_NONE,
         GX_VRAM_SUB_BG_128_C,
@@ -244,12 +244,12 @@ static void ov77_021D25B0(void)
         GX_VRAM_TEXPLTT_0_G
     };
 
-    GXLayers_SetBanks(&v0);
+    GXLayers_SetBanks(&vramBanks);
 }
 
 static void ov77_021D25D0(void)
 {
-    GXBanks v0 = {
+    GXBanks vramBanks = {
         GX_VRAM_BG_128_B,
         GX_VRAM_BGEXTPLTT_NONE,
         GX_VRAM_SUB_BG_128_C,
@@ -262,12 +262,12 @@ static void ov77_021D25D0(void)
         GX_VRAM_TEXPLTT_0123_E
     };
 
-    GXLayers_SetBanks(&v0);
+    GXLayers_SetBanks(&vramBanks);
 }
 
 static void ov77_021D25F0(void)
 {
-    GXBanks v0 = {
+    GXBanks vramBanks = {
         GX_VRAM_BG_256_AB,
         GX_VRAM_BGEXTPLTT_NONE,
         GX_VRAM_SUB_BG_128_C,
@@ -280,10 +280,10 @@ static void ov77_021D25F0(void)
         GX_VRAM_TEXPLTT_NONE
     };
 
-    GXLayers_SetBanks(&v0);
+    GXLayers_SetBanks(&vramBanks);
 }
 
-static void ov77_021D2610(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D2610(GameOpeningWork *param0)
 {
     param0->unk_0C = BgConfig_New(param0->heapID);
 
@@ -416,7 +416,7 @@ static void ov77_021D2610(UnkStruct_ov77_021D2E9C *param0)
     Bg_MaskPalette(BG_LAYER_SUB_0, 0x0);
 }
 
-static void ov77_021D2724(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D2724(GameOpeningWork *param0)
 {
     param0->unk_0C = BgConfig_New(param0->heapID);
 
@@ -562,7 +562,7 @@ static void ov77_021D2724(UnkStruct_ov77_021D2E9C *param0)
     Bg_MaskPalette(BG_LAYER_SUB_0, 0x0);
 }
 
-static void ov77_021D2828(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D2828(GameOpeningWork *param0)
 {
     ov77_021D361C(param0, 0);
 
@@ -681,7 +681,7 @@ static void ov77_021D2828(UnkStruct_ov77_021D2E9C *param0)
     param0->unk_34.unk_25A = 1;
 }
 
-static void ov77_021D2900(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D2900(GameOpeningWork *param0)
 {
     ov77_021D35B8(param0);
     ov77_021D2828(param0);
@@ -754,7 +754,7 @@ static void ov77_021D2900(UnkStruct_ov77_021D2E9C *param0)
     param0->unk_34.unk_25A = 2;
 }
 
-static void ov77_021D2A00(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D2A00(GameOpeningWork *param0)
 {
     param0->unk_0C = BgConfig_New(param0->heapID);
 
@@ -791,7 +791,7 @@ static void ov77_021D2A00(UnkStruct_ov77_021D2E9C *param0)
     Bg_MaskPalette(BG_LAYER_MAIN_2, 0x0);
 }
 
-static void ov77_021D2A58(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D2A58(GameOpeningWork *param0)
 {
     NNSGfdTexKey v0;
     NNSGfdPlttKey v1;
@@ -823,14 +823,14 @@ static void ov77_021D2AA0(void)
 
 static void ov77_021D2B30(void *param0)
 {
-    UnkStruct_ov77_021D2E9C *v0 = param0;
+    GameOpeningWork *v0 = param0;
     RenderOam_Transfer();
 }
 
 static void ov77_021D2B38(void *param0)
 {
     int v0;
-    UnkStruct_ov77_021D2E9C *v1 = param0;
+    GameOpeningWork *v1 = param0;
     UnkStruct_ov77_021D37C0 *v2 = &v1->unk_34;
 
     if (v2->unk_25B == 1) {
@@ -901,7 +901,7 @@ static void ov77_021D2CE8(void)
 
 static int ov77_021D2D08(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov77_021D2E9C *v0;
+    GameOpeningWork *v0;
 
     BrightnessController_ResetAllControllers();
     SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_WHITE);
@@ -913,8 +913,8 @@ static int ov77_021D2D08(ApplicationManager *appMan, int *param1)
     SetAutorepeat(4, 8);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_76, 0xa0000);
 
-    v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov77_021D2E9C), HEAP_ID_76);
-    memset(v0, 0, sizeof(UnkStruct_ov77_021D2E9C));
+    v0 = ApplicationManager_NewData(appMan, sizeof(GameOpeningWork), HEAP_ID_76);
+    memset(v0, 0, sizeof(GameOpeningWork));
 
     v0->heapID = HEAP_ID_76;
     v0->unk_08 = 0;
@@ -931,7 +931,7 @@ static int ov77_021D2D08(ApplicationManager *appMan, int *param1)
 
 static int ov77_021D2D94(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov77_021D2E9C *v0 = ApplicationManager_Data(appMan);
+    GameOpeningWork *v0 = ApplicationManager_Data(appMan);
 
     if ((v0->unk_2A8) && ((gSystem.pressedKeys & PAD_BUTTON_A) || (gSystem.pressedKeys & PAD_BUTTON_START))) {
         v0->unk_08 = 1;
@@ -980,7 +980,7 @@ static int ov77_021D2D94(ApplicationManager *appMan, int *param1)
 
 static int ov77_021D2E60(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov77_021D2E9C *v0 = ApplicationManager_Data(appMan);
+    GameOpeningWork *v0 = ApplicationManager_Data(appMan);
 
     if (IsScreenFadeDone() == FALSE) {
         FinishScreenFade();
@@ -994,7 +994,7 @@ static int ov77_021D2E60(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static BOOL ov77_021D2E9C(UnkStruct_ov77_021D2E9C *param0)
+static BOOL ov77_021D2E9C(GameOpeningWork *param0)
 {
     u8 *v0 = &(param0->unk_18.unk_00);
 
@@ -1024,7 +1024,7 @@ static BOOL ov77_021D2E9C(UnkStruct_ov77_021D2E9C *param0)
     return 0;
 }
 
-static void ov77_021D2F0C(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D2F0C(GameOpeningWork *param0)
 {
     ov77_021D25B0();
     ov77_021D2610(param0);
@@ -1138,7 +1138,7 @@ static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
     return 0;
 }
 
-static void ov77_021D3234(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D3234(GameOpeningWork *param0)
 {
     SetVBlankCallback(NULL, NULL);
 
@@ -1246,7 +1246,7 @@ static void ov77_021D33A8(SysTask *param0, void *param1)
     G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
 }
 
-static BOOL ov77_021D33F0(UnkStruct_ov77_021D2E9C *param0)
+static BOOL ov77_021D33F0(GameOpeningWork *param0)
 {
     u8 *v0 = &(param0->unk_34.unk_00);
 
@@ -1292,7 +1292,7 @@ static BOOL ov77_021D33F0(UnkStruct_ov77_021D2E9C *param0)
     return 0;
 }
 
-static void ov77_021D34A8(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D34A8(GameOpeningWork *param0)
 {
     u8 v0;
     int v1;
@@ -1334,7 +1334,7 @@ static void ov77_021D34A8(UnkStruct_ov77_021D2E9C *param0)
     param0->unk_34.unk_02 = 1;
 }
 
-static void ov77_021D35B8(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D35B8(GameOpeningWork *param0)
 {
     int v0;
 
@@ -1355,7 +1355,7 @@ static void ov77_021D35B8(UnkStruct_ov77_021D2E9C *param0)
     }
 }
 
-static void ov77_021D361C(UnkStruct_ov77_021D2E9C *param0, BOOL param1)
+static void ov77_021D361C(GameOpeningWork *param0, BOOL param1)
 {
     if (param0->unk_34.unk_02 && (param0->unk_0C != NULL)) {
         if (param0->unk_34.unk_25A == 0) {
@@ -1392,7 +1392,7 @@ static void ov77_021D361C(UnkStruct_ov77_021D2E9C *param0, BOOL param1)
     }
 }
 
-static void ov77_021D36F8(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D36F8(GameOpeningWork *param0)
 {
     u8 v0;
 
@@ -1501,7 +1501,7 @@ static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0)
     param0->unk_03 = 1;
 }
 
-static void ov77_021D3A10(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1)
+static void ov77_021D3A10(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1)
 {
     u8 v0;
     NARC *v1;
@@ -1536,7 +1536,7 @@ static void ov77_021D3A10(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
     NARC_dtor(v1);
 }
 
-static void ov77_021D3B5C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1)
+static void ov77_021D3B5C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1)
 {
     u8 v0;
     NARC *v1;
@@ -1581,7 +1581,7 @@ static void ov77_021D3B5C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
     NARC_dtor(v1);
 }
 
-static void ov77_021D3D4C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1)
+static void ov77_021D3D4C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1)
 {
     u8 v0;
     NARC *v1;
@@ -1805,7 +1805,7 @@ static void ov77_021D4188(UnkStruct_ov77_021D37C0 *param0)
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_W);
 }
 
-static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1, const int param2)
+static BOOL ov77_021D4230(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1, const int param2)
 {
     u8 *v0 = &(param1->unk_01);
 
@@ -2416,7 +2416,7 @@ static void ov77_021D4F38(UnkStruct_ov77_021D37C0 *param0, const int param1)
     }
 }
 
-static void ov77_021D513C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1, int param2)
+static void ov77_021D513C(GameOpeningWork *param0, UnkStruct_ov77_021D37C0 *param1, int param2)
 {
     BOOL v0;
 
@@ -2452,7 +2452,7 @@ static void ov77_021D513C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
     }
 }
 
-static BOOL ov77_021D5254(UnkStruct_ov77_021D2E9C *param0)
+static BOOL ov77_021D5254(GameOpeningWork *param0)
 {
     u8 *v0 = &(param0->unk_298.unk_00);
 
@@ -2482,7 +2482,7 @@ static BOOL ov77_021D5254(UnkStruct_ov77_021D2E9C *param0)
     return 0;
 }
 
-static void ov77_021D52C8(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D52C8(GameOpeningWork *param0)
 {
     int v0;
     int v1;
@@ -2560,7 +2560,7 @@ static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1)
     return 0;
 }
 
-static void ov77_021D5478(UnkStruct_ov77_021D2E9C *param0)
+static void ov77_021D5478(GameOpeningWork *param0)
 {
     if (param0->unk_298.unk_02) {
         Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
