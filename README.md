@@ -20,7 +20,7 @@ To run the [pre-built binaries found in the releases tab](https://github.com/cyb
 ![ROM extraction dialog](images/RomExtraction.png)
 
 * After this has been completed once, you can launch the game simply by running main.exe.
-* Access in-game settings and debug tools by pressing TAB
+* Access in-game settings and debug tools by pressing the grave accent/tilde key
 
 ### Playing in other languages
 Currently, this project only supports the USA version of the game, however, it is possible to change the language of the majority of the in-game text by replacing some files. 
@@ -29,6 +29,13 @@ Once a ROM has been loaded, its contents will be extracted in the same directory
  * msgdata/msg.narc
  * msgdata/pl_msg.narc
  * msgdata/scenario/scr_msg.narc
+
+## Forking Guidelines
+You are welcome to create forks of this project, but do not publish any releases containing the compiled assets alongside PC port binaries.
+
+If you publish releases, you are responsible for also complying with the MIT license on libntr by including the copyright and disclaimer.
+
+cybervisi0n is not affiliated with any forks of this project.
 
 ## Building on Linux
 ### Dockerized build (Recommended)
