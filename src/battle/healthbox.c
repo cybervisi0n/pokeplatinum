@@ -1660,6 +1660,16 @@ static u8 FillCells(s32 max, s32 cur, s32 diff, s32 *temp, u8 *cells, u8 cellNum
     u32 offset, pixels, final;
     s32 updated = cur - diff;
 
+    #ifdef SDK_PORT
+    if(!temp || !cells) {
+        return 0;
+    }
+
+    if(max == 0) {
+        max = 1;
+    }
+    #endif
+
     if (updated < 0) {
         updated = 0;
     } else if (updated > max) {
@@ -1718,6 +1728,12 @@ static u32 CalcGaugeFill(s32 curVal, s32 diff, s32 maxVal, u8 gaugeSize)
     } else if (newVal > maxVal) {
         newVal = maxVal;
     }
+
+    #ifdef SDK_PORT
+    if(maxVal == 0) {
+        maxVal = 1;
+    }
+    #endif
 
     s8 curPixels = curVal * gaugeSizePixels / maxVal;
     s8 newPixels = newVal * gaugeSizePixels / maxVal;

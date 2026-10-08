@@ -88,12 +88,28 @@ void SPLAnim_Alpha(SPLParticle *ptcl, SPLResource *res, int lifeRate)
     int out = alphaAnim->curve.out;
 
     if (lifeRate < in) {
+        #ifdef SDK_PORT
+        if(in != 0) {
+            value = (lifeRate * (alphaAnim->alpha.mid - alphaAnim->alpha.start)) / in;
+        } else {
+            value = 0;
+        }
+        #else
         value = (lifeRate * (alphaAnim->alpha.mid - alphaAnim->alpha.start)) / in;
+        #endif
         value += alphaAnim->alpha.start;
     } else if (lifeRate < out) {
         value = alphaAnim->alpha.mid;
     } else {
+        #ifdef SDK_PORT
+        if(out != 0) {
+            value = ((lifeRate - 255) * (alphaAnim->alpha.end - alphaAnim->alpha.mid)) / (255 - out);
+        } else {
+            value = 0;
+        }
+        #else
         value = ((lifeRate - 255) * (alphaAnim->alpha.end - alphaAnim->alpha.mid)) / (255 - out);
+        #endif
         value += alphaAnim->alpha.end;
     }
 

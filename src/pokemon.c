@@ -649,6 +649,12 @@ void Pokemon_CalcStats(Pokemon *mon)
 
 u32 Pokemon_GetValue(Pokemon *mon, enum PokemonDataParam param, void *dest)
 {
+    #ifdef SDK_PORT
+    if(!mon) {
+        GF_ASSERT(FALSE);
+        return 0;
+    }
+    #endif
     if (mon->box.partyDecrypted == FALSE) {
         Pokemon_DecryptData(&mon->party, sizeof(PartyPokemon), mon->box.personality);
         Pokemon_DecryptData(&mon->box.dataBlocks, sizeof(PokemonDataBlock) * 4, mon->box.checksum);
