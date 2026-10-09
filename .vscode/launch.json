@@ -36,11 +36,19 @@
             "stopAtEntry": false
         },
         {
-            "name": "Debug pokeplatinum.us (LLDB)",
+            "name": "Debug linux (LLDB)",
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/build_linux/pokeplatinum/main",
             "cwd": "${workspaceFolder}/build_linux/pokeplatinum"
         },
+        {
+            "name": "Debug win64",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build_win64/pokeplatinum/main.exe",
+            "miDebuggerPath": "${workspaceRoot}/msys2/mingw64/bin/gdb.exe",
+            "cwd": "${workspaceRoot}/build_win64/pokeplatinum"
+        }
     ]
 }

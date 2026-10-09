@@ -443,6 +443,7 @@ main = executable('main',
         naix_headers,
         h_headers,
         embed_headers,
+        win64_icon_o
     ],
     objects: trainer_ai_o,
     c_args: [

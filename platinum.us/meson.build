@@ -27,3 +27,22 @@ else
     sbins_for_rev_sha1 = files('sbins_rev1.sha1')
     rom_sha1 = files('rom_rev1.sha1')
 endif
+
+
+# EXE icon (win64 build only)
+if(build_target == 'win64')
+
+# EXE icon
+win64_icon_o = custom_target(
+    'win64_icon.o',
+    output: 'win64_icon.o',
+    input: files('win64_icon.rc'),
+    command: [
+        'windres',
+        '@INPUT@',
+        '@OUTPUT@'
+    ],
+)
+
+
+endif
