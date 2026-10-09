@@ -344,8 +344,18 @@ void SPLEmitter_EmitChildren(SPLParticle *ptcl, SPLEmitter *emtr, SPLParticleLis
         child->age = 0;
         child->texture = childRes->misc.texture;
 
+        #ifdef SDK_PORT
+        if(ptcl->lifeTime < 2) {
+            child->loopTimeFactor = 0;
+            child->lifeTimeFactor = 0;
+        } else {
+            child->loopTimeFactor = 0xFFFF / (ptcl->lifeTime / 2);
+            child->lifeTimeFactor = 0xFFFF / ptcl->lifeTime;
+        }
+        #else
         child->loopTimeFactor = 0xFFFF / (ptcl->lifeTime / 2);
         child->lifeTimeFactor = 0xFFFF / ptcl->lifeTime;
+        #endif
         child->lifeRateOffset = 0;
     }
 }
