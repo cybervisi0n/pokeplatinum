@@ -35,6 +35,9 @@
 
 #ifdef SDK_PORT
 #include "port/sim_config_prj.h"
+#ifdef SDK_BUILD_LINUX
+#include "port/sim_icon.h"
+#endif
 #endif
 
 #define RESET_COMBO (PAD_BUTTON_START | PAD_BUTTON_SELECT | PAD_BUTTON_L | PAD_BUTTON_R)
@@ -69,6 +72,9 @@ void NitroMain(void)
 {
 #ifdef SDK_PORT
     SIM_Config_prj_init();
+    #ifdef SDK_BUILD_LINUX
+    SetPokeplatinumAppIcon();
+    #endif
 #endif
     InitSystem();
     InitVRAM();
