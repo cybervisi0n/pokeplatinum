@@ -1615,7 +1615,7 @@ void TradeRoom_SyncValueToPartner(TradeRoom *tradeRoom, int cmd, int value)
 
 static void *TradeRoom_OffsetPartyPtr(Party *party, int index)
 {
-    u32 base = (u32)party;
+    uPtr base = (uPtr)party;
 
     return (void *)(base + index * (236 * MAX_PARTY_SIZE + 4 * 2));
 }
