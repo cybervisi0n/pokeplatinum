@@ -2224,19 +2224,31 @@ static void ov5_021D78A4(UnkStruct_ov5_021DB4B8 *param0, int param1)
     int v0;
     UnkStruct_ov5_021D6FA8 *v1;
     int v2;
+    #ifdef SDK_PORT
+    s64 *v3;
+    #else
     s32 *v3;
+    #endif
     int v4;
     VecFx32 v5;
     u32 v6;
 
     for (v0 = 0; v0 < param1; v0++) {
+        #ifdef SDK_PORT
+        v1 = ov5_021D6F00(param0, sizeof(s64) * 8);
+        #else
         v1 = ov5_021D6F00(param0, sizeof(s32) * 8);
+        #endif
 
         if (v1 == NULL) {
             break;
         }
 
+        #ifdef SDK_PORT
+        v3 = (s64 *)v1->unk_08;
+        #else
         v3 = (s32 *)v1->unk_08;
+        #endif
         v6 = MTRNG_Next();
 
         v3[0] = 0;
@@ -4538,6 +4550,7 @@ static void ov5_021DA244(SysTask *param0, void *param1)
     }
 }
 
+// Volcanic Ash
 static void ov5_021DA5A0(UnkStruct_ov5_021DB4B8 *param0, int param1)
 {
     int v0;
@@ -4545,7 +4558,11 @@ static void ov5_021DA5A0(UnkStruct_ov5_021DB4B8 *param0, int param1)
     UnkStruct_ov5_021D6FA8 *v2;
     UnkStruct_ov5_021D9984 *v3;
     int v4;
+    #ifdef SDK_PORT
+    s64 *v5;
+    #else
     s32 *v5;
+    #endif
 
     v3 = param0->unk_B98;
 
@@ -4554,13 +4571,21 @@ static void ov5_021DA5A0(UnkStruct_ov5_021DB4B8 *param0, int param1)
     }
 
     for (v0 = 0; v0 < param1; v0++) {
+        #ifdef SDK_PORT
+        v2 = ov5_021D6F00(param0, sizeof(s64) * 8);
+        #else
         v2 = ov5_021D6F00(param0, sizeof(s32) * 8);
+        #endif
 
         if (v2 == NULL) {
             break;
         }
 
+        #ifdef SDK_PORT
+        v5 = (s64 *)v2->unk_08;
+        #else
         v5 = (s32 *)v2->unk_08;
+        #endif
         v4 = MTRNG_Next() % 4;
 
         Sprite_SetAnimFrame(v2->unk_04, v4);
@@ -4577,8 +4602,13 @@ static void ov5_021DA5A0(UnkStruct_ov5_021DB4B8 *param0, int param1)
         }
 
         v5[3] = 1 + (MTRNG_Next() % 1);
+        #ifdef SDK_PORT
+        v5[0] = (s64)&v3->unk_B4[1];
+        v5[6] = (s64)&v3->unk_B4[5];
+        #else
         v5[0] = (s32)&v3->unk_B4[1];
         v5[6] = (s32)&v3->unk_B4[5];
+        #endif
         v5[7] = 10 + (MTRNG_Next() % 20);
 
         {
