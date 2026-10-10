@@ -91,7 +91,7 @@ static fx32 Unk_ov77_021D79A4[2] = {
 
 static void ov77_021D54B0()
 {
-    const int heapID = HEAP_ID_76;
+    const int heapID = HEAP_ID_OPENING;
 
     {
         CharTransferTemplate v1 = {
@@ -123,7 +123,7 @@ static void ov77_021D54E8(const int param0, UnkStruct_ov77_021D5564 *param1, con
         param3->affineZRotation = 0;
         param3->priority = 1;
         param3->vramType = param6;
-        param3->heapID = HEAP_ID_76;
+        param3->heapID = HEAP_ID_OPENING;
     }
 }
 
@@ -135,7 +135,7 @@ const int ov77_021D555C(void)
 void ov77_021D5564(UnkStruct_ov77_021D5564 *param0)
 {
     int i;
-    const int heapID = HEAP_ID_76;
+    const int heapID = HEAP_ID_OPENING;
 
     GX_SetOBJVRamModeChar(GX_OBJVRAMMODE_CHAR_1D_32K);
     GXS_SetOBJVRamModeChar(GX_OBJVRAMMODE_CHAR_1D_32K);

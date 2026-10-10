@@ -36,6 +36,14 @@
 
 FS_EXTERN_OVERLAY(game_opening);
 
+enum {
+    OPENING_CUTSCENE_STATE_0 = 0,
+    OPENING_CUTSCENE_STATE_GAMEFREAK_LOGO,
+    OPENING_CUTSCENE_STATE_BATTLE,
+    OPENING_CUTSCENE_STATE_MOUNT_CORONET,
+    OPENING_CUTSCENE_STATE_4
+};
+
 typedef struct {
     NNSG3dRenderObj unk_00;
     NNSG3dResFileHeader *unk_54;
@@ -57,19 +65,19 @@ typedef struct {
 } UnkStruct_ov77_021D5308_sub1;
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u16 unk_04;
-    u8 unk_06;
+    u8 state;
+    u8 sceneState;
+    u8 initialized;
+    u8 unused;
+    u16 unused2;
+    u8 frameCount;
     u8 unk_07;
     u8 unk_08;
     BgConfig *unk_0C;
-    SysTask *unk_10;
+    SysTask *task;
     UnkStruct_ov77_021D670C *unk_14;
     u8 *unk_18;
-} UnkStruct_ov77_021D2F38;
+} GameFreakLogoWork;
 
 typedef struct {
     u8 unk_00;
@@ -123,45 +131,45 @@ typedef struct {
 typedef struct {
     enum HeapID heapID;
     int frameNum;
-    BOOL unk_08;
-    BgConfig *unk_0C;
+    BOOL skip;
+    BgConfig *bgConfig;
     G3DPipelineBuffers *unk_10;
-    u32 unk_14;
-    UnkStruct_ov77_021D2F38 unk_18;
+    u32 randomSeed;
+    GameFreakLogoWork gameFreakLogoWork;
     UnkStruct_ov77_021D37C0 unk_34;
     UnkStruct_ov77_021D5308 unk_298;
-    u8 unk_2A8;
+    u8 isSkippable;
 } OpeningCutsceneWork;
 
 void EnqueueApplication(FSOverlayID param0, const ApplicationManagerTemplate *param1);
 static int OpeningCutscene_Init(ApplicationManager *appMan, int *state);
 static int OpeningCutscene_Main(ApplicationManager *appMan, int *state);
 static int OpeningCutscene_Exit(ApplicationManager *appMan, int *state);
-static BOOL ov77_021D2E9C(OpeningCutsceneWork *cutsceneWork);
-static BOOL ov77_021D33F0(OpeningCutsceneWork *cutsceneWork);
-static BOOL ov77_021D5254(OpeningCutsceneWork *param0);
+static BOOL OpeningCutscene_GameFreakLogo(OpeningCutsceneWork *cutsceneWork);
+static BOOL OpeningCutscene_Battle(OpeningCutsceneWork *cutsceneWork);
+static BOOL OpeningCutscene_MountCoronet(OpeningCutsceneWork *cutsceneWork);
 static void ov77_021D2AA0(void);
 static void ov77_021D2C80(void);
 static void ov77_021D2CE8(void);
 static void ov77_021D35B8(OpeningCutsceneWork *param0);
 static void ov77_021D361C(OpeningCutsceneWork *param0, BOOL param1);
-static void ov77_021D2F0C(OpeningCutsceneWork *param0);
-static void ov77_021D2F38(UnkStruct_ov77_021D2F38 *param0);
-static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1);
-static void ov77_021D3234(OpeningCutsceneWork *param0);
-static void ov77_021D32A4(SysTask *param0, void *param1);
-static void ov77_021D3300(SysTask *param0, void *param1);
-static void ov77_021D3360(SysTask *param0, void *param1);
-static void ov77_021D33A8(SysTask *param0, void *param1);
-static void ov77_021D34A8(OpeningCutsceneWork *param0);
+static void OpeningCutscene_GameFreakLogoInit(OpeningCutsceneWork *cutsceneWork);
+static void OpeningCutscene_GameFreakLogoLoad(GameFreakLogoWork *logoWork);
+static BOOL OpeningCutscene_GameFreakLogoMain(GameFreakLogoWork *logoWork, const int param1);
+static void OpeningCutscene_GameFreakLogoEnd(OpeningCutsceneWork *cutsceneWork);
+static void SysTask_CopyrightFadeIn(SysTask *task, void *taskParam);
+static void SysTask_CopyrightFadeOut(SysTask *task, void *taskParam);
+static void SysTask_GameFreakLogoFadeIn(SysTask *task, void *taskParam);
+static void SysTask_GameFreakLogoFadeIn2(SysTask *task, void *taskParam);
+static void ov77_021D34A8(OpeningCutsceneWork *cutsceneWork);
 static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D3A10(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1);
+static void ov77_021D3A10(OpeningCutsceneWork *cutsceneWork, UnkStruct_ov77_021D37C0 *param1);
 static void ov77_021D3DC4(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D3B5C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1);
+static void ov77_021D3B5C(OpeningCutsceneWork *cutsceneWork, UnkStruct_ov77_021D37C0 *param1);
 static void ov77_021D40B8(UnkStruct_ov77_021D37C0 *param0, int param1);
 static BOOL ov77_021D40DC(UnkStruct_ov77_021D37C0 *param0, int param1);
 static void ov77_021D4188(UnkStruct_ov77_021D37C0 *param0);
-static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1, const int param2);
+static BOOL ov77_021D4230(OpeningCutsceneWork *cutsceneWork, UnkStruct_ov77_021D37C0 *param1, const int param2);
 static void ov77_021D4B70(UnkStruct_ov77_021D37C0 *param0);
 static void ov77_021D4BE4(UnkStruct_ov77_021D37C0 *param0);
 static void ov77_021D4C04(UnkStruct_ov77_021D37C0 *param0, int param1);
@@ -181,7 +189,7 @@ const ApplicationManagerTemplate gOpeningCutsceneAppTemplate = {
     OpeningCutscene_Init,
     OpeningCutscene_Main,
     OpeningCutscene_Exit,
-    0xffffffff
+    FS_OVERLAY_ID_NONE
 };
 
 static const int Unk_ov77_021D7458[] = {
@@ -285,7 +293,7 @@ static void ov77_021D25F0(void)
 
 static void ov77_021D2610(OpeningCutsceneWork *param0)
 {
-    param0->unk_0C = BgConfig_New(param0->heapID);
+    param0->bgConfig = BgConfig_New(param0->heapID);
 
     {
         GraphicsModes v0 = {
@@ -314,7 +322,7 @@ static void ov77_021D2610(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_1, &v1, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_1, &v1, 0);
     }
 
     {
@@ -333,7 +341,7 @@ static void ov77_021D2610(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_2, &v2, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_2, &v2, 0);
     }
 
     {
@@ -352,7 +360,7 @@ static void ov77_021D2610(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_3, &v3, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_3, &v3, 0);
     }
 
     {
@@ -371,7 +379,7 @@ static void ov77_021D2610(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_1, &v4, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_1, &v4, 0);
     }
 
     {
@@ -390,7 +398,7 @@ static void ov77_021D2610(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_2, &v5, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_2, &v5, 0);
     }
 
     {
@@ -409,7 +417,7 @@ static void ov77_021D2610(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_3, &v6, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_3, &v6, 0);
     }
 
     Bg_MaskPalette(BG_LAYER_MAIN_0, 0x0);
@@ -418,7 +426,7 @@ static void ov77_021D2610(OpeningCutsceneWork *param0)
 
 static void ov77_021D2724(OpeningCutsceneWork *param0)
 {
-    param0->unk_0C = BgConfig_New(param0->heapID);
+    param0->bgConfig = BgConfig_New(param0->heapID);
 
     {
         GraphicsModes v0 = {
@@ -447,7 +455,7 @@ static void ov77_021D2724(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_1, &v1, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_1, &v1, 0);
     }
 
     {
@@ -466,7 +474,7 @@ static void ov77_021D2724(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_2, &v2, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_2, &v2, 0);
     }
 
     {
@@ -485,7 +493,7 @@ static void ov77_021D2724(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_3, &v3, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_3, &v3, 0);
     }
 
     {
@@ -504,7 +512,7 @@ static void ov77_021D2724(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_0, &v4, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_0, &v4, 0);
     }
 
     {
@@ -553,9 +561,9 @@ static void ov77_021D2724(OpeningCutsceneWork *param0)
             },
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_1, &v5[0], 0);
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_2, &v5[1], 0);
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_3, &v5[2], 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_1, &v5[0], 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_2, &v5[1], 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_3, &v5[2], 0);
     }
 
     Bg_MaskPalette(BG_LAYER_MAIN_1, 0x0);
@@ -582,7 +590,7 @@ static void ov77_021D2828(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_3, &v0, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_3, &v0, 0);
     }
 
     {
@@ -601,7 +609,7 @@ static void ov77_021D2828(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_1, &v1, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_1, &v1, 0);
     }
 
     {
@@ -620,7 +628,7 @@ static void ov77_021D2828(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_2, &v2, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_2, &v2, 0);
     }
 
     {
@@ -669,9 +677,9 @@ static void ov77_021D2828(OpeningCutsceneWork *param0)
             },
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_1, &v3[0], 0);
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_2, &v3[1], 0);
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_3, &v3[2], 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_1, &v3[0], 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_2, &v3[1], 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_3, &v3[2], 0);
     }
 
     Bg_MaskPalette(BG_LAYER_MAIN_1, 0x0);
@@ -713,7 +721,7 @@ static void ov77_021D2900(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_0, &v1, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_0, &v1, 0);
     }
 
     {
@@ -732,13 +740,13 @@ static void ov77_021D2900(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_SUB_0, &v2, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_SUB_0, &v2, 0);
     }
 
-    Bg_SetOffset(param0->unk_0C, BG_LAYER_MAIN_0, 0, 0);
-    Bg_SetOffset(param0->unk_0C, BG_LAYER_MAIN_0, 3, 0);
-    Bg_SetOffset(param0->unk_0C, BG_LAYER_SUB_0, 0, 0);
-    Bg_SetOffset(param0->unk_0C, BG_LAYER_SUB_0, 3, 0);
+    Bg_SetOffset(param0->bgConfig, BG_LAYER_MAIN_0, 0, 0);
+    Bg_SetOffset(param0->bgConfig, BG_LAYER_MAIN_0, 3, 0);
+    Bg_SetOffset(param0->bgConfig, BG_LAYER_SUB_0, 0, 0);
+    Bg_SetOffset(param0->bgConfig, BG_LAYER_SUB_0, 3, 0);
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG0, 0);
@@ -756,7 +764,7 @@ static void ov77_021D2900(OpeningCutsceneWork *param0)
 
 static void ov77_021D2A00(OpeningCutsceneWork *param0)
 {
-    param0->unk_0C = BgConfig_New(param0->heapID);
+    param0->bgConfig = BgConfig_New(param0->heapID);
 
     {
         GraphicsModes v0 = {
@@ -785,7 +793,7 @@ static void ov77_021D2A00(OpeningCutsceneWork *param0)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_0C, BG_LAYER_MAIN_2, &v1, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_2, &v1, 0);
     }
 
     Bg_MaskPalette(BG_LAYER_MAIN_2, 0x0);
@@ -821,7 +829,7 @@ static void ov77_021D2AA0(void)
     G3_ViewPort(0, 0, 255, 191);
 }
 
-static void ov77_021D2B30(void *param0)
+static void OpeningCutscene_GameFreakLogoVBlankCallback(void *param0)
 {
     OpeningCutsceneWork *v0 = param0;
     RenderOam_Transfer();
@@ -848,8 +856,8 @@ static void ov77_021D2B38(void *param0)
         Camera_SetAsActive(v2->unk_20.camera);
     }
 
-    if (v1->unk_0C != NULL) {
-        Bg_RunScheduledUpdates(v1->unk_0C);
+    if (v1->bgConfig != NULL) {
+        Bg_RunScheduledUpdates(v1->bgConfig);
     }
 
     for (v0 = 0; v0 < 7 + 1; v0++) {
@@ -911,18 +919,18 @@ static int OpeningCutscene_Init(ApplicationManager *appMan, int *state)
     GXLayers_DisableEngineALayers();
     GXLayers_DisableEngineBLayers();
     SetAutorepeat(4, 8);
-    Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_76, 0xa0000);
+    Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_OPENING, 0xa0000);
 
-    cutsceneWork = ApplicationManager_NewData(appMan, sizeof(OpeningCutsceneWork), HEAP_ID_76);
+    cutsceneWork = ApplicationManager_NewData(appMan, sizeof(OpeningCutsceneWork), HEAP_ID_OPENING);
     memset(cutsceneWork, 0, sizeof(OpeningCutsceneWork));
 
-    cutsceneWork->heapID = HEAP_ID_76;
-    cutsceneWork->unk_08 = 0;
-    cutsceneWork->unk_2A8 = 0;
+    cutsceneWork->heapID = HEAP_ID_OPENING;
+    cutsceneWork->skip = FALSE;
+    cutsceneWork->isSkippable = 0;
 
     gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
     GXLayers_SwapDisplay();
-    cutsceneWork->unk_14 = LCRNG_GetSeed();
+    cutsceneWork->randomSeed = LCRNG_GetSeed();
 
     LCRNG_SetSeed(0);
 
@@ -931,37 +939,37 @@ static int OpeningCutscene_Init(ApplicationManager *appMan, int *state)
 
 static int OpeningCutscene_Main(ApplicationManager *appMan, int *state)
 {
-    OpeningCutsceneWork *v0 = ApplicationManager_Data(appMan);
+    OpeningCutsceneWork *cutsceneWork = ApplicationManager_Data(appMan);
 
-    if ((v0->unk_2A8) && ((gSystem.pressedKeys & PAD_BUTTON_A) || (gSystem.pressedKeys & PAD_BUTTON_START))) {
-        v0->unk_08 = 1;
+    if ((cutsceneWork->isSkippable) && ((gSystem.pressedKeys & PAD_BUTTON_A) || (gSystem.pressedKeys & PAD_BUTTON_START))) {
+        cutsceneWork->skip = TRUE;
         gSystem.showTitleScreenIntro = FALSE;
         SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_BLACK);
         SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_BLACK);
     }
 
     switch (*state) {
-    case 0:
-        v0->unk_18.unk_18 = &v0->unk_2A8;
+    case OPENING_CUTSCENE_STATE_0:
+        cutsceneWork->gameFreakLogoWork.unk_18 = &cutsceneWork->isSkippable;
         (*state)++;
         break;
-    case 1:
-        if (ov77_021D2E9C(v0)) {
+    case OPENING_CUTSCENE_STATE_GAMEFREAK_LOGO:
+        if (OpeningCutscene_GameFreakLogo(cutsceneWork)) {
             (*state)++;
         }
         break;
-    case 2:
-        if (ov77_021D33F0(v0)) {
+    case OPENING_CUTSCENE_STATE_BATTLE:
+        if (OpeningCutscene_Battle(cutsceneWork)) {
             (*state)++;
         }
         break;
-    case 3:
-        if (ov77_021D5254(v0)) {
+    case OPENING_CUTSCENE_STATE_MOUNT_CORONET:
+        if (OpeningCutscene_MountCoronet(cutsceneWork)) {
             (*state)++;
         }
         break;
-    case 4:
-        if (v0->frameNum >= 2430) {
+    case OPENING_CUTSCENE_STATE_4:
+        if (cutsceneWork->frameNum >= 2430) {
             return 1;
         }
         break;
@@ -970,94 +978,94 @@ static int OpeningCutscene_Main(ApplicationManager *appMan, int *state)
         break;
     }
 
-    if (v0->unk_08) {
+    if (cutsceneWork->skip) {
         return 1;
     }
 
-    v0->frameNum++;
+    cutsceneWork->frameNum++;
     return 0;
 }
 
 static int OpeningCutscene_Exit(ApplicationManager *appMan, int *state)
 {
-    OpeningCutsceneWork *v0 = ApplicationManager_Data(appMan);
+    OpeningCutsceneWork *cutsceneWork = ApplicationManager_Data(appMan);
 
     if (IsScreenFadeDone() == FALSE) {
         FinishScreenFade();
     }
 
-    LCRNG_SetSeed(v0->unk_14);
+    LCRNG_SetSeed(cutsceneWork->randomSeed);
     ApplicationManager_FreeData(appMan);
-    Heap_Destroy(HEAP_ID_76);
+    Heap_Destroy(HEAP_ID_OPENING);
     EnqueueApplication(FS_OVERLAY_ID(game_opening), &gTitleScreenAppTemplate);
 
     return 1;
 }
 
-static BOOL ov77_021D2E9C(OpeningCutsceneWork *cutsceneWork)
+static BOOL OpeningCutscene_GameFreakLogo(OpeningCutsceneWork *cutsceneWork)
 {
-    u8 *v0 = &(cutsceneWork->unk_18.unk_00);
+    u8 *state = &(cutsceneWork->gameFreakLogoWork.state);
 
-    if (cutsceneWork->unk_08) {
-        (*v0) = 3;
+    if (cutsceneWork->skip) {
+        (*state) = 3;
     }
 
-    switch (*v0) {
+    switch (*state) {
     case 0:
-        ov77_021D2F0C(cutsceneWork);
-        (*v0)++;
+        OpeningCutscene_GameFreakLogoInit(cutsceneWork);
+        (*state)++;
         break;
     case 1:
-        ov77_021D2F38(&cutsceneWork->unk_18);
-        (*v0)++;
+        OpeningCutscene_GameFreakLogoLoad(&cutsceneWork->gameFreakLogoWork);
+        (*state)++;
         break;
     case 2:
-        if (ov77_021D30D0(&cutsceneWork->unk_18, cutsceneWork->frameNum)) {
-            (*v0)++;
+        if (OpeningCutscene_GameFreakLogoMain(&cutsceneWork->gameFreakLogoWork, cutsceneWork->frameNum)) {
+            (*state)++;
         }
         break;
     case 3:
-        ov77_021D3234(cutsceneWork);
+        OpeningCutscene_GameFreakLogoEnd(cutsceneWork);
         return 1;
     }
 
     return 0;
 }
 
-static void ov77_021D2F0C(OpeningCutsceneWork *param0)
+static void OpeningCutscene_GameFreakLogoInit(OpeningCutsceneWork *cutsceneWork)
 {
     ov77_021D25B0();
-    ov77_021D2610(param0);
+    ov77_021D2610(cutsceneWork);
 
-    param0->unk_18.unk_0C = param0->unk_0C;
-    param0->unk_18.unk_14 = ov77_021D670C();
+    cutsceneWork->gameFreakLogoWork.unk_0C = cutsceneWork->bgConfig;
+    cutsceneWork->gameFreakLogoWork.unk_14 = ov77_021D670C();
 
-    SetVBlankCallback(ov77_021D2B30, (void *)param0);
+    SetVBlankCallback(OpeningCutscene_GameFreakLogoVBlankCallback, (void *)cutsceneWork);
 
-    param0->unk_18.unk_02 = 1;
+    cutsceneWork->gameFreakLogoWork.initialized = 1;
 }
 
-static void ov77_021D2F38(UnkStruct_ov77_021D2F38 *param0)
+static void OpeningCutscene_GameFreakLogoLoad(GameFreakLogoWork *logoWork)
 {
-    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 16, param0->unk_0C, 2, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 16, param0->unk_0C, 6, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 17, param0->unk_0C, 2, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 18, param0->unk_0C, 6, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 16, logoWork->unk_0C, 2, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 16, logoWork->unk_0C, 6, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 17, logoWork->unk_0C, 2, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 18, logoWork->unk_0C, 6, 0, 0, 0, HEAP_ID_OPENING);
 
-    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 15, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 15, 4, 0, 0, HEAP_ID_76);
+    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 15, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 15, 4, 0, 0, HEAP_ID_OPENING);
 
-    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__TITLEDEMO, 15, param0->unk_0C, 1, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__TITLEDEMO, 13, param0->unk_0C, 1, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__TITLEDEMO, 15, logoWork->unk_0C, 1, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__TITLEDEMO, 13, logoWork->unk_0C, 1, 0, 0, 0, HEAP_ID_OPENING);
 
-    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__TITLEDEMO, 14, 0, 0, 2 * 16 * 1, HEAP_ID_76);
+    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__TITLEDEMO, 14, 0, 0, 2 * 16 * 1, HEAP_ID_OPENING);
 
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 19, param0->unk_0C, 3, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 19, param0->unk_0C, 7, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 114, param0->unk_0C, 5, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 113, param0->unk_0C, 5, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 19, logoWork->unk_0C, 3, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 19, logoWork->unk_0C, 7, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 114, logoWork->unk_0C, 5, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 113, logoWork->unk_0C, 5, 0, 0, 0, HEAP_ID_OPENING);
 
-    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 115, 4, 0, 2 * 16 * 1, HEAP_ID_76);
+    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 115, 4, 0, 2 * 16 * 1, HEAP_ID_OPENING);
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 0);
@@ -1072,32 +1080,32 @@ static void ov77_021D2F38(UnkStruct_ov77_021D2F38 *param0)
     GXLayers_TurnBothDispOn();
 }
 
-static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
+static BOOL OpeningCutscene_GameFreakLogoMain(GameFreakLogoWork *logoWork, const int param1)
 {
-    u8 *v0 = &(param0->unk_01);
+    u8 *logoState = &(logoWork->sceneState);
 
-    ov77_021D69C0(param0->unk_14, param1);
+    ov77_021D69C0(logoWork->unk_14, param1);
 
-    switch (*v0) {
+    switch (*logoState) {
     case 0:
-        param0->unk_07 = 0;
-        param0->unk_06 = 0;
-        param0->unk_08 = 0;
-        param0->unk_10 = SysTask_Start(ov77_021D32A4, param0, 0);
+        logoWork->unk_07 = 0;
+        logoWork->frameCount = 0;
+        logoWork->unk_08 = 0;
+        logoWork->task = SysTask_Start(SysTask_CopyrightFadeIn, logoWork, 0);
         Sound_SetSceneAndPlayBGM(SOUND_SCENE_TITLE_SCREEN, SEQ_TITLE00_sseq, 1);
-        (*v0)++;
+        (*logoState)++;
         break;
     case 1:
-        if ((param0->unk_08) && (param1 >= 115)) {
-            param0->unk_07 = 0;
-            param0->unk_06 = 16;
-            param0->unk_08 = 0;
-            param0->unk_10 = SysTask_Start(ov77_021D3300, param0, 0);
-            (*v0)++;
+        if ((logoWork->unk_08) && (param1 >= 115)) {
+            logoWork->unk_07 = 0;
+            logoWork->frameCount = 16;
+            logoWork->unk_08 = 0;
+            logoWork->task = SysTask_Start(SysTask_CopyrightFadeOut, logoWork, 0);
+            (*logoState)++;
         }
         break;
     case 2:
-        if ((param0->unk_08) && (param1 >= 265)) {
+        if ((logoWork->unk_08) && (param1 >= 265)) {
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 0);
             GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG1, 0);
 
@@ -1107,26 +1115,26 @@ static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
             GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 1);
 
-            param0->unk_07 = 0;
-            param0->unk_06 = 0;
-            param0->unk_08 = 0;
-            param0->unk_10 = SysTask_Start(ov77_021D3360, param0, 0);
-            (*v0)++;
+            logoWork->unk_07 = 0;
+            logoWork->frameCount = 0;
+            logoWork->unk_08 = 0;
+            logoWork->task = SysTask_Start(SysTask_GameFreakLogoFadeIn, logoWork, 0);
+            (*logoState)++;
         }
         break;
     case 3:
-        if (param0->unk_08) {
-            param0->unk_07 = 0;
-            param0->unk_06 = 0;
-            param0->unk_08 = 0;
-            param0->unk_10 = SysTask_Start(ov77_021D33A8, param0, 0);
-            (*v0)++;
+        if (logoWork->unk_08) {
+            logoWork->unk_07 = 0;
+            logoWork->frameCount = 0;
+            logoWork->unk_08 = 0;
+            logoWork->task = SysTask_Start(SysTask_GameFreakLogoFadeIn2, logoWork, 0);
+            (*logoState)++;
         }
         break;
     case 4:
-        if ((param0->unk_08) && (param1 >= 490)) {
-            StartScreenFade(FADE_SUB_THEN_MAIN, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 18, 1, HEAP_ID_76);
-            (*v0)++;
+        if ((logoWork->unk_08) && (param1 >= 490)) {
+            StartScreenFade(FADE_SUB_THEN_MAIN, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 18, 1, HEAP_ID_OPENING);
+            (*logoState)++;
         }
         break;
     case 5:
@@ -1138,119 +1146,120 @@ static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
     return 0;
 }
 
-static void ov77_021D3234(OpeningCutsceneWork *param0)
+static void OpeningCutscene_GameFreakLogoEnd(OpeningCutsceneWork *cutsceneWork)
 {
     SetVBlankCallback(NULL, NULL);
 
-    if (param0->unk_18.unk_02) {
-        ov77_021D67B0(param0->unk_18.unk_14);
+    if (cutsceneWork->gameFreakLogoWork.initialized) {
+        ov77_021D67B0(cutsceneWork->gameFreakLogoWork.unk_14);
 
-        Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_1);
-        Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
-        Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_2);
-        Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_3);
-        Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_3);
-        Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_1);
-        Heap_Free(param0->unk_0C);
+        Bg_FreeTilemapBuffer(cutsceneWork->bgConfig, BG_LAYER_MAIN_1);
+        Bg_FreeTilemapBuffer(cutsceneWork->bgConfig, BG_LAYER_MAIN_2);
+        Bg_FreeTilemapBuffer(cutsceneWork->bgConfig, BG_LAYER_SUB_2);
+        Bg_FreeTilemapBuffer(cutsceneWork->bgConfig, BG_LAYER_MAIN_3);
+        Bg_FreeTilemapBuffer(cutsceneWork->bgConfig, BG_LAYER_SUB_3);
+        Bg_FreeTilemapBuffer(cutsceneWork->bgConfig, BG_LAYER_SUB_1);
+        Heap_Free(cutsceneWork->bgConfig);
 
-        param0->unk_18.unk_02 = 0;
+        cutsceneWork->gameFreakLogoWork.initialized = 0;
     }
 
-    if (param0->unk_18.unk_10 != NULL) {
-        GF_ASSERT(param0->unk_08);
-        SysTask_Done(param0->unk_18.unk_10);
-        param0->unk_18.unk_10 = NULL;
+    if (cutsceneWork->gameFreakLogoWork.task != NULL) {
+        GF_ASSERT(cutsceneWork->skip);
+        SysTask_Done(cutsceneWork->gameFreakLogoWork.task);
+        cutsceneWork->gameFreakLogoWork.task = NULL;
     }
 }
 
-static void ov77_021D32A4(SysTask *param0, void *param1)
+static void SysTask_CopyrightFadeIn(SysTask *task, void *taskParam)
 {
-    UnkStruct_ov77_021D2F38 *v0 = param1;
+    GameFreakLogoWork *v0 = taskParam;
 
     v0->unk_07++;
 
     if (v0->unk_07 >= 6) {
         v0->unk_07 = 0;
-        v0->unk_06++;
+        v0->frameCount++;
     }
 
-    if (v0->unk_06 >= 16) {
-        SysTask_Done(param0);
-        v0->unk_10 = NULL;
+    if (v0->frameCount >= 16) {
+        SysTask_Done(task);
+        v0->task = NULL;
         v0->unk_08 = 1;
     }
 
-    G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
-    G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
+    G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->frameCount, 16);
+    G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->frameCount, 16);
 }
 
-static void ov77_021D3300(SysTask *param0, void *param1)
+static void SysTask_CopyrightFadeOut(SysTask *task, void *taskParam)
 {
-    UnkStruct_ov77_021D2F38 *v0 = param1;
+    GameFreakLogoWork *v0 = taskParam;
 
     v0->unk_07++;
 
     if (v0->unk_07 >= 4) {
         v0->unk_07 = 0;
-        v0->unk_06--;
+        v0->frameCount--;
     }
 
-    if (v0->unk_06 == 0) {
-        SysTask_Done(param0);
-        v0->unk_10 = NULL;
+    if (v0->frameCount == 0) {
+        SysTask_Done(task);
+        v0->task = NULL;
         v0->unk_08 = 1;
         *(v0->unk_18) = 1;
     }
 
-    G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
-    G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
+    G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->frameCount, 16);
+    G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->frameCount, 16);
 }
 
-static void ov77_021D3360(SysTask *param0, void *param1)
+static void SysTask_GameFreakLogoFadeIn(SysTask *task, void *taskParam)
 {
-    UnkStruct_ov77_021D2F38 *v0 = param1;
+    GameFreakLogoWork *logoWork = taskParam;
 
-    v0->unk_07++;
+    logoWork->unk_07++;
 
-    if (v0->unk_07 >= 4) {
-        v0->unk_07 = 0;
-        v0->unk_06++;
+    if (logoWork->unk_07 >= 4) {
+        logoWork->unk_07 = 0;
+        logoWork->frameCount++;
     }
 
-    if (v0->unk_06 >= 16) {
-        SysTask_Done(param0);
-        v0->unk_10 = NULL;
-        v0->unk_08 = 1;
+    if (logoWork->frameCount >= 16) {
+        SysTask_Done(task);
+        logoWork->task = NULL;
+        logoWork->unk_08 = 1;
     }
 
-    G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
+    G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_PLANEMASK_BG3, logoWork->frameCount, 16);
 }
 
-static void ov77_021D33A8(SysTask *param0, void *param1)
+// This appears to be a duplicate of SysTask_GameFreakLogoFadeIn
+static void SysTask_GameFreakLogoFadeIn2(SysTask *task, void *taskParam)
 {
-    UnkStruct_ov77_021D2F38 *v0 = param1;
+    GameFreakLogoWork *logoWork = taskParam;
 
-    v0->unk_07++;
+    logoWork->unk_07++;
 
-    if (v0->unk_07 >= 4) {
-        v0->unk_07 = 0;
-        v0->unk_06++;
+    if (logoWork->unk_07 >= 4) {
+        logoWork->unk_07 = 0;
+        logoWork->frameCount++;
     }
 
-    if (v0->unk_06 >= 16) {
-        SysTask_Done(param0);
-        v0->unk_10 = NULL;
-        v0->unk_08 = 1;
+    if (logoWork->frameCount >= 16) {
+        SysTask_Done(task);
+        logoWork->task = NULL;
+        logoWork->unk_08 = 1;
     }
 
-    G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
+    G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_PLANEMASK_BG3, logoWork->frameCount, 16);
 }
 
-static BOOL ov77_021D33F0(OpeningCutsceneWork *cutsceneWork)
+static BOOL OpeningCutscene_Battle(OpeningCutsceneWork *cutsceneWork)
 {
     u8 *v0 = &(cutsceneWork->unk_34.unk_00);
 
-    if (cutsceneWork->unk_08) {
+    if (cutsceneWork->skip) {
         (*v0) = 4;
     }
 
@@ -1292,29 +1301,29 @@ static BOOL ov77_021D33F0(OpeningCutsceneWork *cutsceneWork)
     return 0;
 }
 
-static void ov77_021D34A8(OpeningCutsceneWork *param0)
+static void ov77_021D34A8(OpeningCutsceneWork *cutsceneWork)
 {
     u8 v0;
     int v1;
     int v2;
 
     ov77_021D25D0();
-    ov77_021D2724(param0);
-    ov77_021D2A58(param0);
+    ov77_021D2724(cutsceneWork);
+    ov77_021D2A58(cutsceneWork);
 
     v1 = ov77_021D555C();
     v2 = ov77_021D6CB8();
 
-    param0->unk_34.unk_14 = Heap_Alloc(HEAP_ID_76, v1);
-    param0->unk_34.unk_18 = ov77_021D6734(16);
-    param0->unk_34.unk_1C = Heap_Alloc(HEAP_ID_76, v2);
+    cutsceneWork->unk_34.unk_14 = Heap_Alloc(HEAP_ID_OPENING, v1);
+    cutsceneWork->unk_34.unk_18 = ov77_021D6734(16);
+    cutsceneWork->unk_34.unk_1C = Heap_Alloc(HEAP_ID_OPENING, v2);
 
-    memset(param0->unk_34.unk_14, 0, v1);
-    memset(param0->unk_34.unk_1C, 0, v2);
+    memset(cutsceneWork->unk_34.unk_14, 0, v1);
+    memset(cutsceneWork->unk_34.unk_1C, 0, v2);
 
-    param0->unk_34.unk_08 = 4;
-    ov77_021D6CFC(param0->unk_34.unk_1C);
-    param0->unk_34.unk_10 = param0->unk_0C;
+    cutsceneWork->unk_34.unk_08 = 4;
+    ov77_021D6CFC(cutsceneWork->unk_34.unk_1C);
+    cutsceneWork->unk_34.unk_10 = cutsceneWork->bgConfig;
 
     gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
     GXLayers_SwapDisplay();
@@ -1328,10 +1337,10 @@ static void ov77_021D34A8(OpeningCutsceneWork *param0)
     NNS_G3dGlbMaterialColorSpecEmi(GX_RGB(18, 18, 18), GX_RGB(14, 14, 14), 0);
     NNS_G3dGlbPolygonAttr(13, GX_POLYGONMODE_MODULATE, GX_CULL_BACK, 0, 31, GX_POLYGON_ATTR_MISC_FOG);
 
-    SetVBlankCallback(ov77_021D2B38, (void *)param0);
+    SetVBlankCallback(ov77_021D2B38, (void *)cutsceneWork);
     BrightnessController_SetScreenBrightness(-16, GX_BLEND_PLANEMASK_BG3, BRIGHTNESS_MAIN_SCREEN);
 
-    param0->unk_34.unk_02 = 1;
+    cutsceneWork->unk_34.unk_02 = 1;
 }
 
 static void ov77_021D35B8(OpeningCutsceneWork *param0)
@@ -1357,37 +1366,37 @@ static void ov77_021D35B8(OpeningCutsceneWork *param0)
 
 static void ov77_021D361C(OpeningCutsceneWork *param0, BOOL param1)
 {
-    if (param0->unk_34.unk_02 && (param0->unk_0C != NULL)) {
+    if (param0->unk_34.unk_02 && (param0->bgConfig != NULL)) {
         if (param0->unk_34.unk_25A == 0) {
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_3);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_1);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_0);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_1);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_2);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_3);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_3);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_1);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_2);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_0);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_1);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_2);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_3);
         } else if (param0->unk_34.unk_25A == 1) {
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_3);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_1);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_3);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_1);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_2);
 
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_1);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_2);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_3);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_1);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_2);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_3);
         } else {
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_0);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_3);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_1);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_0);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_1);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_2);
-            Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_3);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_0);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_3);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_1);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_2);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_0);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_1);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_2);
+            Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_3);
         }
 
         if (param1 == 1) {
-            Heap_Free(param0->unk_0C);
-            param0->unk_0C = NULL;
+            Heap_Free(param0->bgConfig);
+            param0->bgConfig = NULL;
         }
     }
 }
@@ -1444,44 +1453,44 @@ static void ov77_021D36F8(OpeningCutsceneWork *param0)
 static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0)
 {
     u8 v0;
-    NARC *v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
+    NARC *v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_OPENING);
 
     {
-        Graphics_LoadPaletteWithSrcOffsetFromOpenNARC(v1, 96, 0, 0x20 * 0xc, 0x20 * 0xc, 0x20 * 2, HEAP_ID_76);
-        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 95, param0->unk_10, 3, 0, 0, 0, HEAP_ID_76);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 12, param0->unk_10, 3, 0, 0, 0, HEAP_ID_76);
+        Graphics_LoadPaletteWithSrcOffsetFromOpenNARC(v1, 96, 0, 0x20 * 0xc, 0x20 * 0xc, 0x20 * 2, HEAP_ID_OPENING);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 95, param0->unk_10, 3, 0, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 12, param0->unk_10, 3, 0, 0, 0, HEAP_ID_OPENING);
 
-        Graphics_LoadPaletteWithSrcOffsetFromOpenNARC(v1, 13, 0, 0x20 * 0xe, 0x20 * 0xe, 0x20 * 2, HEAP_ID_76);
-        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 14, param0->unk_10, 2, 0, 0, 0, HEAP_ID_76);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 12, param0->unk_10, 2, 0, 0, 0, HEAP_ID_76);
+        Graphics_LoadPaletteWithSrcOffsetFromOpenNARC(v1, 13, 0, 0x20 * 0xe, 0x20 * 0xe, 0x20 * 2, HEAP_ID_OPENING);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 14, param0->unk_10, 2, 0, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 12, param0->unk_10, 2, 0, 0, 0, HEAP_ID_OPENING);
 
         {
             NARC *v2;
 
-            v2 = NARC_ctor(NARC_INDEX_DATA__WEATHER_SYS, HEAP_ID_76);
+            v2 = NARC_ctor(NARC_INDEX_DATA__WEATHER_SYS, HEAP_ID_OPENING);
 
-            Graphics_LoadTilesToBgLayerFromOpenNARC(v2, 56, param0->unk_10, 1, 0, 0, 0, HEAP_ID_76);
-            Graphics_LoadTilemapToBgLayerFromOpenNARC(v2, 57, param0->unk_10, 1, 0, 0, 0, HEAP_ID_76);
-            Graphics_LoadTilemapToBgLayerFromOpenNARC(v2, 57, param0->unk_10, 1, 32 * 32, 0, 0, HEAP_ID_76);
-            Graphics_LoadPaletteFromOpenNARC(v2, 55, 0, 0x20 * 0, 0x20, HEAP_ID_76);
+            Graphics_LoadTilesToBgLayerFromOpenNARC(v2, 56, param0->unk_10, 1, 0, 0, 0, HEAP_ID_OPENING);
+            Graphics_LoadTilemapToBgLayerFromOpenNARC(v2, 57, param0->unk_10, 1, 0, 0, 0, HEAP_ID_OPENING);
+            Graphics_LoadTilemapToBgLayerFromOpenNARC(v2, 57, param0->unk_10, 1, 32 * 32, 0, 0, HEAP_ID_OPENING);
+            Graphics_LoadPaletteFromOpenNARC(v2, 55, 0, 0x20 * 0, 0x20, HEAP_ID_OPENING);
             NARC_dtor(v2);
         }
     }
 
     {
-        Graphics_LoadPaletteFromOpenNARC(v1, 61, 4, 0, 0, HEAP_ID_76);
-        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 59, param0->unk_10, 5, 0, 0, 0, HEAP_ID_76);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 63, param0->unk_10, 5, 0, 0, 0, HEAP_ID_76);
-        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 58, param0->unk_10, 6, 0, 0, 0, HEAP_ID_76);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 62, param0->unk_10, 6, 0, 0, 0, HEAP_ID_76);
-        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 60, param0->unk_10, 7, 0, 0, 0, HEAP_ID_76);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 64, param0->unk_10, 7, 0, 0, 0, HEAP_ID_76);
+        Graphics_LoadPaletteFromOpenNARC(v1, 61, 4, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 59, param0->unk_10, 5, 0, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 63, param0->unk_10, 5, 0, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 58, param0->unk_10, 6, 0, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 62, param0->unk_10, 6, 0, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 60, param0->unk_10, 7, 0, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 64, param0->unk_10, 7, 0, 0, 0, HEAP_ID_OPENING);
     }
 
     {
-        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 14, param0->unk_10, 4, 0, 0, 0, HEAP_ID_76);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 12, param0->unk_10, 4, 0, 0, 0, HEAP_ID_76);
-        Graphics_LoadPaletteWithSrcOffsetFromOpenNARC(v1, 13, 4, 0x20 * 0xe, 0x20 * 0xe, 0x20 * 2, HEAP_ID_76);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 14, param0->unk_10, 4, 0, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 12, param0->unk_10, 4, 0, 0, 0, HEAP_ID_OPENING);
+        Graphics_LoadPaletteWithSrcOffsetFromOpenNARC(v1, 13, 4, 0x20 * 0xe, 0x20 * 0xe, 0x20 * 2, HEAP_ID_OPENING);
     }
 
     ov77_021D5564(param0->unk_14);
@@ -1501,7 +1510,7 @@ static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0)
     param0->unk_03 = 1;
 }
 
-static void ov77_021D3A10(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1)
+static void ov77_021D3A10(OpeningCutsceneWork *cutsceneWork, UnkStruct_ov77_021D37C0 *param1)
 {
     u8 v0;
     NARC *v1;
@@ -1512,16 +1521,16 @@ static void ov77_021D3A10(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
     G2_SetBG0Priority(0);
     Bg_SetPriority(BG_LAYER_MAIN_1, 3);
 
-    v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
+    v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_OPENING);
 
-    Graphics_LoadPaletteFromOpenNARC(v1, 68, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadPaletteFromOpenNARC(v1, 68, 0, 0, 0, HEAP_ID_OPENING);
 
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 66, param1->unk_10, 1, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 70, param1->unk_10, 1, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 65, param1->unk_10, 2, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 69, param1->unk_10, 2, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 67, param1->unk_10, 3, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 71, param1->unk_10, 3, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 66, param1->unk_10, 1, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 70, param1->unk_10, 1, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 65, param1->unk_10, 2, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 69, param1->unk_10, 2, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 67, param1->unk_10, 3, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 71, param1->unk_10, 3, 0, 0, 0, HEAP_ID_OPENING);
 
     MI_CpuClear16((void *)HW_BG_PLTT, 2);
     MI_CpuClear16((void *)HW_DB_BG_PLTT, 2);
@@ -1536,37 +1545,37 @@ static void ov77_021D3A10(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
     NARC_dtor(v1);
 }
 
-static void ov77_021D3B5C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1)
+static void ov77_021D3B5C(OpeningCutsceneWork *cutsceneWork, UnkStruct_ov77_021D37C0 *param1)
 {
     u8 v0;
     NARC *v1;
 
-    ov77_021D2828(param0);
+    ov77_021D2828(cutsceneWork);
 
-    v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
+    v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_OPENING);
 
-    Graphics_LoadPaletteFromOpenNARC(v1, 72, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadPaletteFromOpenNARC(v1, 72, 4, 0, 0, HEAP_ID_76);
+    Graphics_LoadPaletteFromOpenNARC(v1, 72, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadPaletteFromOpenNARC(v1, 72, 4, 0, 0, HEAP_ID_OPENING);
 
-    param1->unk_240 = Heap_Alloc(HEAP_ID_76, 0x200);
+    param1->unk_240 = Heap_Alloc(HEAP_ID_OPENING, 0x200);
 
     MI_CpuCopy16((void *)HW_BG_PLTT, param1->unk_240, 0x200);
     MI_CpuClear16(param1->unk_240, 2);
 
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 73, param1->unk_10, 1, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 76, param1->unk_10, 1, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 73, param1->unk_10, 5, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 76, param1->unk_10, 5, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 73, param1->unk_10, 1, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 76, param1->unk_10, 1, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 73, param1->unk_10, 5, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 76, param1->unk_10, 5, 0, 0, 0, HEAP_ID_OPENING);
 
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 74, param1->unk_10, 2, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 77, param1->unk_10, 2, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 74, param1->unk_10, 6, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 77, param1->unk_10, 6, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 74, param1->unk_10, 2, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 77, param1->unk_10, 2, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 74, param1->unk_10, 6, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 77, param1->unk_10, 6, 0, 0, 0, HEAP_ID_OPENING);
 
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 75, param1->unk_10, 3, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 78, param1->unk_10, 3, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 75, param1->unk_10, 7, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 78, param1->unk_10, 7, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 75, param1->unk_10, 3, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 78, param1->unk_10, 3, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 75, param1->unk_10, 7, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 78, param1->unk_10, 7, 0, 0, 0, HEAP_ID_OPENING);
 
     MI_CpuClear16((void *)HW_BG_PLTT, 2);
     MI_CpuClear16((void *)HW_DB_BG_PLTT, 2);
@@ -1588,12 +1597,12 @@ static void ov77_021D3D4C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
 
     ov77_021D2900(param0);
 
-    v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
+    v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_OPENING);
 
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 79, param1->unk_10, 0, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 80, param1->unk_10, 0, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 81, param1->unk_10, 4, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 82, param1->unk_10, 4, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 79, param1->unk_10, 0, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 80, param1->unk_10, 0, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 81, param1->unk_10, 4, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 82, param1->unk_10, 4, 0, 0, 0, HEAP_ID_OPENING);
 
     NARC_dtor(v1);
 }
@@ -1670,7 +1679,7 @@ static void ov77_021D3F24(UnkStruct_ov77_021D37C0 *param0, int param1, int param
         param3 = 6;
     }
 
-    v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
+    v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_OPENING);
 
     for (v0 = param2; v0 < param3; v0++) {
         if (Unk_ov77_021D779C[param1][v0] == 0) {
@@ -1703,7 +1712,7 @@ static void ov77_021D3F24(UnkStruct_ov77_021D37C0 *param0, int param1, int param
 
 static void ov77_021D4044(UnkStruct_ov77_021D37C0 *param0, int param1)
 {
-    param0->unk_20.camera = Camera_Alloc(HEAP_ID_76);
+    param0->unk_20.camera = Camera_Alloc(HEAP_ID_OPENING);
 
     {
         VecFx32 v0 = { 0, 0, FX32_ONE * 16 * 6 };
@@ -1805,7 +1814,7 @@ static void ov77_021D4188(UnkStruct_ov77_021D37C0 *param0)
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_W);
 }
 
-static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *param1, const int param2)
+static BOOL ov77_021D4230(OpeningCutsceneWork *cutsceneWork, UnkStruct_ov77_021D37C0 *param1, const int param2)
 {
     u8 *v0 = &(param1->unk_01);
 
@@ -1841,14 +1850,14 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
         break;
     case 2:
         if (param2 == 785) {
-            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 4, 1, HEAP_ID_76);
+            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 4, 1, HEAP_ID_OPENING);
         }
 
         if (param2 == (785 + 5)) {
             GF_ASSERT(IsScreenFadeDone() == TRUE);
             param1->unk_247 = (1 << 2);
             param1->unk_248 = (1 << 3);
-            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 4, 1, HEAP_ID_76);
+            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 4, 1, HEAP_ID_OPENING);
         }
 
         if (param2 == 945 - 1) {
@@ -1865,14 +1874,14 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
 
         if (param2 >= 975) {
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
-            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 18, 1, HEAP_ID_76);
+            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 18, 1, HEAP_ID_OPENING);
             param1->unk_08 = 16;
             (*v0)++;
         }
         break;
     case 3:
         if (1) {
-            ov77_021D513C(param0, param1, param2);
+            ov77_021D513C(cutsceneWork, param1, param2);
             ov77_021D4F38(param1, param2);
             ov77_021D6530(param1->unk_14, param2);
 
@@ -1888,7 +1897,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
             ov77_021D61B8(param1->unk_14, param2);
 
             if (param2 >= 1576) {
-                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 18, 1, HEAP_ID_76);
+                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 18, 1, HEAP_ID_OPENING);
                 (*v0)++;
             }
         }
@@ -1904,7 +1913,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
             Bg_ToggleLayer(BG_LAYER_SUB_0, 0);
             ov77_021D6000(param1->unk_14, param1->unk_18);
             param1->unk_244 = 1;
-            ov77_021D3A10(param0, param1);
+            ov77_021D3A10(cutsceneWork, param1);
             ov77_021D603C(param1->unk_14, 1, 1);
             ov77_021D603C(param1->unk_14, 2, 1);
 
@@ -1942,7 +1951,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
 
             G2_BlendNone();
             G2S_BlendNone();
-            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 18, 1, HEAP_ID_76);
+            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 18, 1, HEAP_ID_OPENING);
             (*v0)++;
         }
         break;
@@ -1975,7 +1984,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
         ov77_021D4C04(param1, param2);
 
         if (param2 == (64 * 30 - 15 - 15 - 45)) {
-            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_76);
+            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
             (*v0)++;
         }
         break;
@@ -1990,7 +1999,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
             Bg_ScheduleScroll(param1->unk_10, 1, 3, 0);
             Bg_ScheduleScroll(param1->unk_10, 5, 0, 0);
             Bg_ScheduleScroll(param1->unk_10, 5, 3, 0);
-            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_76);
+            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
             (*v0)++;
         }
         break;
@@ -2008,7 +2017,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
                 ov77_021D603C(param1->unk_14, 11, 1);
                 ov77_021D603C(param1->unk_14, 12, 1);
             } else if (param2 >= (1935 - 15)) {
-                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 4, 1, HEAP_ID_76);
+                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 4, 1, HEAP_ID_OPENING);
                 (*v0)++;
             }
         }
@@ -2017,7 +2026,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
         ov77_021D6470(param1->unk_14, param2);
 
         if (IsScreenFadeDone()) {
-            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 64, 1, HEAP_ID_76);
+            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 64, 1, HEAP_ID_OPENING);
             ov77_021D603C(param1->unk_14, 11, 0);
             ov77_021D603C(param1->unk_14, 12, 0);
             ov77_021D603C(param1->unk_14, 13, 1);
@@ -2025,7 +2034,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
             ov77_021D603C(param1->unk_14, 15, 1);
             ov77_021D603C(param1->unk_14, 16, 1);
             ov77_021D636C(param1->unk_14, 0);
-            ov77_021D3B5C(param0, param1);
+            ov77_021D3B5C(cutsceneWork, param1);
             gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
             GXLayers_SwapDisplay();
             ov77_021D3DC4(param1);
@@ -2042,7 +2051,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
 
         if (IsScreenFadeDone()) {
             if (param2 >= (1995 + 15)) {
-                StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_76);
+                StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
                 (*v0)++;
             }
         }
@@ -2053,7 +2062,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
         if (IsScreenFadeDone()) {
             G2_SetBlendAlpha(GX_BLEND_PLANEMASK_NONE, GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, 0, 0);
             MI_CpuClear16((void *)HW_BG_PLTT, 0x200);
-            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_76);
+            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
             (*v0)++;
         }
         break;
@@ -2062,7 +2071,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
 
         if (IsScreenFadeDone()) {
             if (ov77_021D6E78(param1->unk_1C, 0, param2)) {
-                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_76);
+                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
                 (*v0)++;
             }
         }
@@ -2076,7 +2085,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
                 GXLayers_SwapDisplay();
                 ov77_021D3DC4(param1);
 
-                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_76);
+                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
                 (*v0)++;
             }
         }
@@ -2087,7 +2096,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
         if (IsScreenFadeDone()) {
             if (param2 >= (2085 + 15 + 30)) {
                 if (ov77_021D6E78(param1->unk_1C, 1, param2)) {
-                    StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_76);
+                    StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
                     param1->unk_0C = 0;
                     (*v0)++;
                 }
@@ -2103,7 +2112,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
             gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
             GXLayers_SwapDisplay();
 
-            ov77_021D3D4C(param0, param1);
+            ov77_021D3D4C(cutsceneWork, param1);
             ov77_021D3DC4(param1);
             ov77_021D636C(param1->unk_14, 1);
 
@@ -2113,7 +2122,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
             Bg_ScheduleScroll(param1->unk_10, 5, 0, 60);
             Bg_ScheduleScroll(param1->unk_10, 6, 0, 60);
             Bg_ScheduleScroll(param1->unk_10, 7, 0, 60);
-            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 16, 1, HEAP_ID_76);
+            StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 16, 1, HEAP_ID_OPENING);
             (*v0)++;
         }
         break;
@@ -2121,7 +2130,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
         ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
 
         if (IsScreenFadeDone()) {
-            StartScreenFade(FADE_SUB_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 16, 1, HEAP_ID_76);
+            StartScreenFade(FADE_SUB_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 16, 1, HEAP_ID_OPENING);
             (*v0)++;
         }
         break;
@@ -2136,7 +2145,7 @@ static BOOL ov77_021D4230(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
             if (param2 >= ((2200 + 15) + 1)) {
                 param1->unk_247 |= (1 << 0) | (1 << 4);
 
-                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 6, 1, HEAP_ID_76);
+                StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 6, 1, HEAP_ID_OPENING);
                 (*v0)++;
             }
         }
@@ -2422,7 +2431,7 @@ static void ov77_021D513C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
 
     switch (param2) {
     case (40 * 30 - 15):
-        StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_76);
+        StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
         break;
     case ((40 * 30 - 15) + 6):
         GF_ASSERT(IsScreenFadeDone() == TRUE);
@@ -2438,44 +2447,44 @@ static void ov77_021D513C(OpeningCutsceneWork *param0, UnkStruct_ov77_021D37C0 *
     case (((40 * 30 - 15) + 6) + 3):
         v0 = ov77_021D40DC(param1, 1);
         GF_ASSERT(v0 == 1);
-        StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_76);
+        StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
         break;
     case (47 * 30 - 15):
-        StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_76);
+        StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
         break;
     case ((47 * 30 - 15) + 6):
         GF_ASSERT(IsScreenFadeDone() == TRUE);
         ov77_021D35B8(param0);
         ov77_021D40B8(param1, 2);
-        StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_76);
+        StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_OPENING);
         break;
     }
 }
 
-static BOOL ov77_021D5254(OpeningCutsceneWork *param0)
+static BOOL OpeningCutscene_MountCoronet(OpeningCutsceneWork *cutsceneWork)
 {
-    u8 *v0 = &(param0->unk_298.unk_00);
+    u8 *v0 = &(cutsceneWork->unk_298.unk_00);
 
-    if (param0->unk_08) {
+    if (cutsceneWork->skip) {
         (*v0) = 3;
     }
 
     switch (*v0) {
     case 0:
-        ov77_021D52C8(param0);
+        ov77_021D52C8(cutsceneWork);
         (*v0)++;
         break;
     case 1:
-        ov77_021D5308(&param0->unk_298);
+        ov77_021D5308(&cutsceneWork->unk_298);
         (*v0)++;
         break;
     case 2:
-        if (ov77_021D5390(&param0->unk_298, param0->frameNum)) {
+        if (ov77_021D5390(&cutsceneWork->unk_298, cutsceneWork->frameNum)) {
             (*v0)++;
         }
         break;
     case 3:
-        ov77_021D5478(param0);
+        ov77_021D5478(cutsceneWork);
         return 1;
     }
 
@@ -2490,7 +2499,7 @@ static void ov77_021D52C8(OpeningCutsceneWork *param0)
     ov77_021D25F0();
     ov77_021D2A00(param0);
 
-    param0->unk_298.unk_08 = param0->unk_0C;
+    param0->unk_298.unk_08 = param0->bgConfig;
 
     SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_WHITE);
     SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_WHITE);
@@ -2502,9 +2511,9 @@ static void ov77_021D52C8(OpeningCutsceneWork *param0)
 
 static void ov77_021D5308(UnkStruct_ov77_021D5308 *param0)
 {
-    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 99, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 98, param0->unk_08, 2, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 97, param0->unk_08, 2, 0, 0, 0, HEAP_ID_76);
+    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 99, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 98, param0->unk_08, 2, 0, 0, 0, HEAP_ID_OPENING);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 97, param0->unk_08, 2, 0, 0, 0, HEAP_ID_OPENING);
 
     GXLayers_DisableEngineALayers();
     GXLayers_EngineASetLayers(0);
@@ -2525,14 +2534,14 @@ static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1)
     switch (*v0) {
     case 0:
         if (param1 >= (2285 - 15 - 65)) {
-            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 30, 1, HEAP_ID_76);
+            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 30, 1, HEAP_ID_OPENING);
             (*v0)++;
         }
         break;
     case 1:
         if (IsScreenFadeDone()) {
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
-            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 90, 1, HEAP_ID_76);
+            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 90, 1, HEAP_ID_OPENING);
             (*v0)++;
         }
         break;
@@ -2543,7 +2552,7 @@ static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1)
         break;
     case 3:
         if (param1 >= (2500 - 15 - 65)) {
-            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 8, 1, HEAP_ID_76);
+            StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 8, 1, HEAP_ID_OPENING);
 
             (*v0)++;
         }
@@ -2563,8 +2572,8 @@ static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1)
 static void ov77_021D5478(OpeningCutsceneWork *param0)
 {
     if (param0->unk_298.unk_02) {
-        Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
-        Heap_Free(param0->unk_0C);
+        Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_2);
+        Heap_Free(param0->bgConfig);
         param0->unk_298.unk_02 = 0;
     }
 

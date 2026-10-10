@@ -77,7 +77,7 @@ static const u8 Unk_ov77_021D7930[4] = {
 
 static void ov77_021D6670()
 {
-    const int heapId = HEAP_ID_76;
+    const int heapId = HEAP_ID_OPENING;
 
     {
         CharTransferTemplate v1 = {
@@ -108,14 +108,14 @@ static void ov77_021D66A0(UnkStruct_ov77_021D6800 *param0, AffineSpriteListTempl
         param1->affineZRotation = 0;
         param1->priority = 1;
         param1->vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
-        param1->heapID = HEAP_ID_76;
+        param1->heapID = HEAP_ID_OPENING;
     }
 }
 
 UnkStruct_ov77_021D670C *ov77_021D670C(void)
 {
     int v0 = sizeof(UnkStruct_ov77_021D670C);
-    UnkStruct_ov77_021D670C *v1 = Heap_Alloc(HEAP_ID_76, v0);
+    UnkStruct_ov77_021D670C *v1 = Heap_Alloc(HEAP_ID_OPENING, v0);
 
     memset(v1, 0, v0);
 
@@ -128,9 +128,9 @@ UnkStruct_ov77_021D670C *ov77_021D670C(void)
 UnkStruct_ov77_021D6734 *ov77_021D6734(const int param0)
 {
     int v0;
-    UnkStruct_ov77_021D6734 *v1 = Heap_Alloc(HEAP_ID_76, sizeof(UnkStruct_ov77_021D6734));
+    UnkStruct_ov77_021D6734 *v1 = Heap_Alloc(HEAP_ID_OPENING, sizeof(UnkStruct_ov77_021D6734));
     v0 = sizeof(UnkStruct_ov77_021D6ADC) * param0;
-    v1->unk_04 = Heap_Alloc(HEAP_ID_76, v0);
+    v1->unk_04 = Heap_Alloc(HEAP_ID_OPENING, v0);
 
     memset(v1->unk_04, 0, v0);
     v1->unk_00 = param0;
@@ -182,7 +182,7 @@ void ov77_021D67B0(UnkStruct_ov77_021D670C *param0)
 static void ov77_021D6800(UnkStruct_ov77_021D6800 *param0)
 {
     int i;
-    const int heapID = HEAP_ID_76;
+    const int heapID = HEAP_ID_OPENING;
 
     GX_SetOBJVRamModeChar(GX_OBJVRAMMODE_CHAR_1D_32K);
     GXS_SetOBJVRamModeChar(GX_OBJVRAMMODE_CHAR_1D_32K);
