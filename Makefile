@@ -236,6 +236,18 @@ $(BUILD_LINUX)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD)
 		--dest-c src/meson.build
 	@touch $@
 
+$(BUILD_WIN64)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD)
+	$(PYTHON) $(LSFGEN) $(LSF_IN) --prefix-dir main.nef.p/ \
+		--dest-lsf platinum.us/main.lsf \
+		--dest-c src/meson.build
+	@touch $@
+
+$(BUILD_NX)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD)
+	$(PYTHON) $(LSFGEN) $(LSF_IN) --prefix-dir main.nef.p/ \
+		--dest-lsf platinum.us/main.lsf \
+		--dest-c src/meson.build
+	@touch $@
+
 $(BUILD):
 	mkdir -p -- $(BUILD)
 
