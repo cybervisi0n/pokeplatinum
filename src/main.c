@@ -35,6 +35,8 @@
 
 #ifdef SDK_PORT
 #include "port/sim_config_prj.h"
+#include "char_transfer.h"
+#include "pltt_transfer.h"
 #ifdef SDK_BUILD_LINUX
 #include "port/sim_icon.h"
 #endif
@@ -269,6 +271,11 @@ static void SoftReset(enum OSResetParameter resetParam)
 {
     SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_WHITE);
     SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_WHITE);
+
+    #ifdef SDK_PORT
+    CharTransfer_Free();
+    PlttTransfer_Free();
+    #endif
 
     if (CommManager_ExitOrReset()) {
         SaveData_SaveStateCancel(SaveData_Ptr());
