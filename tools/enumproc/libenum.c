@@ -92,6 +92,10 @@ static inline char* poolpush(const char **target, char *dst, const char *src, si
     return dst + n + 1;
 }
 
+static inline int tokeq(const char *s, size_t n, const char *z) {
+    return strncmp(z, s, n) == 0 && z[n] == '\0';
+}
+
 enum_seq_t libenum_load(const char *str, size_t size, char **endptr) {
     enum_lex_t lexer = {
         .p = str,
@@ -143,8 +147,11 @@ enum_seq_t libenum_load(const char *str, size_t size, char **endptr) {
                 lexer.p++
             );
 
+            if (lexer.p == lexer.s) return_error(LIBENUM_E_TOKEN); // empty initializer
+
             p_pool = poolpush(&result.members[result.size].expr, p_pool,
                                lexer.s, lexer.p - lexer.s);
+            result.members[result.size].expr_src = lexer.s;
             expect = EXPECT_COMMA;
             break;
 
@@ -168,8 +175,7 @@ enum_seq_t libenum_load(const char *str, size_t size, char **endptr) {
             }
 
             for (size_t i = 0; i < result.size; i++) {
-                if (strncmp(result.members[i].name, lexer.s, lexer.n) == 0
-                    && strlen(result.members[i].name) == lexer.n) {
+                if (tokeq(lexer.s, lexer.n, result.members[i].name)) {
                     return_error(LIBENUM_E_DUPLICATE);
                 }
             }
@@ -248,7 +254,7 @@ enum_seq_t libenum_find(const char *str, size_t size, const char *name,
         const char *sym_end = sym_beg;
         do { sym_end++; } while (sym_end < e && is_word(*sym_end));
 
-        if (strncmp(name, sym_beg, sym_end - sym_beg) != 0) {
+        if (!tokeq(sym_beg, sym_end - sym_beg, name)) {
             p = sym_end;
             continue;
         }
@@ -334,7 +340,7 @@ static const char *keywords[] = {
 
 static int is_keyword(const char *s, size_t n) {
     for (size_t i = 0; i < countof(keywords); i++) {
-        if (strncmp(keywords[i], s, n) == 0) return 1;
+        if (tokeq(s, n, keywords[i])) return 1;
     }
 
     return 0;
@@ -351,8 +357,8 @@ static int lex(enum_lex_t *lexer) {
         do { lexer->p++; } while (lexer->p < lexer->e && is_word(*lexer->p));
 
         lexer->n = lexer->p - lexer->s;
-        if (strncmp(lexer->s, "enum", lexer->n) == 0) return T_KWENUM;
-        if (is_keyword(lexer->s, lexer->n))           return T_INVALIDKW;
+        if (tokeq(lexer->s, lexer->n, "enum")) return T_KWENUM;
+        if (is_keyword(lexer->s, lexer->n))    return T_INVALIDKW;
         return T_IDENTIFIER;
     }
 
@@ -464,7 +470,7 @@ enum_seq_t libenum_loadcpp(const char *str, size_t size, const char *prefix,
         const size_t sym_len  = sym_end - sym_beg;
         const size_t expr_len = expr_end - expr_beg;
         for (size_t i = 0; i < result.size; i++) {
-            if (strncmp(result.members[i].name, sym_beg, sym_len) == 0) {
+            if (tokeq(sym_beg, sym_len, result.members[i].name)) {
                 p = sym_beg;
                 return_error(LIBENUM_E_DUPLICATE);
             }
@@ -473,6 +479,7 @@ enum_seq_t libenum_loadcpp(const char *str, size_t size, const char *prefix,
         enum_member_t *memb = &result.members[result.size++];
         p_pool = poolpush(&memb->name, p_pool, sym_beg, sym_len);
         p_pool = poolpush(&memb->expr, p_pool, expr_beg, expr_len);
+        memb->expr_src = expr_beg;
     }
 
     if (result.size == 0) free(result.members); // unlike enums, this is valid

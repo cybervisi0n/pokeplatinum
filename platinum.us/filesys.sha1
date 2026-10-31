@@ -204,7 +204,7 @@ e4ad5fcd9010114089a5ded83a077a75860d633a *res/graphics/scroll_prompts/scroll_pro
 02e2132b2bb08413d890c220bff7219e3725f7c2 *res/prebuilt/graphic/fontoam.narc
 e7266bd8b7095861b6e1fdaf4f13cb648a9c325d *res/prebuilt/graphic/footprint_board.narc
 035a00972c8c63a18e00d82f4fc0cb1f46aef76d *res/prebuilt/graphic/hiden_effect.narc
-24760aae84c838f66389e1de92bc1b1579f5d953 *res/prebuilt/graphic/imageclip.narc
+24760aae84c838f66389e1de92bc1b1579f5d953 *res/graphics/fashion_case/fashion_case.narc
 4d1aac7d0014e2ffdfb6501b3f16ec2084d46e04 *res/prebuilt/graphic/library_tv.narc
 44214e37e0345a75b00a1c01d46ca787cdba1fb8 *res/prebuilt/graphic/lobby_news.narc
 428a40285a2c82705502962047f8cb9492ef3df1 *res/graphics/mail/mail.narc
@@ -252,7 +252,7 @@ a2eca9df316b9cad191ace16d08a90603966e892 *res/prebuilt/graphic/worldtrade.narc
 0622e95a5dc830735e711852032b829ead7d21e6 *res/prebuilt/poketool/icongra/poke_icon.narc
 7fb44c0bcde2ac5ae042835146c21b84159f5693 *res/pokemon/pokefoot.narc
 21bd9b9e352c828de0a93979589f7ea487c846d6 *res/graphics/field_sprites/field_sprites.narc
-70d483c69d9f83dc52de91f2451c6cdfba6a046c *res/prebuilt/data/mmodel/fldeff.narc
+70d483c69d9f83dc52de91f2451c6cdfba6a046c *res/graphics/field_effects/field_effects.narc
 5de52d02105237dc02fb4c87c9b8378a5da93217 *res/graphics/battle/particles/pokeballs/ball_particles.narc
 bd80949f0ab84fe4b4963a41063088b2e2d6df92 *res/graphics/battle/particles/battle_particles.narc
 e484a4ea105e16977b9f39b965aaad014a4ec923 *res/field/events/zone_event.narc

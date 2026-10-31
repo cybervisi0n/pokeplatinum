@@ -258,13 +258,15 @@ trainer_ai_o = custom_target(
     output: 'trainer_ai_script.o',
     input: files('src/battle/trainer_ai/script.s'),
     command: [
-        arm_none_eabi_gcc_exe,
-        '-I', meson.global_source_root() / 'include',
-        '-I', meson.global_source_root() / 'asm',
-        '-I', meson.global_build_root(),
-        '-x', 'assembler-with-cpp',
-        '-MD', '-MF', '@DEPFILE@',
-        '-c', '-o', '@OUTPUT@',
+        make_script_bin_sh,
+        '-i', meson.global_source_root() / 'include',
+        '-i', meson.global_source_root() / 'asm',
+        '-i', meson.global_build_root(),
+        '--depfile', '@DEPFILE@',
+        '--enumproc', enumproc_exe,
+        '--assembler', arm_none_eabi_gcc_exe,
+        '--compile-only',
+        '--output', '@OUTPUT@',
         '@INPUT@',
     ],
     depfile: '@BASENAME@.d',
@@ -335,6 +337,29 @@ trainer_ai_o = custom_target(
 )
 endif
 
+if(build_target != 'arm')
+pokeplatinum_port_c = files(
+    'src/port/charcode_convert.c',
+    'src/port/debug_field.c',
+    'src/port/sim_config_prj.c',
+    'src/port/sim_gui_prj.cpp',
+    'src/port/gui_cheats.cpp',
+    'src/port/gui_configPrj.cpp',
+    'src/port/gui_createitem.cpp',
+    'src/port/gui_createitem_utils.c',
+    'src/port/gui_createmon.cpp',
+    'src/port/gui_createmon_utils.c',
+    'src/port/gui_mapjump.cpp',
+    'src/port/gui_mapjump_utils.c'
+)
+
+if(build_target == 'linux')
+pokeplatinum_port_c += files(
+    'src/port/sim_icon.cpp'
+)
+endif
+endif
+
 if (build_target == 'arm')
 libmslc = fs.copyfile('tools/metroskrew/lib/metroskrew/sdk/ds/2.0/sp2/msl/MSL_C/MSL_ARM/Lib/MSL_C_NITRO_Ai_LE.a')
 libmslcpp = fs.copyfile('tools/metroskrew/lib/metroskrew/sdk/ds/2.0/sp2/msl/MSL_C++/MSL_ARM/Lib/MSL_CPP_NITRO_Ai_LE.a')
@@ -391,6 +416,7 @@ if (build_target == 'linux')
 main = executable('main',
     sources: [
         pokeplatinum_c,
+        pokeplatinum_port_c,
         c_consts_generators,
         naix_headers,
         h_headers,
@@ -439,6 +465,7 @@ ws2_32_dep = declare_dependency(dependencies: [ws2_32_lib])
 main = executable('main',
     sources: [
         pokeplatinum_c,
+        pokeplatinum_port_c,
         c_consts_generators,
         naix_headers,
         h_headers,
@@ -485,6 +512,7 @@ if (build_target == 'nx')
 main = executable('main',
     sources: [
         pokeplatinum_c,
+        pokeplatinum_port_c,
         c_consts_generators,
         naix_headers,
         h_headers,
