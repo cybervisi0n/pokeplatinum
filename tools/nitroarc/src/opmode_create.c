@@ -321,7 +321,7 @@ errcleanup:
 static bool should_exclude(const char *name, const strvec_t *excls) {
     for (size_t i = 0; i < excls->size; i++) {
         #ifdef _WIN32
-        if(PathMatchSpecA(name, excls->data[i]) == 0) return true;
+        if(PathMatchSpecA(name, excls->data[i]) == TRUE) return true;
         #else
         if (fnmatch(excls->data[i], name, 0) == 0) return true;
         #endif
