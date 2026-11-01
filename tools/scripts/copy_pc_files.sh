@@ -36,5 +36,6 @@ else
       chmod +x $BUILDDIR/../tools/linuxdeploy/linuxdeploy-x86_64.AppImage
     fi
     $BUILDDIR/../tools/linuxdeploy/linuxdeploy-x86_64.AppImage --appdir $OUTPUTDIR/$3.AppDir --executable=$OUTPUTDIR/main --desktop-file=$BUILDDIR/../tools/linuxdeploy/App.desktop --icon-file=$BUILDDIR/../tools/linuxdeploy/app.png --output appimage
+    mv pokeplatinum-x86_64.AppImage $OUTPUTDIR/pokeplatinum.AppImage
   fi
 fi
