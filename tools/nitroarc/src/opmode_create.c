@@ -569,11 +569,7 @@ static int write_index(
     char  *guard = NULL;
     FILE  *fnaix = NULL;
     FILE  *frecs = NULL;
-    #ifdef _WIN32
-    char  *psep  = strrstem(fname, '\\');
-    #else
     char  *psep  = strrstem(fname, '/');
-    #endif
     psep         = psep ? psep + 1 : (char *)fname; // basename follows last '/'
     char  *pdot  = strrstem(psep, '.');             // extension is within base
 
