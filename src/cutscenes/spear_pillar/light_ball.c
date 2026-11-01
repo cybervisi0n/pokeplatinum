@@ -165,8 +165,19 @@ static void LightBall_Jitter(LightBall *lightBall)
     if (lightBall->driftAngle < 12) {
         lightBall->jitterIntensity++;
         lightBall->jitterIntensity %= 3;
+        #ifdef SDK_PORT
+        // Fix divide by zero
+        if(lightBall->jitterIntensity == 0) {
+            lightBall->stateParams[0] = 1;
+            lightBall->stateParams[1] = 1;
+        } else {
+            lightBall->stateParams[0] = (LCRNG_Next() % lightBall->jitterIntensity) + 1;
+            lightBall->stateParams[1] = (LCRNG_Next() % lightBall->jitterIntensity) + 1;
+        }
+        #else
         lightBall->stateParams[0] = (LCRNG_Next() % lightBall->jitterIntensity) + 1;
         lightBall->stateParams[1] = (LCRNG_Next() % lightBall->jitterIntensity) + 1;
+        #endif
         lightBall->state = 2;
     }
 
