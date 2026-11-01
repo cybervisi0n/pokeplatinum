@@ -1,5 +1,5 @@
 #!/bin/bash
-BUILDDIR=build_linux/pokeplatinum
+BUILDDIR=build_linux
 
 cd $BUILDDIR
 mkdir release_linux

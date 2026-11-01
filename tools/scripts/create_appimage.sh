@@ -1,6 +1,6 @@
 #!/bin/bash
 BUILDDIR=$1
-OUTPUTDIR=$BUILDDIR/$2
+OUTPUTDIR=$BUILDDIR
 mkdir -p $OUTPUTDIR
 mkdir -p $OUTPUTDIR/$2.AppDir
 mkdir -p $OUTPUTDIR/$2.AppDir/usr/bin

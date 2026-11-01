@@ -75,7 +75,7 @@ This build target requires DevKitA64, this is already installed in the build con
 * ./drun.sh make nx
 
 ## Notes
-Target executable will be in ./build_(platform)/pokeplatinum directory.
+Target executable will be in ./build_(platform) directory.
 ROM will be built in /build directory
 
 firmware.bin does not contain any real DS firmware, it only contains an offset address and enough space to keep the WiFi config.

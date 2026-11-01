@@ -1,5 +1,5 @@
 #!/bin/bash
-BUILDDIR=build_win64/pokeplatinum
+BUILDDIR=build_win64
 
 cd $BUILDDIR
 mkdir release_win64
