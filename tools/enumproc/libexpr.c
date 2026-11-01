@@ -20,7 +20,7 @@
 
 #include <assert.h>
 #include <errno.h>
-#include <inttypes.h>
+#include <stdint.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -106,9 +106,9 @@ struct evalstack {
         assert(stk.n_nums >= 2);                                                        \
         stk.n_nums -= 2;                                                                \
                                                                                         \
-        int64_t a = stk.nums[stk.n_nums];                                                  \
-        int64_t b = stk.nums[stk.n_nums + 1];                                              \
-        int64_t r = 0;                                                                     \
+        int64_t a = stk.nums[stk.n_nums];                                               \
+        int64_t b = stk.nums[stk.n_nums + 1];                                           \
+        int64_t r = 0;                                                                  \
         switch ((o).op) {                                                               \
         case OP_MUL: if (__builtin_mul_overflow(a, b, &r)) fail((o).pos); break;        \
         case OP_ADD: if (__builtin_add_overflow(a, b, &r)) fail((o).pos); break;        \
@@ -119,7 +119,7 @@ struct evalstack {
             r = (o).op == OP_DIV ? a / b : a % b;                                       \
             break;                                                                      \
         case OP_LSH:                                                                    \
-            if (b < 0 || b >= LONG_BITS || a < 0 || a > (INT64_MAX >> b)) fail((o).pos); \
+            if (b < 0 || b >= LONG_BITS || a < 0 || a > (INT64_MAX >> b)) fail((o).pos);\
             r = a << b;                                                                 \
             break;                                                                      \
         case OP_RSH:                                                                    \
