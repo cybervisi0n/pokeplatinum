@@ -172,6 +172,15 @@ link_args = [
     '--verbose',
     '-Wl,-Map=main.map'
 ]
+elif (build_target == 'prospero')
+link_args = [
+    '-nostartfiles',
+    '-T' + meson.global_source_root() + '/' + 'prospero/ps5-elf.ld',
+    '-e',
+    '_start',
+    '-Wl,--version-script=' + meson.global_source_root() + '/' + 'prospero/ps5-app-symbols.map',
+    '-pthread'
+]
 else
 link_args = [
 ]
@@ -508,7 +517,7 @@ main = executable('main',
     native: true
 )
 endif
-if (build_target == 'nx')
+if (build_target == 'nx' or build_target == 'prospero')
 main = executable('main',
     sources: [
         pokeplatinum_c,
@@ -605,6 +614,85 @@ pokeplatinum_nds = custom_target('pokeplatinum.us',
     ],
     build_by_default: true
 )
+elif(build_target == 'prospero')
+# Create eboot and PPSA app folder
+subdir('prospero')
+
+eboot_elf = custom_target(
+    'eboot.elf',
+    output: 'eboot.elf',
+    depends: [
+        main, 
+        sce_agc_lib, 
+        sce_agc_driver_lib
+    ],
+    command: [
+        ps5_native_tool_exe,
+        'link',
+        '--in',
+        main,
+        '--out',
+        '@OUTPUT@',
+        '--stub-dir',
+        meson.global_source_root() + '/prospero-deps/ps5-payload-sdk/target/lib',
+        '--stub',
+        sce_agc_lib,
+        '--stub',
+        sce_agc_driver_lib,
+        '--module-sdk',
+        '0x02000009',
+        '--companion_sdk',
+        '0x08050001',
+        '--file-name',
+        'eboot.elf'
+    ]
+)
+
+# Sign eboot.elf to eboot.bin
+eboot_bin = custom_target(
+    'eboot.bin',
+    output: 'eboot.bin',
+    depends: [eboot_elf],
+    command: [ ps5_native_tool_exe, 
+               'self',
+               '--sign',
+               '--in',
+               eboot_elf,
+               '--out',
+               '@OUTPUT@' ]
+)
+
+# Generate libc.prx stub (required by PS5 loader)
+libc_prx = custom_target(
+    'libc.prx',
+    output: 'libc.prx',
+    depends: [libc_elf],
+    command: [ ps5_native_tool_exe, 
+               'self',
+               '--sign',
+               '--in',
+               libc_elf,
+               '--out',
+               '@OUTPUT@' ]
+)
+
+build_app_folder_sh = files('tools/scripts/build_ps5_folder.sh')
+sce_sys_source = meson.project_source_root() + '/prospero/sce_sys'
+app_folder = custom_target(
+    'PPSA92008',
+    output: 'PPSA92008',
+    build_by_default: true,
+    depends: [libc_prx, eboot_bin],
+    command: [
+        build_app_folder_sh,
+        meson.project_source_root(),
+        eboot_bin,
+        libc_prx,
+        sce_sys_source,
+        '@OUTPUT@'
+    ],
+)
+
 else
 # Copy files into 'pc' folder
 copy_files_script = files('tools/scripts/copy_pc_files.sh')

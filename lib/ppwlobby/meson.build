@@ -8,6 +8,10 @@ if(build_target == 'arm')
         '-wrap:sdk', '2.0/sp2p3',
         '-nothumb'
     ]
+elif(build_target == 'prospero')
+    ppwlobby_c_args = [
+        '-fpermissive'
+    ]
 else
     ppwlobby_c_args = [
         '-fpermissive',

@@ -1,0 +1,15 @@
+/*
+ * ps5-native-app-boilerplate - Application symbol visibility policy.
+ * Copyright (C) 2026 BlackBearReloaded
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Keeps every symbol internal to the executable. The native converter
+ * publishes no application exports, and the linker would otherwise export a
+ * function the app defines in place of a system stub (the C++ allocation
+ * operators, or getaddrinfo and isatty in console_curl.c).
+ */
+
+{
+    local:
+        *;
+};

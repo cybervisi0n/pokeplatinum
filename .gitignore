@@ -3,6 +3,10 @@
 /build_linux/
 /build_win64/
 /build_nx/
+/build_prospero/
+
+# Prospero dependencies
+/prospero-deps/
 
 # MSys2
 /msys2/
