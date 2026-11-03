@@ -35,3 +35,6 @@ fi
 if [ -f $SCE_SYS_SOURCE_DIR/snd0.at9 ]; then
     cp $SCE_SYS_SOURCE_DIR/snd0.at9 $OUTPUT_DIR/sce_sys/snd0.at9
 fi
+
+cp -u $REPO_ROOT/res/pc_port/header.bin $OUTPUT_DIR/header.bin
+cp -u $REPO_ROOT/res/pc_port/dwc_nv.bin $OUTPUT_DIR/firmware.bin
