@@ -3,7 +3,11 @@
 
 #include "port/sim_config_prj.h"
 
+#ifdef SDK_BUILD_PROSPERO
+#define SIM_CONFIG_PRJ_FILE_PATH "/app0/sim_config_prj.ini"
+#else
 #define SIM_CONFIG_PRJ_FILE_PATH "./sim_config_prj.ini"
+#endif
 
 static int IniHandler(void* user, const char* section, const char* name,
                    const char* value);
