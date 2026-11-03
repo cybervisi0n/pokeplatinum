@@ -517,7 +517,7 @@ main = executable('main',
     native: true
 )
 endif
-if (build_target == 'nx' or build_target == 'prospero')
+if (build_target == 'nx')
 main = executable('main',
     sources: [
         pokeplatinum_c,
@@ -551,6 +551,51 @@ main = executable('main',
         libcrypto_ov97,
         libcrypto_static,
         libgds,
+    ],
+    link_args: [
+        link_args,
+    ],
+    link_depends: main_lcf,
+    native: false
+)
+endif
+if (build_target == 'prospero')
+subdir('prospero')
+
+main = executable('main',
+    sources: [
+        pokeplatinum_c,
+        pokeplatinum_port_c,
+        c_consts_generators,
+        naix_headers,
+        h_headers,
+        embed_headers,
+    ],
+    objects: trainer_ai_o,
+    c_args: [
+        pokeplatinum_args,
+    ],
+    c_pch: 'include/pch/global_pch.h',
+    include_directories: [
+        public_includes,
+        libcrypto_public_includes,
+        libgds_public_includes,
+        libspl_public_includes,
+        ppwlobby_public_includes,
+    ],
+    dependencies: [
+        nitrosdk_dep,
+        nitrosystem_dep,
+        nitrowifi_dep,
+        nitrodwc_dep,
+        libvct_dep,
+    ],
+    link_with: [
+        libspl,
+        libcrypto_ov97,
+        libcrypto_static,
+        libgds,
+        prospero_crt_lib
     ],
     link_args: [
         link_args,
@@ -616,8 +661,6 @@ pokeplatinum_nds = custom_target('pokeplatinum.us',
 )
 elif(build_target == 'prospero')
 # Create eboot and PPSA app folder
-subdir('prospero')
-
 eboot_elf = custom_target(
     'eboot.elf',
     output: 'eboot.elf',
