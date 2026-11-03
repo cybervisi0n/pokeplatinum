@@ -14,6 +14,9 @@ rm -f ps5-payload-sdk.zip
 mkdir -p prospero-deps/include
 mkdir -p prospero-deps/lib
 
+# Forcibly remove the ps5 payload runtime from the SDK since this is a native app
+sed -i 's|^LIBS_CRT="${PS5_PAYLOAD_SDK}/target/lib/crt1\.o"$|LIBS_CRT=""|' prospero-deps/ps5-payload-sdk/bin/prospero-clang++
+
 # Download OpenGL libraries
 ./tools/scripts/download_prospero_lib.sh https://github.com/cybervisi0n/ps5-mesa ps5-mesa_release.zip
 ./tools/scripts/download_prospero_lib.sh https://github.com/cybervisi0n/ps5-opengnm-psbc ps5-opengnm-psbc_release.zip
