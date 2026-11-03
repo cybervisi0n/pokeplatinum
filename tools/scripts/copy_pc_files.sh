@@ -16,6 +16,7 @@ done
 cp -u $BUILDDIR/../res/pc_port/header.bin $OUTPUTDIR/header.bin
 cp -u $BUILDDIR/../res/pc_port/dwc_nv.bin $OUTPUTDIR/firmware.bin
 cp $BUILDDIR/main $OUTPUTDIR/main
+cp -u $BUILDDIR/../language.csv $OUTPUTDIR/language.csv
 
 if [[ "$4" == "-nx" ]]; then
   /opt/devkitpro/tools/bin/elf2nro $OUTPUTDIR/main $OUTPUTDIR/pokeplatinum.nro
