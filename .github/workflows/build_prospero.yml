@@ -15,7 +15,7 @@ env:
   BUILD: /var/tmp/pokeplatinum
 
 jobs:
-  build_linux:
+  build_prospero:
     permissions:
       contents: write
     runs-on: ubuntu-24.04
