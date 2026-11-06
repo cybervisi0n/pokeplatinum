@@ -5,6 +5,7 @@
 #include <nitro/rtc.h>
 
 #include "struct_defs/daycare.h"
+#include "pc_boxes.h"
 
 typedef struct 
 GameTime_v0 {
@@ -42,5 +43,14 @@ typedef struct Daycare_v0 {
     u32 offspringPersonality;
     u8 stepCounter;
 } Daycare_v0;
+
+typedef struct 
+PCBoxes_v0 {
+    u32 currentBoxID;
+    BoxPokemon boxMons[MAX_PC_BOXES][MAX_MONS_PER_BOX];
+    u16 names[MAX_PC_BOXES][PC_BOX_NAME_BUFFER_LEN];
+    u8 wallpapers[MAX_PC_BOXES];
+    u8 unlockedWallpapers;
+} PCBoxes_v0;
 
 #endif

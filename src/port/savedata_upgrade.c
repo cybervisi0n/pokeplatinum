@@ -7,6 +7,7 @@
 #include "constants/savedata/savedata.h"
 #include "constants/savedata/save_table.h"
 #include "math_util.h"
+#include "pc_boxes.h"
 #include "system_data.h"
 
 #include "savedata_structs_v0.h"
@@ -97,14 +98,32 @@ static void UpgradeSaveFile(u8 * savePtr) {
     newFooter->saveBlockID = oldFooter->saveBlockID;
     newFooter->saveCounter = oldFooter->saveCounter;
     newFooter->blockCounter = oldFooter->blockCounter;
-    newFooter->size = newSaveDataOffset;
+    newFooter->size = 0xcf2c;
     newFooter->signature = SECTOR_SIGNATURE;
 
     // Get checksum
-    newFooter->checksum = CalcCRC16Checksum(savePtr, 0xcf18 + sizeof(SaveCheckFooter) - 2);
+    newFooter->checksum = CalcCRC16Checksum(savePtr, 53016);
 
     // Load Boxes block
-    
+    PCBoxes_v0 * oldBoxes = (PCBoxes_v0 *)(oldSaveData + 0xCF40);
+    PCBoxes * newBoxes = (PCBoxes *)(savePtr + 0xCF2C);
+
+    newBoxes->currentBoxID = oldBoxes->currentBoxID;
+    memcpy(newBoxes->boxMons, oldBoxes->boxMons, sizeof(BoxPokemon) * MAX_PC_BOXES * MAX_MONS_PER_BOX);
+    memcpy(newBoxes->names, oldBoxes->names, sizeof(BoxPokemon) * MAX_PC_BOXES * MAX_MONS_PER_BOX);
+    memcpy(newBoxes->wallpapers, oldBoxes->wallpapers, sizeof(oldBoxes->wallpapers));
+    newBoxes->unlockedWallpapers = oldBoxes->unlockedWallpapers;
+
+    // Make the PC Boxes footer
+    newFooter = (SaveBlockFooter*)(savePtr + 0x1F0FC);
+    oldFooter = (SaveBlockFooter*)(oldSaveData + 0x1F118);
+
+    newFooter->saveBlockID = oldFooter->saveBlockID;
+    newFooter->saveCounter = oldFooter->saveCounter;
+    newFooter->blockCounter = oldFooter->blockCounter;
+    newFooter->size = 0x121e4;
+    newFooter->signature = SECTOR_SIGNATURE;
+    newFooter->checksum = CalcCRC16Checksum(savePtr + 0xCF2C, 74192);
 
     free(oldSaveData);
 }
