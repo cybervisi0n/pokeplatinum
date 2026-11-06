@@ -5,7 +5,11 @@
 
 #include "savedata.h"
 
-typedef struct GameTime {
+typedef struct 
+#ifndef SDK_BUILD_ARM
+__attribute__((__packed__))
+#endif
+GameTime {
     BOOL canary;
     RTCDate date;
     RTCTime time;
@@ -15,7 +19,11 @@ typedef struct GameTime {
     u32 penaltyInMinutes;
 } GameTime;
 
-typedef struct SystemData {
+typedef struct
+#ifndef SDK_BUILD_ARM
+__attribute__((__packed__))
+#endif 
+SystemData {
     s64 rtcOffset;
     u8 macAddress[6];
     u8 ownerBirthMonth;
