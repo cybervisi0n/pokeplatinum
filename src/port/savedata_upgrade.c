@@ -1,6 +1,8 @@
 #include "port/savedata_upgrade.h"
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <SDL2/SDL.h>
 
 #include <nitro/card/backup.h>
 
@@ -150,6 +152,22 @@ BOOL PCPORT_ProcessSaveDataUpgrades() {
     memset(saveBuf, 0, SAVE_FLASH_SIZE);
 
     CARD_ReadBackup(0, saveBuf, SAVE_FLASH_SIZE);
+
+    // Backup old save
+    const char * bakPath = 
+    #ifdef SDK_BUILD_PROSPERO
+    "/app0/save.bin.bak"
+    #else
+    "save.bin.bak"
+    #endif
+    ;
+
+    FILE * bakFile = fopen(bakPath, "wb");
+    if(bakFile) {
+        fwrite(saveBuf, 1, sizeof(u8) * SAVE_FLASH_SIZE, bakFile);
+        fclose(bakFile);
+    }
+
     // Process for main save and backup save
     BOOL mainUpgraded = ProcessSaveRegion(saveBuf + (SAVE_SECTOR_SIZE * PRIMARY_SECTOR_START));
     BOOL backupUpgraded = ProcessSaveRegion(saveBuf + (SAVE_SECTOR_SIZE * BACKUP_SECTOR_START));
@@ -157,6 +175,8 @@ BOOL PCPORT_ProcessSaveDataUpgrades() {
     if(mainUpgraded || backupUpgraded) {
         // Write new save to CARD
         CARD_WriteBackup(0, saveBuf, SAVE_FLASH_SIZE);
+
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "pokeplatinum", "Save data has been upgraded to the new format. It is now fully compatible with emulators and real hardware. The game will now soft reset.", NULL);
     }
 
     free(saveBuf);
