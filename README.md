@@ -14,6 +14,11 @@ Project goals:
 * Facilitate modding by allowing both a PC port and DS ROM to be compiled and debugged from the same source tree
 * Support all WiFi and multiplayer features
 
+## Supported Platforms
+* Linux x86_64
+* Windows x86_64
+* PS5 (Very early alpha)
+
 ## Save Data Compatibility
 Save data from emulators and DS hardware is compatible with the PC port, and PC port save data is also compatible with emulators and real hardware. On first launch of v0.2.0 or newer, save data from <= v0.1.13 will be upgraded to the new format.
 
