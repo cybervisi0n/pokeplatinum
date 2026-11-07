@@ -15,7 +15,7 @@ Project goals:
 * Support all WiFi and multiplayer features
 
 ## Save Data Compatibility
-As of pre-release v0.2.0, save data from emulators and DS hardware is compatible with the PC port, and PC port save data is also compatible with emulators and real hardware. On first launch of v0.2.0 or newer, save data from <= v0.1.13 will be upgraded to the new format. Currently this comes with the caveat that data in the "extra" region will not be converted over yet. This includes Hall of Fame, Battle frontier, and Battle Videos. Do not update to the pre-release if you have "extra" data in the old PC save format that you care about. Once these conversions are fully implemented, the pre-release will transition to a normal release.
+Save data from emulators and DS hardware is compatible with the PC port, and PC port save data is also compatible with emulators and real hardware. On first launch of v0.2.0 or newer, save data from <= v0.1.13 will be upgraded to the new format.
 
 ## Setup Guide
 To run the [pre-built binaries found in the releases tab](https://github.com/cybervisi0n/pokeplatinum/releases), **you MUST dump and provide your own US ROM of Pokémon Platinum (CPUE01).** On first launch, you will be prompted to select your .nds ROM file as seen in the images below:
