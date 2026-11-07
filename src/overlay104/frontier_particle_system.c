@@ -37,7 +37,11 @@ ParticleSystem *FrontierParticleSystem_NewParticleSystem(FrontierParticleSystem 
 {
     GF_ASSERT(fps->particleSys[index] == NULL);
 
+    #ifdef SDK_64BIT
+    void *heap = Heap_Alloc(fps->heapID, 0x4800*2);
+    #else
     void *heap = Heap_Alloc(fps->heapID, 0x4800);
+    #endif
     ParticleSystem *ps = ParticleSystem_New(AllocTexVram, AllocPaletteVram, heap, 0x4800, TRUE, fps->heapID);
     Camera *camera = ParticleSystem_GetCamera(ps);
 
