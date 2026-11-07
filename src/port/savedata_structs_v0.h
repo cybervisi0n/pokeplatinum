@@ -5,6 +5,9 @@
 #include <nitro/rtc.h>
 
 #include "struct_defs/daycare.h"
+#include "struct_defs/struct_0202F298.h"
+#include "struct_defs/struct_0202F41C.h"
+#include "struct_defs/struct_02030A80.h"
 #include "pc_boxes.h"
 
 typedef struct 
@@ -52,5 +55,27 @@ PCBoxes_v0 {
     u8 wallpapers[MAX_PC_BOXES];
     u8 unlockedWallpapers;
 } PCBoxes_v0;
+
+typedef struct 
+UnkStruct_0202F41C_t_v0 {
+    u16 unk_00[12];
+    u8 unk_18[12];
+    u16 unk_24;
+    u8 unk_26;
+    u8 unk_27;
+    BattleRegulation battleRegulation;
+    u16 unk_48;
+    u8 unk_4A[14];
+    u64 unk_58;
+    UnkStruct_0202F298_sub1 unk_60;
+} UnkStruct_0202F41C_v0;
+
+typedef struct 
+BattleRecording_v0 {
+    u32 unk_00;
+    UnkStruct_02030A80 unk_04;
+    UnkStruct_0202F41C_v0 unk_84;
+    UnkStruct_0202F298 unk_E8;
+} BattleRecording_v0;
 
 #endif

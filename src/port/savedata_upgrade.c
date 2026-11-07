@@ -10,6 +10,8 @@
 #include "constants/savedata/save_table.h"
 #include "math_util.h"
 #include "pc_boxes.h"
+#include "savedata.h"
+#include "struct_defs/battle_recording.h"
 #include "system_data.h"
 
 #include "savedata_structs_v0.h"
@@ -126,6 +128,47 @@ static void UpgradeSaveFile(u8 * savePtr) {
     newFooter->size = 0x121e4;
     newFooter->signature = SECTOR_SIGNATURE;
     newFooter->checksum = CalcCRC16Checksum(savePtr + 0xCF2C, 74192);
+
+    // Convert Battle Videos
+    const int NumVideoPages = 4;
+    const int videoPages[] = {36, 38, 40, 42};
+
+    for(int i=0; i < NumVideoPages; i++) {
+        u32 offset = videoPages[i] * 0x1000;
+        BattleRecording_v0 * oldRecording = (BattleRecording_v0*)(oldSaveData + offset);
+        BattleRecording * newRecording = (BattleRecording *)(savePtr + offset);
+
+        newRecording->unk_00 = oldRecording->unk_00;
+        memcpy(&newRecording->unk_04, &oldRecording->unk_04, sizeof(UnkStruct_02030A80));
+
+        memcpy(newRecording->unk_84.unk_00, oldRecording->unk_84.unk_00, sizeof(newRecording->unk_84.unk_00));
+        memcpy(newRecording->unk_84.unk_18, oldRecording->unk_84.unk_18, sizeof(newRecording->unk_84.unk_18));
+        newRecording->unk_84.unk_24 = oldRecording->unk_84.unk_24;
+        newRecording->unk_84.unk_26 = oldRecording->unk_84.unk_26;
+        newRecording->unk_84.unk_27 = oldRecording->unk_84.unk_27;
+        memcpy(&newRecording->unk_84.battleRegulation, &oldRecording->unk_84.battleRegulation, sizeof(BattleRegulation));
+        newRecording->unk_84.unk_48 = oldRecording->unk_84.unk_48;
+        memcpy(newRecording->unk_84.unk_4A, oldRecording->unk_84.unk_4A, sizeof(newRecording->unk_84.unk_4A));
+        newRecording->unk_84.unk_58 = oldRecording->unk_84.unk_58;
+        newRecording->unk_84.unk_60.unk_00 = CalcCRC16Checksum(&newRecording->unk_84, sizeof(UnkStruct_0202F41C) - (sizeof(UnkStruct_0202F298_sub1)) - (sizeof(u64)));
+        newRecording->unk_84.unk_60.unk_02 = oldRecording->unk_84.unk_60.unk_02;
+        
+        memcpy(&newRecording->unk_E8, &oldRecording->unk_E8, sizeof(UnkStruct_0202F298));
+
+
+        SaveCheckFooter * newVideoFooter = (SaveCheckFooter *)((uPtr)newRecording + sizeof(BattleRecording));
+        SaveCheckFooter * oldVideoFooter = (SaveCheckFooter *)((uPtr)oldRecording + sizeof(BattleRecording_v0));
+
+        newVideoFooter->signature = oldVideoFooter->signature;
+        newVideoFooter->saveCounter = oldVideoFooter->saveCounter;
+        newVideoFooter->size = sizeof(BattleRecording);
+        newVideoFooter->id = oldVideoFooter->id;
+        newVideoFooter->checksum = CalcCRC16Checksum(newRecording, sizeof(BattleRecording) + sizeof(SaveCheckFooter) - 2);
+    }
+
+    // Copy hall of fame and battle frontier
+    memcpy(savePtr + (0x1000 * 32), oldSaveData + (0x1000 * 32), 0x1000 * 4);
+
 
     free(oldSaveData);
 }
