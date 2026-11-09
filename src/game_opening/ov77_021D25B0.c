@@ -1054,10 +1054,18 @@ static void ov77_021D2F38(UnkStruct_ov77_021D2F38 *param0)
 
     Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 19, param0->unk_0C, 3, 0, 0, 0, HEAP_ID_76);
     Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 19, param0->unk_0C, 7, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 114, param0->unk_0C, 5, 0, 0, 0, HEAP_ID_76);
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 113, param0->unk_0C, 5, 0, 0, 0, HEAP_ID_76);
+    
+    {   // Online interactions not rated
+        NARC *LangDemoNarc = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
 
-    Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 115, 4, 0, 2 * 16 * 1, HEAP_ID_76);
+        if (NARC_GetFileCount(LangDemoNarc) > 113) {
+            Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 114, param0->unk_0C, 5, 0, 0, 0, HEAP_ID_76);
+            Graphics_LoadTilemapToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 113, param0->unk_0C, 5, 0, 0, 0, HEAP_ID_76);
+            Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 115, 4, 0, 2 * 16 * 1, HEAP_ID_76);
+        }
+
+        NARC_dtor(LangDemoNarc);
+    }
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 0);
