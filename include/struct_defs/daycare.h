@@ -15,7 +15,11 @@ typedef struct DaycareMail {
     u8 unk_5E_4 : 4;
 } DaycareMail;
 
-typedef struct DaycareMon {
+typedef struct 
+#ifndef SDK_BUILD_ARM
+__attribute__((__packed__))
+#endif
+DaycareMon {
     BoxPokemon boxMon;
     DaycareMail daycareMail;
     u32 steps;

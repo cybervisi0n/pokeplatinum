@@ -172,6 +172,15 @@ link_args = [
     '--verbose',
     '-Wl,-Map=main.map'
 ]
+elif (build_target == 'prospero')
+link_args = [
+    '-nostartfiles',
+    '-T' + meson.global_source_root() + '/' + 'prospero/ps5-elf.ld',
+    '-e',
+    '_start',
+    '-Wl,--version-script=' + meson.global_source_root() + '/' + 'prospero/ps5-app-symbols.map',
+    '-pthread'
+]
 else
 link_args = [
 ]
@@ -258,13 +267,15 @@ trainer_ai_o = custom_target(
     output: 'trainer_ai_script.o',
     input: files('src/battle/trainer_ai/script.s'),
     command: [
-        arm_none_eabi_gcc_exe,
-        '-I', meson.global_source_root() / 'include',
-        '-I', meson.global_source_root() / 'asm',
-        '-I', meson.global_build_root(),
-        '-x', 'assembler-with-cpp',
-        '-MD', '-MF', '@DEPFILE@',
-        '-c', '-o', '@OUTPUT@',
+        make_script_bin_sh,
+        '-i', meson.global_source_root() / 'include',
+        '-i', meson.global_source_root() / 'asm',
+        '-i', meson.global_build_root(),
+        '--depfile', '@DEPFILE@',
+        '--enumproc', enumproc_exe,
+        '--assembler', arm_none_eabi_gcc_exe,
+        '--compile-only',
+        '--output', '@OUTPUT@',
         '@INPUT@',
     ],
     depfile: '@BASENAME@.d',
@@ -335,6 +346,30 @@ trainer_ai_o = custom_target(
 )
 endif
 
+if(build_target != 'arm')
+pokeplatinum_port_c = files(
+    'src/port/charcode_convert.c',
+    'src/port/debug_field.c',
+    'src/port/savedata_upgrade.c',
+    'src/port/sim_config_prj.c',
+    'src/port/sim_gui_prj.cpp',
+    'src/port/gui_cheats.cpp',
+    'src/port/gui_configPrj.cpp',
+    'src/port/gui_createitem.cpp',
+    'src/port/gui_createitem_utils.c',
+    'src/port/gui_createmon.cpp',
+    'src/port/gui_createmon_utils.c',
+    'src/port/gui_mapjump.cpp',
+    'src/port/gui_mapjump_utils.c'
+)
+
+if(build_target == 'linux')
+pokeplatinum_port_c += files(
+    'src/port/sim_icon.cpp'
+)
+endif
+endif
+
 if (build_target == 'arm')
 libmslc = fs.copyfile('tools/metroskrew/lib/metroskrew/sdk/ds/2.0/sp2/msl/MSL_C/MSL_ARM/Lib/MSL_C_NITRO_Ai_LE.a')
 libmslcpp = fs.copyfile('tools/metroskrew/lib/metroskrew/sdk/ds/2.0/sp2/msl/MSL_C++/MSL_ARM/Lib/MSL_CPP_NITRO_Ai_LE.a')
@@ -391,6 +426,7 @@ if (build_target == 'linux')
 main = executable('main',
     sources: [
         pokeplatinum_c,
+        pokeplatinum_port_c,
         c_consts_generators,
         naix_headers,
         h_headers,
@@ -439,6 +475,7 @@ ws2_32_dep = declare_dependency(dependencies: [ws2_32_lib])
 main = executable('main',
     sources: [
         pokeplatinum_c,
+        pokeplatinum_port_c,
         c_consts_generators,
         naix_headers,
         h_headers,
@@ -485,6 +522,7 @@ if (build_target == 'nx')
 main = executable('main',
     sources: [
         pokeplatinum_c,
+        pokeplatinum_port_c,
         c_consts_generators,
         naix_headers,
         h_headers,
@@ -514,6 +552,51 @@ main = executable('main',
         libcrypto_ov97,
         libcrypto_static,
         libgds,
+    ],
+    link_args: [
+        link_args,
+    ],
+    link_depends: main_lcf,
+    native: false
+)
+endif
+if (build_target == 'prospero')
+subdir('prospero')
+
+main = executable('main',
+    sources: [
+        pokeplatinum_c,
+        pokeplatinum_port_c,
+        c_consts_generators,
+        naix_headers,
+        h_headers,
+        embed_headers,
+    ],
+    objects: trainer_ai_o,
+    c_args: [
+        pokeplatinum_args,
+    ],
+    c_pch: 'include/pch/global_pch.h',
+    include_directories: [
+        public_includes,
+        libcrypto_public_includes,
+        libgds_public_includes,
+        libspl_public_includes,
+        ppwlobby_public_includes,
+    ],
+    dependencies: [
+        nitrosdk_dep,
+        nitrosystem_dep,
+        nitrowifi_dep,
+        nitrodwc_dep,
+        libvct_dep,
+    ],
+    link_with: [
+        libspl,
+        libcrypto_ov97,
+        libcrypto_static,
+        libgds,
+        prospero_crt_lib
     ],
     link_args: [
         link_args,
@@ -577,6 +660,83 @@ pokeplatinum_nds = custom_target('pokeplatinum.us',
     ],
     build_by_default: true
 )
+elif(build_target == 'prospero')
+# Create eboot and PPSA app folder
+eboot_elf = custom_target(
+    'eboot.elf',
+    output: 'eboot.elf',
+    depends: [
+        main, 
+        sce_agc_lib, 
+        sce_agc_driver_lib
+    ],
+    command: [
+        ps5_native_tool_exe,
+        'link',
+        '--in',
+        main,
+        '--out',
+        '@OUTPUT@',
+        '--stub-dir',
+        meson.global_source_root() + '/prospero-deps/ps5-payload-sdk/target/lib',
+        '--stub',
+        sce_agc_lib,
+        '--stub',
+        sce_agc_driver_lib,
+        '--module-sdk',
+        '0x02000009',
+        '--companion_sdk',
+        '0x08050001',
+        '--file-name',
+        'eboot.elf'
+    ]
+)
+
+# Sign eboot.elf to eboot.bin
+eboot_bin = custom_target(
+    'eboot.bin',
+    output: 'eboot.bin',
+    depends: [eboot_elf],
+    command: [ ps5_native_tool_exe, 
+               'self',
+               '--sign',
+               '--in',
+               eboot_elf,
+               '--out',
+               '@OUTPUT@' ]
+)
+
+# Generate libc.prx stub (required by PS5 loader)
+libc_prx = custom_target(
+    'libc.prx',
+    output: 'libc.prx',
+    depends: [libc_elf],
+    command: [ ps5_native_tool_exe, 
+               'self',
+               '--sign',
+               '--in',
+               libc_elf,
+               '--out',
+               '@OUTPUT@' ]
+)
+
+build_app_folder_sh = files('tools/scripts/build_ps5_folder.sh')
+sce_sys_source = meson.project_source_root() + '/prospero/sce_sys'
+app_folder = custom_target(
+    'PPSA92008',
+    output: 'PPSA92008',
+    build_by_default: true,
+    depends: [libc_prx, eboot_bin],
+    command: [
+        build_app_folder_sh,
+        meson.project_source_root(),
+        eboot_bin,
+        libc_prx,
+        sce_sys_source,
+        '@OUTPUT@'
+    ],
+)
+
 else
 # Copy files into 'pc' folder
 copy_files_script = files('tools/scripts/copy_pc_files.sh')

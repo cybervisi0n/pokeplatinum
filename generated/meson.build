@@ -12,7 +12,6 @@ metang_exe = find_program('metang', native: true)
 
 metang_generators = {
     'abilities': { 'type': 'enum', 'tag': 'Ability' },
-    'accessories': {'type': 'enum', 'tag': 'Accessory'},
     'ai_action_choices': { 'type': 'enum', 'tag': 'AIActionChoice' },
     'ai_flags': { 'type': 'mask', 'tag': 'AIFlag', 'extra': ['--no-auto'] },
     'ai_load_type_targets': { 'type': 'enum', 'tag': 'AILoadTypeTarget' },
@@ -55,7 +54,6 @@ metang_generators = {
     'game_records': { 'type': 'enum', 'tag': 'GameRecord' },
     'gender_ratios': { 'type': 'enum', 'tag': 'GenderRatio' },
     'genders': { 'type': 'enum', 'tag': 'Gender' },
-    'giratina_shadow_animations': {'type': 'enum', 'tag': 'GiratinaShadowAnimation'},
     'goods': { 'type': 'enum', 'tag': 'Good' },
     'hidden_locations': { 'type': 'enum', 'tag': 'HiddenLocation' },
     'item_ai_categories': { 'type': 'enum', 'tag': 'ItemAICategory' },
@@ -123,6 +121,9 @@ metang_generators = {
 c_consts_generators = []
 py_consts_generators = []
 
+# generated header targets by key, e.g., c_consts_headers['moves']
+c_consts_headers = {}
+
 foreach gen_key : metang_generators.keys()
     gen_h = gen_key + '.h'
     gen_py = gen_key + '.py'
@@ -130,7 +131,7 @@ foreach gen_key : metang_generators.keys()
     gen_args = metang_generators.get(gen_key)
     gen_extra_args = gen_args.get('extra', [])
 
-    c_consts_generators += custom_target(gen_h,
+    gen_h_target = custom_target(gen_h,
         output: gen_h,
         input: gen_file,
         command: [
@@ -142,6 +143,9 @@ foreach gen_key : metang_generators.keys()
             '@INPUT@',
         ]
     )
+
+    c_consts_generators += gen_h_target
+    c_consts_headers += { gen_key: gen_h_target }
 
     py_consts_generators += custom_target(gen_py,
         output: gen_py,
@@ -161,8 +165,6 @@ moves_txt = files('moves.txt')
 species_txt = files('species.txt')
 text_banks_txt = files('text_banks.txt')
 trainer_classes_txt = files('trainer_classes.txt')
-trainers_txt = files('trainers.txt')
-frontier_trainers_txt = files('frontier_trainers.txt')
 
 py_consts_env = environment()
 py_consts_env.append('PYTHONPATH', meson.project_build_root())

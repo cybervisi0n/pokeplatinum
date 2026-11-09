@@ -34,10 +34,12 @@ BUILD ?= build
 BUILD_LINUX ?= $(BUILD)_linux
 BUILD_WIN64 ?= $(BUILD)_win64
 BUILD_NX ?= $(BUILD)_nx
+BUILD_PROSPERO ?= $(BUILD)_prospero
 ROOT_INI := $(BUILD)/root.ini
 ROOT_INI_LINUX := $(BUILD_LINUX)/root.ini
 ROOT_INI_WIN64 := $(BUILD_WIN64)/root.ini
 ROOT_INI_NX := $(BUILD_NX)/root.ini
+ROOT_INI_PROSPERO := $(BUILD_PROSPERO)/root.ini
 
 UNAME_R := $(shell uname -r)
 UNAME_S := $(shell uname -s)
@@ -96,6 +98,11 @@ endif
 
 export NINJA_STATUS := [%p %f/%t] 
 
+PYTHON ?= python3
+LSF_IN := platinum.us/main.lsf.in
+LSFGEN := tools/scripts/lsfgen.py
+LSFGEN_OUT := platinum.us/main.lsf src/meson.build
+
 # Modders can delete the `check` dependency here after their first build.
 all: release
 
@@ -127,6 +134,9 @@ win64: $(BUILD_WIN64)/build.ninja
 nx: $(BUILD_NX)/build.ninja
 	$(MESON) compile -C $(BUILD_NX)
 
+prospero: $(BUILD_PROSPERO)/build.ninja
+	$(MESON) compile -C $(BUILD_PROSPERO)
+
 clean: $(BUILD)/build.ninja
 	$(MESON) compile -C $(BUILD) --clean
 	rm -rf $(BUILD)/res
@@ -153,7 +163,7 @@ setup_linux: $(BUILD)_linux/build.ninja
 
 configure: $(BUILD)/build.ninja
 
-$(BUILD)/build.ninja: | $(BUILD) $(SKREW_EXE) meson
+$(BUILD)/build.ninja: | $(BUILD) $(SKREW_EXE) meson $(LSFGEN_OUT)
 	$(MESON) setup \
 		-Drevision=$(ROM_REVISION) \
 		--wrap-mode=nopromote \
@@ -161,7 +171,7 @@ $(BUILD)/build.ninja: | $(BUILD) $(SKREW_EXE) meson
 		--cross-file=meson/$(CROSS) \
 		-- $(BUILD)
 
-$(BUILD_LINUX)/build.ninja: $(ROOT_INI_LINUX) | $(BUILD_LINUX) $(SKREW_EXE) meson
+$(BUILD_LINUX)/build.ninja: $(ROOT_INI_LINUX) | $(BUILD_LINUX) $(SKREW_EXE) meson $(BUILD_LINUX)/lsfgen.stamp
 	$(MESON) setup \
 		-Dbuild_target=linux \
 		--native-file=meson/$(NATIVE) \
@@ -171,7 +181,7 @@ $(BUILD_LINUX)/build.ninja: $(ROOT_INI_LINUX) | $(BUILD_LINUX) $(SKREW_EXE) meso
 		-- $(BUILD_LINUX)
 
 ifeq ($(GITHUB_CI),)
-$(BUILD_WIN64)/build.ninja: $(ROOT_INI_WIN64) | $(BUILD_WIN64) $(SKREW_EXE) meson
+$(BUILD_WIN64)/build.ninja: $(ROOT_INI_WIN64) | $(BUILD_WIN64) $(SKREW_EXE) meson $(BUILD_WIN64)/lsfgen.stamp
 	$(MESON) setup \
 		-Dbuild_target=win64 \
 		--native-file=meson/$(NATIVE) \
@@ -180,7 +190,7 @@ $(BUILD_WIN64)/build.ninja: $(ROOT_INI_WIN64) | $(BUILD_WIN64) $(SKREW_EXE) meso
 		--cross-file=$(ROOT_INI_WIN64) \
 		-- $(BUILD_WIN64)
 else
-$(BUILD_WIN64)/build.ninja: $(ROOT_INI_WIN64) | $(BUILD_WIN64) $(SKREW_EXE) meson
+$(BUILD_WIN64)/build.ninja: $(ROOT_INI_WIN64) | $(BUILD_WIN64) $(SKREW_EXE) meson $(BUILD_WIN64)/lsfgen.stamp
 	$(MESON) setup \
 		-Dbuild_target=win64 \
 		-Dskip_anim_scripts=true \
@@ -191,7 +201,7 @@ $(BUILD_WIN64)/build.ninja: $(ROOT_INI_WIN64) | $(BUILD_WIN64) $(SKREW_EXE) meso
 		-- $(BUILD_WIN64)
 endif
 
-$(BUILD_NX)/build.ninja: $(ROOT_INI_NX) | $(BUILD_NX) $(SKREW_EXE) meson
+$(BUILD_NX)/build.ninja: $(ROOT_INI_NX) | $(BUILD_NX) $(SKREW_EXE) meson $(BUILD_NX)/lsfgen.stamp
 	$(MESON) setup \
 		-Dbuild_target=nx \
 		--native-file=meson/$(NATIVE) \
@@ -199,6 +209,15 @@ $(BUILD_NX)/build.ninja: $(ROOT_INI_NX) | $(BUILD_NX) $(SKREW_EXE) meson
 		--cross-file=meson/cross_nx.ini \
 		--cross-file=$(ROOT_INI_NX) \
 		-- $(BUILD_NX)
+	
+$(BUILD_PROSPERO)/build.ninja: $(ROOT_INI_PROSPERO) | $(BUILD_PROSPERO) $(SKREW_EXE) meson $(BUILD_PROSPERO)/lsfgen.stamp
+	$(MESON) setup \
+		-Dbuild_target=prospero \
+		--native-file=meson/$(NATIVE) \
+		--native-file=$(ROOT_INI_PROSPERO) \
+		--cross-file=prospero-deps/ps5-payload-sdk/toolchain/prospero.ini \
+		--cross-file=$(ROOT_INI_PROSPERO) \
+		-- $(BUILD_PROSPERO)
 
 $(ROOT_INI): | $(BUILD)
 	echo "[constants]" > $@
@@ -216,6 +235,43 @@ $(ROOT_INI_NX): | $(BUILD_NX)
 	echo "[constants]" > $@
 	echo "root = '$$PWD'" >> $@
 
+$(ROOT_INI_PROSPERO): | $(BUILD_PROSPERO)
+	echo "[constants]" > $@
+	echo "root = '$$PWD'" >> $@
+# macOS's default Make does not support grouped targets, so we have to generate
+# a stamp file as a stand-in.
+$(LSFGEN_OUT): $(BUILD)/lsfgen.stamp ;
+
+$(BUILD)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD)
+	$(PYTHON) $(LSFGEN) $(LSF_IN) --prefix-dir main.nef.p/ \
+		--dest-lsf platinum.us/main.lsf \
+		--dest-c src/meson.build
+	@touch $@
+
+$(BUILD_LINUX)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD_LINUX)
+	$(PYTHON) $(LSFGEN) $(LSF_IN) --prefix-dir main.nef.p/ \
+		--dest-lsf platinum.us/main.lsf \
+		--dest-c src/meson.build
+	@touch $@
+
+$(BUILD_WIN64)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD_WIN64)
+	$(PYTHON) $(LSFGEN) $(LSF_IN) --prefix-dir main.nef.p/ \
+		--dest-lsf platinum.us/main.lsf \
+		--dest-c src/meson.build
+	@touch $@
+
+$(BUILD_NX)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD_NX)
+	$(PYTHON) $(LSFGEN) $(LSF_IN) --prefix-dir main.nef.p/ \
+		--dest-lsf platinum.us/main.lsf \
+		--dest-c src/meson.build
+	@touch $@
+
+$(BUILD_PROSPERO)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD_PROSPERO)
+	$(PYTHON) $(LSFGEN) $(LSF_IN) --prefix-dir main.nef.p/ \
+		--dest-lsf platinum.us/main.lsf \
+		--dest-c src/meson.build
+	@touch $@
+
 $(BUILD):
 	mkdir -p -- $(BUILD)
 
@@ -227,6 +283,9 @@ $(BUILD_WIN64):
 
 $(BUILD_NX):
 	mkdir -p -- $(BUILD_NX) 
+
+$(BUILD_PROSPERO): prospero-deps
+	mkdir -p -- $(BUILD_PROSPERO) 
 
 meson: $(MESON)
 
@@ -242,3 +301,6 @@ skrewup: skrewrm skrew
 
 $(SKREW_EXE):
 	SKREW_SYS=$(SKREW_SYS) SKREW_VER=$(SKREW_VER) SKREW_DIR=$(SKREW_DIR) $(SKREW_GET)
+
+prospero-deps:
+	./tools/scripts/download_prospero_dependencies.sh

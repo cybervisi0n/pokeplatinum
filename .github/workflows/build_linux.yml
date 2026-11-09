@@ -41,4 +41,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: release_linux
-          path: build_linux/pokeplatinum/release_linux
+          path: build_linux/release_linux

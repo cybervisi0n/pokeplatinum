@@ -15,12 +15,19 @@
 
 #define USE_CURRENT_BOX -1
 
-typedef struct PCBoxes {
+typedef struct 
+#ifndef SDK_BUILD_ARM
+__attribute__((__packed__))
+#endif
+PCBoxes {
     u32 currentBoxID;
     BoxPokemon boxMons[MAX_PC_BOXES][MAX_MONS_PER_BOX];
     u16 names[MAX_PC_BOXES][PC_BOX_NAME_BUFFER_LEN];
     u8 wallpapers[MAX_PC_BOXES];
     u8 unlockedWallpapers;
+    #ifndef SDK_BUILD_ARM
+    u8 pad;
+    #endif
 } PCBoxes;
 
 void PCBoxes_Init(PCBoxes *pcBoxes);

@@ -54,7 +54,7 @@ docker run -it --user $(id -u):$(id -g) \
            --device /dev/fuse \
            --cap-add SYS_ADMIN \
            --mount type=bind,src=./,target=$CWD \
-           $IMAGENAME
+           $IMAGENAME bash -c "cd $CWD && source ./tools/scripts/env_vars_linux.sh && bash"
 exit 0
 fi
 
@@ -69,5 +69,5 @@ docker run --user $(id -u):$(id -g) \
            --cap-add SYS_ADMIN \
            -i \
            --mount type=bind,src=./,target=$CWD \
-           $IMAGENAME sh -c "cd $CWD && $COMMAND"
+           $IMAGENAME bash -c "cd $CWD && source ./tools/scripts/env_vars_linux.sh &&  $COMMAND"
 

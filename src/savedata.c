@@ -15,6 +15,10 @@
 #include "unk_0209A74C.h"
 #include "unk_0209AA74.h"
 
+#ifdef SDK_PORT
+#include "port/savedata_upgrade.h"
+#endif
+
 static void SaveTable_Clear(SaveDataBody *body, const SavePageInfo *pageInfo);
 static void SavePageInfo_Init(SavePageInfo *pageInfo);
 static void SaveBlockInfo_Init(SaveBlockInfo *blockInfo, const SavePageInfo *pageInfo);
@@ -91,6 +95,14 @@ SaveData *SaveData_Init(void)
     case LOAD_RESULT_ERROR:
         saveData->loadCheckStatus |= NORMAL_LOAD_ERROR;
     case LOAD_RESULT_EMPTY:
+        #ifdef SDK_PORT
+        // Attempt SaveData upgrade
+        BOOL upgraded = PCPORT_ProcessSaveDataUpgrades();
+        if(upgraded) {
+            // Soft reset now
+            OS_ResetSystem(0);
+        }
+        #endif
         SaveData_Clear(saveData);
         break;
     }
