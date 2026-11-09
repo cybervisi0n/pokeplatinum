@@ -11,3 +11,4 @@ cp libgcc_s_seh-1.dll release_win64/libgcc_s_seh-1.dll
 cp libstdc++-6.dll release_win64/libstdc++-6.dll
 cp libwinpthread-1.dll release_win64/libwinpthread-1.dll
 cp SDL2.dll release_win64/SDL2.dll
+cp language.csv release_win64/language.csv
