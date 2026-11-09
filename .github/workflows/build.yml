@@ -1,0 +1,120 @@
+name: build_linux
+
+on:
+  push:
+    branches: [ pc_port ]
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+env:
+  LM_LICENSE_FILE: "${{ github.workspace }}/tools/cw/license.dat"
+  BUILD: /var/tmp/pokeplatinum
+
+jobs:
+  build_arm:
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install Software
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends fuse git python3 wget zip
+
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Install Metroskrew
+        run: ./drun.sh make skrew
+
+      - name: Build (ARM)
+        run: ./drun.sh make
+
+  build_linux:
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install Software
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends fuse git python3 wget zip
+
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Install Metroskrew
+        run: ./drun.sh make skrew
+
+      - name: Build (Linux)
+        run: ./drun.sh make linux
+
+      - name: Package release artifact (linux)
+        run: ./tools/scripts/package_artifacts_linux.sh
+
+      - name: Upload release artifact (linux)
+        uses: actions/upload-artifact@v6
+        with:
+          name: release_linux
+          path: build_linux/release_linux
+
+  build_prospero:
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install Software
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends fuse git python3 wget zip
+
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Install Metroskrew
+        run: ./drun.sh make skrew
+
+      - name: Install Prospero Dependencies
+        run: ./drun.sh make prospero-deps
+
+      - name: Build (Prospero)
+        run: ./drun.sh make prospero
+
+      - name: Package release artifact (Prospero)
+        run: ./tools/scripts/package_artifacts_prospero.sh
+
+      - name: Upload release artifact (Prospero)
+        uses: actions/upload-artifact@v6
+        with:
+          name: release_ps5
+          path: build_prospero/release_prospero
+
+  build_win:
+    permissions:
+      contents: write
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Install MSys2
+        run: .\Install_MSys2.ps1
+        shell: powershell
+
+      - name: Build (win64)
+        run: .\Launch_Msys2.ps1 "make win64"
+        shell: powershell
+
+      - name: Package release artifact (win64)
+        run: .\Launch_Msys2.ps1 ./tools/scripts/package_artifacts_win64.sh
+        shell: powershell
+
+      - name: Upload release artifact (win64)
+        uses: actions/upload-artifact@v6
+        with:
+          name: release_win64
+          path: build_win64/release_win64
