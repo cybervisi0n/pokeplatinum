@@ -463,7 +463,6 @@ main = executable('main',
     link_args: [
         link_args,
     ],
-    link_depends: main_lcf,
     native: true
 )
 endif
@@ -514,7 +513,6 @@ main = executable('main',
     link_args: [
         link_args,
     ],
-    link_depends: main_lcf,
     native: true
 )
 endif
@@ -556,7 +554,6 @@ main = executable('main',
     link_args: [
         link_args,
     ],
-    link_depends: main_lcf,
     native: false
 )
 endif
@@ -601,7 +598,6 @@ main = executable('main',
     link_args: [
         link_args,
     ],
-    link_depends: main_lcf,
     native: false
 )
 endif
@@ -609,7 +605,7 @@ endif
 ############################################################
 ###                    ARM7 BINARIES                     ###
 ############################################################
-ichneumon_sub = subproject('libntr').get_variable('ichneumon_sub')
+ichneumon_sub = libntr_prj.get_variable('ichneumon_sub')
 ichneumon_sub_defs = []
 
 

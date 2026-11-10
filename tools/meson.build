@@ -26,4 +26,6 @@ arm_none_eabi_gcc_exe = find_program('arm-none-eabi-gcc', native: true)
 arm_none_eabi_objcopy_exe = find_program('arm-none-eabi-objcopy', native: true)
 
 # Subproject tools
+if(build_target == 'arm')
 makelcf_exe = find_program('makelcf', native: true)
+endif
