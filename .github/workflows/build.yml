@@ -62,6 +62,34 @@ jobs:
           name: release_linux
           path: build_linux/release_linux
 
+  build_nx:
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install Software
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends fuse git python3 wget zip
+
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Install Metroskrew
+        run: ./drun.sh make skrew
+
+      - name: Build (NX)
+        run: ./drun.sh make nx
+
+      - name: Package release artifact (NX)
+        run: ./tools/scripts/package_artifacts_nx.sh
+
+      - name: Upload release artifact (NX)
+        uses: actions/upload-artifact@v6
+        with:
+          name: release_nx
+          path: build_nx/release_nx
+
   build_prospero:
     permissions:
       contents: write
