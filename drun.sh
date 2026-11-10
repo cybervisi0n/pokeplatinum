@@ -1,5 +1,4 @@
 #!/bin/bash
-PROJECT=pokeplatinum
 
 #Parse args
 if [ "$#" -lt 1 ]; then
@@ -18,7 +17,7 @@ if [ "${!FIRSTARG}" = "--interactive" ]; then
     INTERACTIVE=1
 fi
 
-IMAGENAME=$PROJECT-build
+IMAGENAME=cybervisi0n/pokeplatinum-build:v1
 
 # Build command variable
 COMMAND=""
@@ -26,18 +25,6 @@ for (( i=$FIRSTARG; i<=$#; i+=1 ))
 do
     COMMAND=$COMMAND"${!i} "
 done
-
-# Check if container image needs to be built
-if [ "$(docker images -q $IMAGENAME)" == "" ]
-then
-    echo "Building container image $IMAGENAME"
-    if [ -z "${GITHUB_ACTIONS}" ]; then
-        docker build -t $IMAGENAME -f $DOCKERFILENAME .
-    else
-        # DevkitPro does not install in GitHub actions
-        docker build -t $IMAGENAME -f $DOCKERFILENAME --build-arg USE_DEVKITPRO=0 .
-    fi
-fi
 
 mkdir -p ./.fontconfig_cache
 
@@ -47,7 +34,6 @@ CWD=$(pwd)
 if [ $INTERACTIVE -eq 1 ]; then
 docker run -it --user $(id -u):$(id -g) \
            --env DISPLAY=$DISPLAY \
-           --env DEVKITPRO=/opt/devkitpro \
            --env GITHUB_ACTIONS=$GITHUB_ACTIONS \
            -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
            --privileged \
@@ -61,7 +47,6 @@ fi
 # Run command in container
 docker run --user $(id -u):$(id -g) \
            --env DISPLAY=$DISPLAY \
-           --env DEVKITPRO=/opt/devkitpro \
            --env GITHUB_ACTIONS=$GITHUB_ACTIONS \
            -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
            --privileged \
