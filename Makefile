@@ -34,11 +34,13 @@ BUILD ?= build
 BUILD_LINUX ?= $(BUILD)_linux
 BUILD_WIN64 ?= $(BUILD)_win64
 BUILD_NX ?= $(BUILD)_nx
+BUILD_OUNCE ?= $(BUILD)_ounce
 BUILD_PROSPERO ?= $(BUILD)_prospero
 ROOT_INI := $(BUILD)/root.ini
 ROOT_INI_LINUX := $(BUILD_LINUX)/root.ini
 ROOT_INI_WIN64 := $(BUILD_WIN64)/root.ini
 ROOT_INI_NX := $(BUILD_NX)/root.ini
+ROOT_INI_OUNCE := $(BUILD_OUNCE)/root.ini
 ROOT_INI_PROSPERO := $(BUILD_PROSPERO)/root.ini
 
 UNAME_R := $(shell uname -r)
@@ -134,6 +136,9 @@ win64: $(BUILD_WIN64)/build.ninja
 nx: $(BUILD_NX)/build.ninja
 	$(MESON) compile -C $(BUILD_NX)
 
+ounce: $(BUILD_OUNCE)/build.ninja
+	$(MESON) compile -C $(BUILD_OUNCE)
+
 prospero: $(BUILD_PROSPERO)/build.ninja
 	$(MESON) compile -C $(BUILD_PROSPERO)
 
@@ -209,6 +214,15 @@ $(BUILD_NX)/build.ninja: $(ROOT_INI_NX) | $(BUILD_NX) $(SKREW_EXE) meson $(BUILD
 		--cross-file=meson/cross_nx.ini \
 		--cross-file=$(ROOT_INI_NX) \
 		-- $(BUILD_NX)
+
+$(BUILD_OUNCE)/build.ninja: $(ROOT_INI_OUNCE) | $(BUILD_OUNCE) $(SKREW_EXE) meson $(BUILD_OUNCE)/lsfgen.stamp
+	$(MESON) setup \
+		-Dbuild_target=ounce \
+		--native-file=meson/$(NATIVE) \
+		--native-file=$(ROOT_INI_OUNCE) \
+		--cross-file=meson/cross_nx.ini \
+		--cross-file=$(ROOT_INI_OUNCE) \
+		-- $(BUILD_OUNCE)
 	
 $(BUILD_PROSPERO)/build.ninja: $(ROOT_INI_PROSPERO) | $(BUILD_PROSPERO) $(SKREW_EXE) meson $(BUILD_PROSPERO)/lsfgen.stamp
 	$(MESON) setup \
@@ -232,6 +246,10 @@ $(ROOT_INI_WIN64): | $(BUILD_WIN64)
 	echo "root = '$$PWD'" >> $@
 
 $(ROOT_INI_NX): | $(BUILD_NX)
+	echo "[constants]" > $@
+	echo "root = '$$PWD'" >> $@
+
+$(ROOT_INI_OUNCE): | $(BUILD_OUNCE)
 	echo "[constants]" > $@
 	echo "root = '$$PWD'" >> $@
 
@@ -266,6 +284,12 @@ $(BUILD_NX)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD_NX)
 		--dest-c src/meson.build
 	@touch $@
 
+$(BUILD_OUNCE)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD_OUNCE)
+	$(PYTHON) $(LSFGEN) $(LSF_IN) --prefix-dir main.nef.p/ \
+		--dest-lsf platinum.us/main.lsf \
+		--dest-c src/meson.build
+	@touch $@
+
 $(BUILD_PROSPERO)/lsfgen.stamp: $(LSF_IN) $(LSFGEN) | $(BUILD_PROSPERO)
 	$(PYTHON) $(LSFGEN) $(LSF_IN) --prefix-dir main.nef.p/ \
 		--dest-lsf platinum.us/main.lsf \
@@ -283,6 +307,9 @@ $(BUILD_WIN64):
 
 $(BUILD_NX):
 	mkdir -p -- $(BUILD_NX) 
+
+$(BUILD_OUNCE):
+	mkdir -p -- $(BUILD_OUNCE) 
 
 $(BUILD_PROSPERO): prospero-deps
 	mkdir -p -- $(BUILD_PROSPERO) 
