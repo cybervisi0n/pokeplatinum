@@ -90,6 +90,34 @@ jobs:
           name: release_nx
           path: build_nx/release_nx
 
+  build_ounce:
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install Software
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends fuse git python3 wget zip
+
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Install Metroskrew
+        run: ./drun.sh make skrew
+
+      - name: Build (Ounce)
+        run: ./drun.sh make ounce
+
+      - name: Package release artifact (Ounce)
+        run: ./tools/scripts/package_artifacts_ounce.sh
+
+      - name: Upload release artifact (Ounce)
+        uses: actions/upload-artifact@v6
+        with:
+          name: release_ounce
+          path: build_ounce/release_ounce
+
   build_prospero:
     permissions:
       contents: write
