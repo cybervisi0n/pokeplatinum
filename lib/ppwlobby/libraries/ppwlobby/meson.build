@@ -14,7 +14,7 @@ libdwcppwlobby = static_library('dwcppwlobby',
     cpp_args: [cpp_args, ppwlobby_c_args],
     include_directories: [public_includes, ppwlobby_public_includes, toplevel_includes],
     dependencies: [nitrosdk_dep, nitrodwc_dep, nitrowifi_dep, libdwcenc_dep],
-    pic: (build_target == 'nx'),
+    pic: (build_target == 'nx' or build_target == 'ounce'),
     native: (build_target == 'linux' or build_target == 'win64')
 )
 
