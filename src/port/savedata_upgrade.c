@@ -190,6 +190,10 @@ static BOOL ProcessSaveRegion(u8 * savePtr) {
 
 
 BOOL PCPORT_ProcessSaveDataUpgrades() {
+    #ifdef SDK_BUILD_OUNCE
+    // ounce never had a version old enough to use the old save format
+    return FALSE;
+    #else
     // Read entire save file from CARD
     u8 * saveBuf = malloc(sizeof(u8) * SAVE_FLASH_SIZE);
     memset(saveBuf, 0, SAVE_FLASH_SIZE);
@@ -225,4 +229,5 @@ BOOL PCPORT_ProcessSaveDataUpgrades() {
     free(saveBuf);
 
     return (mainUpgraded || backupUpgraded);
+    #endif
 }
