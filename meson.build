@@ -127,7 +127,7 @@ if(build_target != 'arm')
     ]
 endif
 
-if(build_target == 'nx')
+if(build_target == 'nx' or build_target == 'ounce')
     pokeplatinum_args += '-fPIC'
 endif
 
@@ -167,6 +167,15 @@ link_args = [
     '-g',
     '-march=armv8-a+crc+crypto',
     '-mtune=cortex-a56',
+    '-mtp=soft',
+    '-fPIE',
+    '--verbose',
+    '-Wl,-Map=main.map'
+]
+elif (build_target == 'ounce')
+link_args = [
+    '-specs=/opt/devkitpro/libounce/switch.specs',
+    '-g',
     '-mtp=soft',
     '-fPIE',
     '--verbose',
@@ -280,7 +289,7 @@ trainer_ai_o = custom_target(
     ],
     depfile: '@BASENAME@.d',
 )
-elif(build_target == 'nx')
+elif(build_target == 'nx' or build_target == 'ounce')
 trainer_ai_ss = custom_target(
     'trainer_ai_script.ss',
     output: 'trainer_ai_script.ss',
@@ -516,7 +525,7 @@ main = executable('main',
     native: true
 )
 endif
-if (build_target == 'nx')
+if (build_target == 'nx' or build_target == 'ounce')
 main = executable('main',
     sources: [
         pokeplatinum_c,
@@ -634,7 +643,7 @@ pokeplatinum_nds = custom_target('pokeplatinum.us.nds',
     ],
     build_by_default: true
 )
-elif (build_target == 'nx')
+elif (build_target == 'nx' or build_target == 'ounce')
 copy_files_script = files('tools/scripts/copy_pc_files.sh')
 
 pokeplatinum_nds = custom_target('pokeplatinum.us',

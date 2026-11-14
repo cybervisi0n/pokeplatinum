@@ -3,6 +3,7 @@
 /build_linux/
 /build_win64/
 /build_nx/
+/build_ounce/
 /build_prospero/
 
 # Prospero dependencies
