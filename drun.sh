@@ -17,7 +17,7 @@ if [ "${!FIRSTARG}" = "--interactive" ]; then
     INTERACTIVE=1
 fi
 
-IMAGENAME=cybervisi0n/pokeplatinum-build:v1
+IMAGENAME=cybervisi0n/pokeplatinum-build:v2
 
 # Build command variable
 COMMAND=""
