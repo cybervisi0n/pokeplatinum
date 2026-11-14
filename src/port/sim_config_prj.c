@@ -73,8 +73,13 @@ static BOOL StringToBool(const char * str)
 // Initialize a SIM_Config_prj_type to default values
 void SIM_Config_prj_LoadDefaults(SIM_Config_prj_type * aConfig)
 {
+  #ifdef SDK_BUILD_NX
+  aConfig->enable60fps = FALSE;
+  aConfig->enable60fpsSpeedFix = FALSE;
+  #else
   aConfig->enable60fps = TRUE;
   aConfig->enable60fpsSpeedFix = TRUE;
+  #endif
   aConfig->enableAsserts = FALSE;
   aConfig->breakDebuggerOnGfAssert = FALSE;
 
