@@ -18,10 +18,7 @@ mkdir -p prospero-deps/lib
 sed -i 's|^LIBS_CRT="${PS5_PAYLOAD_SDK}/target/lib/crt1\.o"$|LIBS_CRT=""|' prospero-deps/ps5-payload-sdk/bin/prospero-clang++
 
 # Download OpenGL libraries
-./tools/scripts/download_prospero_lib.sh https://github.com/cybervisi0n/ps5-mesa ps5-mesa_release.zip
-./tools/scripts/download_prospero_lib.sh https://github.com/cybervisi0n/ps5-opengnm-psbc ps5-opengnm-psbc_release.zip
-./tools/scripts/download_prospero_lib.sh https://github.com/cybervisi0n/ps5-gl-runtime ps5-gl-runtime_release.zip
+./tools/scripts/download_prospero_lib.sh  https://github.com/cybervisi0n/ps5-mesa-radv ps5-mesa_release.zip
 
-# Add your own external libraries here
-# SDL2 is provided as an example
+# Download ps5-sdl2
 ./tools/scripts/download_prospero_lib.sh https://github.com/cybervisi0n/ps5-sdl2 ps5-sdl2_release.zip

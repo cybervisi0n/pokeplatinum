@@ -188,7 +188,13 @@ link_args = [
     '-e',
     '_start',
     '-Wl,--version-script=' + meson.global_source_root() + '/' + 'prospero/ps5-app-symbols.map',
-    '-pthread'
+    '-pthread',
+    # Vulkan dispatch will be messed up without this
+    '-L' + meson.global_source_root() + '/prospero-deps/lib',
+    '-Wl,--whole-archive',
+    '-lvulkan_radeon',
+    '-Wl,--no-whole-archive',
+    '-Wl,-Map=main.map'
 ]
 else
 link_args = [
@@ -602,7 +608,9 @@ main = executable('main',
         libcrypto_ov97,
         libcrypto_static,
         libgds,
-        prospero_crt_lib
+    ],
+    link_whole: [
+        prospero_crt_lib,
     ],
     link_args: [
         link_args,
