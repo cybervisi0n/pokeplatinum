@@ -1,0 +1,8 @@
+[wrap-git]
+url = https://github.com/cybervisi0n/ps5-app-crt.git
+revision = main
+depth = 1
+directory = ps5-app-crt
+
+[provide]
+dependency_names = ps5-app-crt

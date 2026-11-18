@@ -194,7 +194,16 @@ link_args = [
     '-Wl,--whole-archive',
     '-lvulkan_radeon',
     '-Wl,--no-whole-archive',
-    '-Wl,-Map=main.map'
+    '-Wl,--wrap=malloc',
+    '-Wl,--wrap=calloc',
+    '-Wl,--wrap=realloc',
+    '-Wl,--wrap=free',
+    '-Wl,--wrap=posix_memalign',
+    '-Wl,--wrap=aligned_alloc',
+    '-Wl,--wrap=memalign',
+    '-Wl,--wrap=malloc_usable_size',
+    '-Wl,--wrap=reallocf',
+    '-Wl,--wrap=reallocarray'
 ]
 else
 link_args = [
@@ -575,6 +584,9 @@ endif
 if (build_target == 'prospero')
 subdir('prospero')
 
+subproject('ps5-app-crt')
+ps5_app_crt_dep = dependency('ps5-app-crt')
+
 main = executable('main',
     sources: [
         pokeplatinum_c,
@@ -602,15 +614,13 @@ main = executable('main',
         nitrowifi_dep,
         nitrodwc_dep,
         libvct_dep,
+        ps5_app_crt_dep
     ],
     link_with: [
         libspl,
         libcrypto_ov97,
         libcrypto_static,
         libgds,
-    ],
-    link_whole: [
-        prospero_crt_lib,
     ],
     link_args: [
         link_args,

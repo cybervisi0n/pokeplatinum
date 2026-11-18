@@ -37,6 +37,8 @@
 /subprojects/metroskrew/
 /subprojects/yyjson-*/
 /subprojects/tracy/
+/subprojects/prospero-headers/
+/subprojects/ps5-app-crt/
 /subprojects/.wraplock
 
 # Metroskrew
