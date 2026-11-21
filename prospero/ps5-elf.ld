@@ -1,12 +1,3 @@
-/*
- * ps5-native-app-boilerplate - Intermediate PIE linker layout.
- * Copyright (C) 2026 BlackBearReloaded
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Keeps code, immutable data, RELRO, and writable data in distinct address
- * ranges. The native converter replaces LLVM's generic dynamic metadata.
- */
-
 OUTPUT_FORMAT("elf64-x86-64")
 OUTPUT_ARCH(i386:x86-64)
 

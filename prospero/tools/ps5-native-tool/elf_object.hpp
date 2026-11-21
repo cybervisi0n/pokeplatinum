@@ -1,11 +1,3 @@
-/*
- * ps5-native-app-boilerplate - ELF object model and reader.
- * Copyright (C) 2026 BlackBearReloaded
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Defines the compact ELF64 structures used by the native PS5 module writer.
- */
-
 #pragma once
 
 #include <cstddef>

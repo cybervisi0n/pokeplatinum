@@ -1,12 +1,3 @@
-/*
- * ps5-native-app-boilerplate - Native SHA-1 and SHA-256 implementation.
- * Copyright (C) 2026 BlackBearReloaded
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Implements the published SHA-1 and SHA-256 algorithms for deterministic
- * build metadata without requiring a host cryptography library.
- */
-
 #pragma once
 
 #include <array>

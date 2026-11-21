@@ -1,12 +1,3 @@
-/*
- * ps5-native-app-boilerplate - Native PS5 dynamic-module writer interface.
- * Copyright (C) 2026 BlackBearReloaded
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Declares conversion of an ordinary LLVM-linked PIE into the PS5 application
- * ELF layout consumed by the FSELF wrapper.
- */
-
 #pragma once
 
 #include "elf_object.hpp"

@@ -8,17 +8,19 @@ It should be possible to play the game from start to finish, but there could be 
 
 Generative AI/LLM shortcuts were **not** used in the creation of this project and the libntr libraries. **Pull requests or code suggestions using AI will be rejected.**
 
-Project goals:
-* Create a native port of pokeplatinum for 64-bit PC platforms
-* * Long term: Create native ports for homebrew on various game consoles
-* Facilitate modding by allowing both a PC port and DS ROM to be compiled and debugged from the same source tree
-* Support all WiFi and multiplayer features
+## Features
+* 60 FPS
+* Upscale the 3D rendering up to 20x the NDS resolution
+* Local multiplayer over LAN or the internet
+* WiFi support through the Poke Classic Network (BETA)
+* Compile and debug any of the supported build targets from the same source tree
+* Settings menu: Press F1 or left stick on a gamepad to open
 
 ## Supported Platforms
 * Linux x86_64
 * Windows x86_64
-* PS5 (Very early alpha)
-* NX (Very early alpha)
+* PS5
+* NX
 * Ounce
 
 ## Save Data Compatibility
@@ -33,12 +35,7 @@ To run the [pre-built binaries found in the releases tab](https://github.com/cyb
 * Access in-game settings and debug tools by pressing the grave accent/tilde key
 
 ### Playing in other languages
-Currently, this project only supports the USA version of the game, however, it is possible to change the language of the majority of the in-game text by replacing some files. 
-Once a ROM has been loaded, its contents will be extracted in the same directory as main.exe. Replace the following files with copies from another language:
-
- * msgdata/msg.narc
- * msgdata/pl_msg.narc
- * msgdata/scenario/scr_msg.narc
+This project only supports the executable code of the US version (CPUE01). However, it is possible to import ROMs from other regions to get the majority of the text in the desired language. The relevant language files will be moved to the correct locations automatically during ROM extraction.
 
 ## Forking Guidelines
 You are welcome to create forks of this project, but do not publish any releases containing the compiled assets alongside PC port binaries.
@@ -79,10 +76,6 @@ You can also build a ROM from the same source tree, just run:
 From a freshly cloned repo, run the "Install_MSys2.ps1" script in powershell. This will create a portable MSys2 build environment with all dependencies installed in the repo. This only has to be done once per repo.
 
 To build, run "Launch_MSys2.ps1" and it will launch a MSys2 bash shell. From here, run "make win64" to build.
-
-## NX Build Target (working, but poor performance)
-This build target requires DevKitA64, this is already installed in the build container.
-* ./drun.sh make nx
 
 ## Notes
 Target executable will be in ./build_(platform) directory.

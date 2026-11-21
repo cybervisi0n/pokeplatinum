@@ -1,13 +1,3 @@
-/*
- * ps5-native-app-boilerplate - Native host build utility.
- * Copyright (C) 2026 BlackBearReloaded
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Provides C++ implementations of the repository's host-side build steps.
- * Handles deterministic FSELF containers and converts LLVM-linked PIE files
- * into PS5 dynamic executables without a managed-code toolchain.
- */
-
 #include "hash.hpp"
 #include "elf_object.hpp"
 #include "sce_module_writer.hpp"

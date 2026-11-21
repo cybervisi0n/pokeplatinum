@@ -1,12 +1,3 @@
-/*
- * ps5-native-app-boilerplate - ELF64 object and SDK stub reader.
- * Copyright (C) 2026 BlackBearReloaded
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Reads relocatable objects after LLVM has resolved archives and reads public
- * SDK shared stubs to discover symbol providers without a copied catalog.
- */
-
 #include "elf_object.hpp"
 
 #include <algorithm>

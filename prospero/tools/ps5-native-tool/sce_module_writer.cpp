@@ -1,15 +1,3 @@
-/*
- * ps5-native-app-boilerplate - Native PS5 dynamic-module writer.
- * Copyright (C) 2026 BlackBearReloaded
- * Portions derived from SharpProspero (https://github.com/SvenGDK/SharpProspero),
- * Copyright (C) 2026 SvenGDK, GPL-3.0; translated to C++ and modified.
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Converts an ordinary PIE produced by LLVM lld into the loader-visible PS5
- * executable shape. LLVM remains responsible for C/C++ linking, archives,
- * COMDAT, TLS, unwind data, and ordinary x86-64 relocations.
- */
-
 #include "sce_module_writer.hpp"
 
 #include "hash.hpp"

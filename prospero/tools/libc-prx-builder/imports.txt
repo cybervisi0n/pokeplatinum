@@ -1,7 +1,3 @@
-# ps5-native-app-boilerplate - Clean-room runtime import manifest.
-# Copyright (C) 2026 BlackBearReloaded
-# SPDX-License-Identifier: GPL-3.0-or-later
-#
 # name|encoded library/module suffix|PLT relocation|GLOB_DAT relocation
 __elf_phdr_match_addr|#A#B|1|0
 __error|#A#B|1|0

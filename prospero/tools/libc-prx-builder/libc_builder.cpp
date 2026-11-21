@@ -1,12 +1,3 @@
-/*
- * ps5-native-app-boilerplate - Native clean-room runtime-module builder.
- * Copyright (C) 2026 BlackBearReloaded
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Deterministically emits the libc-compatible loader companion from tracked
- * semantic manifests without managed code or external libraries.
- */
-
 #include "hash.hpp"
 
 #include <algorithm>
@@ -817,7 +808,7 @@ void build_metadata(Bytes &file, const std::vector<ApiSymbol> &api,
     put_string(metadata, 0xA72D, "libSceSysmodule");
     put_string(metadata, 0xA73D, "libc.prx");
     put_string(metadata, 0xA746, "libc");
-    put_string(metadata, 0xA74B, "libc.prx by BlackBearReloaded");
+    put_string(metadata, 0xA74B, "libc.prx");
     put_string(metadata, 0xA797, "libc_setjmp");
 
     const std::size_t symbol_count = names.size();
@@ -906,7 +897,7 @@ void build_comment(Bytes &file)
     auto comment = std::span(file).subspan(kCommentFileOffset, kCommentSize);
     copy_ascii(comment, 0, "PATH");
     write_u32(comment, 4, 0x50);
-    constexpr std::string_view value = "libc.prx by BlackBearReloaded";
+    constexpr std::string_view value = "libc.prx";
     write_u32(comment, 8, value.size() + 1);
     copy_ascii(comment, 12, value);
 }
@@ -936,7 +927,7 @@ Bytes build_runtime(const std::vector<ApiSymbol> &api, const std::vector<Runtime
     build_comment(file);
     build_version(file);
     constexpr std::string_view attribution =
-        "ps5-native-app-boilerplate clean-room libc by BlackBearReloaded";
+        "ps5-native-app-boilerplate clean-room libc";
     copy_ascii(file, kMarkerFileOffset + 0x100, attribution);
     return file;
 }
@@ -959,11 +950,10 @@ void verify_runtime(const Bytes &file, const std::vector<ApiSymbol> &api,
     require(read_u32(file, kMarkerFileOffset) == 1, "runtime Need_sceLibc marker");
     require(read_u64(file, kGotFileOffset) == kMetadataAddress + kDynamicOffset,
             "runtime GOT dynamic pointer");
-    require(read_ascii_z(file, kMetadataFileOffset + 0xA74B) == "libc.prx by BlackBearReloaded",
+    require(read_ascii_z(file, kMetadataFileOffset + 0xA74B) == "libc.prx",
             "runtime clean original filename");
     require(api.size() + imports.size() + 1 == 2669, "runtime dynamic symbol count");
     const std::string ascii(reinterpret_cast<const char *>(file.data()), file.size());
-    require(ascii.find("BlackBearReloaded") != std::string::npos, "runtime attribution marker");
     for (std::string_view forbidden :
          {"W:/Build", "W:\\Build", "J013", "Prospero_Release", "sys/internal"})
         require(ascii.find(forbidden) == std::string::npos,

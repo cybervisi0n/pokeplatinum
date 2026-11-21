@@ -1,12 +1,3 @@
-/*
- * ps5-native-app-boilerplate - Native FSELF container interface.
- * Copyright (C) 2026 BlackBearReloaded
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Declares deterministic wrapping, extraction, inspection, and integrity
- * helpers for plaintext PS5 signed-executable containers.
- */
-
 #pragma once
 
 #include <array>

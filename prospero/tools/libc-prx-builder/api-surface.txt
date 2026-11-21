@@ -1,9 +1,3 @@
-# ps5-native-app-boilerplate - Observed libc API-surface manifest.
-# Copyright (C) 2026 BlackBearReloaded
-# SPDX-License-Identifier: GPL-3.0-or-later
-#
-# Interface metadata only: NID | ELF binding | ELF type | advertised size.
-# No proprietary instructions, object contents, or implementation data.
 H2e8t5ScQGc|1|2|0x214
 P330P3dFF68|1|1|0x4
 z8GPiQwaAEY|1|2|0x467
