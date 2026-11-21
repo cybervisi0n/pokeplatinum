@@ -32,7 +32,10 @@ To run the [pre-built binaries found in the releases tab](https://github.com/cyb
 ![ROM extraction dialog](images/RomExtraction.png)
 
 * After this has been completed once, you can launch the game simply by running main.exe.
-* Access in-game settings and debug tools by pressing the grave accent/tilde key
+* Access in-game settings and debug tools by pressing the grave accent/tilde key or F1 key
+
+### Notes for PS5 Users
+Currently, ROM extraction is not supported on the PS5. Play the PC version once to extract your ROM, then upload the extracted files to the PPSA92008 folder on the PS5.
 
 ### Playing in other languages
 This project only supports the executable code of the US version (CPUE01). However, it is possible to import ROMs from other regions to get the majority of the text in the desired language. The relevant language files will be moved to the correct locations automatically during ROM extraction.
