@@ -10,6 +10,7 @@ Generative AI/LLM shortcuts were **not** used in the creation of this project an
 
 ## Features
 * 60 FPS
+* Gamepad and keyboard controls
 * Upscale the 3D rendering up to 20x the NDS resolution
 * Local multiplayer over LAN or the internet
 * WiFi support through the Poke Classic Network (BETA)
@@ -33,6 +34,13 @@ To run the [pre-built binaries found in the releases tab](https://github.com/cyb
 
 * After this has been completed once, you can launch the game simply by running main.exe.
 * Access in-game settings and debug tools by pressing the grave accent/tilde key or F1 key
+
+### Default Gamepad Controls
+* ABXYLR are straightforward
+* Dpad or Left stick is bound to the DS Dpad
+* Right stick is bound to a virtual touch cursor
+* * Clicking the right stick simulates a touch
+* Clicking the left stick toggles the menu
 
 ### Notes for PS5 Users
 Currently, ROM extraction is not supported on the PS5. Play the PC version once to extract your ROM, then upload the extracted files to the PPSA92008 folder on the PS5.
