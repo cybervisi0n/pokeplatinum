@@ -13,8 +13,8 @@ static bool sConfigPrjOpen = false;
 static bool sCheatsOpen = false;
 static bool sMapJumpOpen = false;
 
-void PrjMain(bool * openState) {
-    ImGui::Begin("pokeplatinum", openState);
+void PrjMain() {
+    //ImGui::Begin("pokeplatinum");
 
     ImGui::Text("Git rev: %s", SIM_GetProjectGitHash());
 
@@ -27,6 +27,6 @@ void PrjMain(bool * openState) {
         AppButton("Jump to Map", &sMapJumpOpen, MapJumpInit, MapJumpMain);
     }
 
-    ImGui::End();
+    //ImGui::End();
 }
 }
