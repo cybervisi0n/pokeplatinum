@@ -285,6 +285,12 @@ subdir('res')
 ############################################################
 subdir('src')
 
+trainer_ai_extra_defines = []
+
+if(build_target == 'prospero')
+    trainer_ai_extra_defines += ['-DSDK_BUILD_PROSPERO']
+endif
+
 if (build_target == 'arm')
 trainer_ai_o = custom_target(
     'trainer_ai_script.o',
@@ -344,6 +350,7 @@ trainer_ai_ss = custom_target(
     command: [
         'gcc',
         '-D__ASSEMBLER__',
+        trainer_ai_extra_defines,
         '-I', meson.global_source_root() / 'asm',
         '-I', meson.global_build_root(),
         '-I', meson.global_source_root() / 'include',

@@ -10,7 +10,11 @@
 #include "generated/pokemon_types.h"
 #include "macros/aicmd.inc"
 
+#ifdef SDK_BUILD_PROSPERO
+    .section .rodata
+#else
     .text
+#endif
 
     .global gTrainerAITable
 gTrainerAITable:
