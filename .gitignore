@@ -26,15 +26,9 @@
 /subprojects/libntrsystem/
 /subprojects/libntrwifi/
 /subprojects/libntrdwc/
-/subprojects/nitrogfx/
-/subprojects/libpng-*/
-/subprojects/zlib-*/
 /subprojects/packagecache
 /subprojects/metang/
-/subprojects/rapidjson-*/
 /subprojects/meson-*/
-/subprojects/nitrorom/
-/subprojects/metroskrew/
 /subprojects/yyjson-*/
 /subprojects/tracy/
 /subprojects/prospero-headers/

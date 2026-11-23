@@ -10,6 +10,7 @@
 
 #include "battle_frontier_save.h"
 #include "battle_tower_modes.h"
+#include "battle_tower_save.h"
 #include "bg_window.h"
 #include "easy_chat_sentence.h"
 #include "font.h"
@@ -31,7 +32,6 @@
 #include "text.h"
 #include "unk_0208C098.h"
 #include "vram_transfer.h"
-#include "wifi_battle_tower_save.h"
 
 #include "res/graphics/frontier/tower/records.naix"
 #include "res/graphics/sprite_templates/tower_records.h"
@@ -851,7 +851,7 @@ static void PrintSelectedWifiTrainersHomeCountry(BattleTowerRecordsApp *app)
         Text_AddPrinterWithParamsAndColor(&app->windows[WINDOW_RANKINGS_MESSAGE], FONT_SYSTEM, app->strMan.string, 0, 4, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
     } else {
         StringTemplate_SetCountryName(app->strMan.strTemplate, 0, trainer->country);
-        StringTemplate_SetCityName(app->strMan.strTemplate, 1, trainer->country, trainer->region);
+        StringTemplate_SetRegionName(app->strMan.strTemplate, 1, trainer->country, trainer->region);
         StringTemplate_Format(app->strMan.strTemplate, app->strMan.string, app->strMan.countryAndCityStr);
         Text_AddPrinterWithParamsAndColor(&app->windows[WINDOW_RANKINGS_MESSAGE], FONT_SYSTEM, app->strMan.string, 0, 4, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
     }

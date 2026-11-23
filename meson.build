@@ -666,6 +666,7 @@ pokeplatinum_nds = custom_target('pokeplatinum.us.nds',
         rom_ini,
         filesys_csv,
     ],
+    depends: map_data_stamp,
     build_by_default: true
 )
 elif (build_target == 'nx' or build_target == 'ounce')
