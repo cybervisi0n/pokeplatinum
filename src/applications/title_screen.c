@@ -34,6 +34,10 @@
 #include "res/graphics/title_screen/titledemo.naix"
 #include "res/text/bank/title_screen.h"
 
+#ifdef SDK_PORT
+#include "port/sim_config_prj.h"
+#endif
+
 FS_EXTERN_OVERLAY(game_opening);
 FS_EXTERN_OVERLAY(main_menu);
 FS_EXTERN_OVERLAY(d_startmenu);
@@ -685,8 +689,20 @@ static void TitleScreen_Render(TitleScreen *titleScreen, TitleScreenGraphics *gf
                 break;
             }
         case GIRATINA_ANIM_STATE_PLAY:
+            #ifdef SDK_PORT
+            SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+
+            if(myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+                gfx->giratinaTexAnim->frame += (FX32_ONE >> 1);
+                gfx->giratinaAnim->frame += (FX32_ONE >> 1);
+            } else {
+                gfx->giratinaTexAnim->frame += FX32_ONE;
+                gfx->giratinaAnim->frame += FX32_ONE;
+            }
+            #else
             gfx->giratinaTexAnim->frame += FX32_ONE;
             gfx->giratinaAnim->frame += FX32_ONE;
+            #endif
 
             if (gfx->giratinaTexAnim->frame == NNS_G3dAnmObjGetNumFrame(gfx->giratinaTexAnim)) {
                 gfx->giratinaTexAnim->frame = 0;
