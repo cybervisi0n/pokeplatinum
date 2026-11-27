@@ -62,6 +62,12 @@ encdata_ex_narc = custom_target('encdata_ex.narc',
 
 nitrofs_files += encdata_ex_narc
 
+labelscan_path = labelscan_py
+
+if(build_target == 'win64')
+labelscan_path = '/' + labelscan_py.path()
+endif
+
 mapgen = custom_target('mapgen',
     output: 'build.ninja',
     command: [
@@ -78,7 +84,7 @@ mapgen = custom_target('mapgen',
         '-C', encounterproc_exe,
         '-c', encounters_order,
         '-Z', make_pokedex_enc_platinum_py,
-        '-L', labelscan_py,
+        '-L', labelscan_path,
         meson.project_source_root() / 'include/constants/fieldmap.h',
         meson.current_source_dir(),
     ],
