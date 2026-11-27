@@ -10,6 +10,10 @@
 #include "sys_task.h"
 #include "sys_task_manager.h"
 
+#ifdef SDK_PORT
+#include "port/sim_config_prj.h"
+#endif
+
 static void Easy3DModel_BindTexture(SysTask *task, void *param);
 static void Easy3DModel_LoadInternal(Easy3DModel *model);
 static void Easy3DAnim_LoadInternal(Easy3DAnim *anim, const Easy3DModel *model, void *data, NNSFndAllocator *allocator);
@@ -86,6 +90,12 @@ void Easy3DAnim_Release(Easy3DAnim *anim, NNSFndAllocator *allocator)
 
 void Easy3DAnim_UpdateLooped(Easy3DAnim *anim, fx32 frameDelta)
 {
+    #ifdef SDK_PORT
+    SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+    if(myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+        frameDelta = frameDelta >> 1;
+    }
+    #endif
     fx32 frameCount = NNS_G3dAnmObjGetNumFrame(anim->animObj);
 
     if (frameDelta > 0) {
@@ -103,6 +113,12 @@ void Easy3DAnim_UpdateLooped(Easy3DAnim *anim, fx32 frameDelta)
 
 BOOL Easy3DAnim_Update(Easy3DAnim *anim, fx32 frameDelta)
 {
+    #ifdef SDK_PORT
+    SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+    if(myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+        frameDelta = frameDelta >> 1;
+    }
+    #endif
     fx32 frameCount = NNS_G3dAnmObjGetNumFrame(anim->animObj);
     BOOL finished = FALSE;
 
