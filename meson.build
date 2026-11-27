@@ -329,10 +329,21 @@ trainer_ai_ss = custom_target(
     feed: true
 )
 
+trainer_ai_enumproc_ss = custom_target(
+    'trainer_ai_script.enumproc.ss',
+    output: 'trainer_ai_script.enumproc.ss',
+    input: trainer_ai_ss,
+    command: [
+        enumproc_exe
+    ],
+    capture: true,
+    feed: true
+)
+
 trainer_ai_o = custom_target(
     'trainer_ai_script.o',
     output: 'trainer_ai_script.o',
-    input: trainer_ai_ss,
+    input: trainer_ai_enumproc_ss,
     command: [
         '/opt/devkitpro/devkitA64/bin/aarch64-none-elf-as',
         '-I', meson.global_source_root() / 'asm',
@@ -362,10 +373,21 @@ trainer_ai_ss = custom_target(
     feed: true
 )
 
+trainer_ai_enumproc_ss = custom_target(
+    'trainer_ai_script.enumproc.ss',
+    output: 'trainer_ai_script.enumproc.ss',
+    input: trainer_ai_ss,
+    command: [
+        enumproc_exe
+    ],
+    capture: true,
+    feed: true
+)
+
 trainer_ai_o = custom_target(
     'trainer_ai_script.o',
     output: 'trainer_ai_script.o',
-    input: trainer_ai_ss,
+    input: trainer_ai_enumproc_ss,
     command: [
         'as',
         '-I', meson.global_source_root() / 'asm',
@@ -666,6 +688,7 @@ pokeplatinum_nds = custom_target('pokeplatinum.us.nds',
         rom_ini,
         filesys_csv,
     ],
+    depends: map_data_stamp,
     build_by_default: true
 )
 elif (build_target == 'nx' or build_target == 'ounce')

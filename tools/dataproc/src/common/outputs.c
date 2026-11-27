@@ -22,9 +22,17 @@ static const char *banner = ""
 
 typedef struct Member { void *data; size_t size; } Member;
 
-typedef struct ArchiveState  { Buffer members;                          } ArchiveState; // T = Member
-typedef struct TextFileState { Buffer body; char *template; char *tail; } TextFileState;
-typedef struct TextBankState { dp_file *file; dp_node messages;         } TextBankState;
+typedef struct ArchiveState  { Buffer members;                  } ArchiveState; // T = Member
+typedef struct TextBankState { dp_file *file; dp_node messages; } TextBankState;
+
+typedef struct TextFileState {
+    Buffer body;
+    char  *template;
+    char  *tail;
+    char  *buffer;
+    size_t size;
+    FILE  *stream;
+} TextFileState;
 
 static Outputs *outputs;
 
@@ -37,6 +45,83 @@ static ArchiveState  *archiveState;
 static TextFileState *textFileState;
 static Buffer        *binaryFileState;
 static TextBankState *textBankState;
+
+#ifdef _WIN32
+static FILE *open_memstream(char **buffer, size_t *size)
+{
+    FILE *stream = tmpfile();
+    if (!stream)
+        return NULL;
+
+    *buffer = NULL;
+    *size = 0;
+
+    return stream;
+}
+
+static int close_memstream(FILE *stream, char **buffer, size_t *size)
+{
+    char *data = NULL;
+    size_t length = 0;
+    int error = 0;
+    long long end;
+
+    if (fflush(stream) != 0) {
+        error = errno ? errno : EIO;
+        goto cleanup;
+    }
+
+    if (_fseeki64(stream, 0, SEEK_END) != 0) {
+        error = errno ? errno : EIO;
+        goto cleanup;
+    }
+
+    end = _ftelli64(stream);
+    if (end < 0) {
+        error = errno ? errno : EIO;
+        goto cleanup;
+    }
+
+    if ((unsigned long long)end > (unsigned long long)SIZE_MAX - 1) {
+        error = EOVERFLOW;
+        goto cleanup;
+    }
+
+    length = (size_t)end;
+
+    if (_fseeki64(stream, 0, SEEK_SET) != 0) {
+        error = errno ? errno : EIO;
+        goto cleanup;
+    }
+
+    data = malloc(length + 1);
+    if (!data) {
+        error = errno ? errno : ENOMEM;
+        goto cleanup;
+    }
+
+    if (fread(data, 1, length, stream) != length) {
+        error = errno ? errno : EIO;
+        goto cleanup;
+    }
+
+    data[length] = '\0';
+
+cleanup:
+    if (fclose(stream) != 0 && error == 0)
+        error = errno ? errno : EIO;
+
+    if (error != 0) {
+        free(data);
+        errno = error;
+        return -1;
+    }
+
+    *buffer = data;
+    *size = length;
+    return 0;
+}
+#endif
 
 // Count the entries of an output table before its { 0 } terminator. A NULL
 // table is empty.
@@ -117,9 +202,24 @@ void Output_Init(Outputs *o)
 static bool Write(const char *filename, const void *data, size_t size)
 {
     char *path = String_Format("%s/%s", CLI_OutputDir(), filename);
-    bool  ok   = File_Write(path, data, size);
-    if (!ok) fprintf(stderr, "error writing '%s': %s\n", path, strerror(errno));
+    char *curr = NULL;
+    bool  ok;
 
+    if (outputs->writeIfChanged) {
+        size_t c_size;
+        curr = File_Read(path, &c_size);
+        if (curr && c_size == size && (size == 0 || memcmp(data, curr, size) == 0)) {
+            ok = true;
+            goto cleanup;
+        }
+    }
+
+    if (!(ok = File_Write(path, data, size))) {
+        fprintf(stderr, "error writing '%s': %s\n", path, strerror(errno));
+    }
+
+cleanup:
+    free(curr);
     free(path);
     return ok;
 }
@@ -210,6 +310,42 @@ void TextFile_Printf(int id, const char *fmt, ...)
     va_end(args);
 }
 
+FILE* TextFile_Stream(int id)
+{
+    CheckID("text file", id, numTextFiles);
+
+    TextFileState *state = &textFileState[id];
+    if (!state->stream && !(state->stream = open_memstream(&state->buffer, &state->size))) {
+        abort();
+    }
+    return state->stream;
+}
+
+static bool FlushStream(const char *path, TextFileState *state)
+{
+    if (state->stream == NULL) return true;
+
+    if (
+    #ifdef _WIN32
+        close_memstream(state->stream, &state->buffer, &state->size)
+    #else
+        fclose(state->stream) 
+    #endif
+        != 0
+    ) {
+        fprintf(stderr, "error writing stream for file '%s': %s\n", path, strerror(errno));
+        state->stream = NULL;
+        return false;
+    }
+
+    Buffer_Append(&state->body, state->buffer, state->size);
+    free(state->buffer);
+    state->buffer = NULL;
+    state->size   = 0;
+    state->stream = NULL;
+    return true;
+}
+
 FORMATTER(2, 3) static void AppendFormat(Buffer *b, const char *fmt, ...)
 {
     va_list args;
@@ -241,6 +377,7 @@ static char* GuardFor(const char *filename)
 static bool WriteTextFile(const TextFile *file, TextFileState *state)
 {
     Buffer out = { 0 };
+    if (!FlushStream(file->filename, state)) return false;
 
     switch (file->wrap) {
     case TEXT_FILE_WRAP_NONE:
@@ -423,8 +560,12 @@ void Output_Close(void)
     }
 
     for (size_t i = 0; i < numTextFiles; i++) {
-        free(textFileState[i].body.data);
-        free(textFileState[i].template);
+        TextFileState *state = &textFileState[i];
+        if (state->stream != NULL) { fclose(state->stream); state->stream = NULL; }
+        free(state->body.data);
+        free(state->template);
+        free(state->buffer);
+        memset(state, 0, sizeof(*state));
     }
 
     for (size_t i = 0; i < numBinaryFiles; i++) {
