@@ -116,12 +116,17 @@ mapgen_exe = executable(
     native: true,
 )
 
+mapproc_deps = [common_dep]
+if(build_target == 'win64')
+    mapproc_deps += declare_dependency(dependencies: meson.get_compiler('c').find_library('systre'))
+endif
+
 mapproc_exe = executable(
     'mapproc',
     sources: [ files('src/maps/mapproc.c'), c_consts_generators ],
     c_args: dataproc_cflags,
     include_directories: [ public_includes, toplevel_includes ],
-    dependencies: [ common_dep ],
+    dependencies: mapproc_deps,
     native: true,
 )
 
