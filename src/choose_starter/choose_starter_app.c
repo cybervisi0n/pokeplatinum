@@ -46,6 +46,10 @@
 #include "unk_0202419C.h"
 #include "vram_transfer.h"
 
+#ifdef SDK_PORT
+#include "port/sim_config_prj.h"
+#endif
+
 #define NUM_STARTER_OPTIONS 3
 #define STARTER_OPTION_0    SPECIES_TURTWIG
 #define STARTER_OPTION_1    SPECIES_CHIMCHAR
@@ -867,6 +871,22 @@ static BOOL Advance3DGraphicsAnimationIfNotLastFrame(ChooseStarter3DGraphics *st
     fx32 lastFrame = NNS_G3dAnmObjGetNumFrame(starter3DGraphics->animationObj);
     BOOL isLastFrame;
 
+    #ifdef SDK_PORT
+    SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+    fx32 animFrameDelta = FX32_ONE;
+
+    if(myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+        animFrameDelta = FX32_ONE >> 1;
+    }
+
+    if (starter3DGraphics->animationFrame + animFrameDelta < lastFrame) {
+        starter3DGraphics->animationFrame += animFrameDelta;
+        isLastFrame = FALSE;
+    } else {
+        starter3DGraphics->animationFrame = lastFrame;
+        isLastFrame = TRUE;
+    }
+    #else
     if (starter3DGraphics->animationFrame + FX32_ONE < lastFrame) {
         starter3DGraphics->animationFrame += FX32_ONE;
         isLastFrame = FALSE;
@@ -874,6 +894,7 @@ static BOOL Advance3DGraphicsAnimationIfNotLastFrame(ChooseStarter3DGraphics *st
         starter3DGraphics->animationFrame = lastFrame;
         isLastFrame = TRUE;
     }
+    #endif
 
     NNS_G3dAnmObjSetFrame(starter3DGraphics->animationObj, starter3DGraphics->animationFrame);
 
@@ -882,7 +903,18 @@ static BOOL Advance3DGraphicsAnimationIfNotLastFrame(ChooseStarter3DGraphics *st
 
 static void Advance3DGraphicsAnimationOnLoop(ChooseStarter3DGraphics *starter3DGraphics)
 {
+    #ifdef SDK_PORT
+    SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+    fx32 animFrameDelta = FX32_ONE;
+
+    if(myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+        animFrameDelta = FX32_ONE >> 1;
+    }
+
+    starter3DGraphics->animationFrame = (starter3DGraphics->animationFrame + animFrameDelta) % NNS_G3dAnmObjGetNumFrame(starter3DGraphics->animationObj);
+    #else
     starter3DGraphics->animationFrame = (starter3DGraphics->animationFrame + FX32_ONE) % NNS_G3dAnmObjGetNumFrame(starter3DGraphics->animationObj);
+    #endif
     NNS_G3dAnmObjSetFrame(starter3DGraphics->animationObj, starter3DGraphics->animationFrame);
 }
 
