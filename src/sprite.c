@@ -6,6 +6,10 @@
 #include "heap.h"
 #include "system.h"
 
+#ifdef SDK_PORT
+#include "port/sim_config_prj.h"
+#endif
+
 typedef void (*SpriteDrawFunc)(const SpriteList *, Sprite *);
 typedef void (*SpriteAnimUpdateFunc)(Sprite *);
 
@@ -426,6 +430,12 @@ u32 Sprite_GetActiveAnim(const Sprite *sprite)
 
 void Sprite_UpdateAnim(Sprite *sprite, fx32 frames)
 {
+    #ifdef SDK_PORT
+    SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+    if(myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+        frames = frames >> 1;
+    }
+    #endif
     if (sprite->type == CELL_ANIM_TYPE_CELL || sprite->type == CELL_ANIM_TYPE_VRAM_CELL) {
         CellAnimationData *cellAnim = (CellAnimationData *)&sprite->animData;
         NNS_G2dTickCellAnimation(&cellAnim->anim, frames);
