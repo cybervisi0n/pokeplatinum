@@ -83,7 +83,13 @@ static const ScriptRange sGlobalScriptRanges[] = {
 
 static void EnsureDir(const char *path)
 {
-    if (mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO) && errno != EEXIST) {
+    if (
+        #ifdef _WIN32
+        mkdir(path)
+        #else
+        mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO)
+        #endif
+         && errno != EEXIST) {
         Driver_Fail("failed to ensure directory '%s': %s", path, strerror(errno));
     }
 }
