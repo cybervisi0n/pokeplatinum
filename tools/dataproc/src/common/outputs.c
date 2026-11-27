@@ -46,6 +46,20 @@ static TextFileState *textFileState;
 static Buffer        *binaryFileState;
 static TextBankState *textBankState;
 
+#ifdef _WIN32
+static FILE *open_memstream(char **buffer, size_t *size)
+{
+    FILE *stream = tmpfile();
+    if (!stream)
+        return NULL;
+
+    *buffer = NULL;
+    *size = 0;
+
+    return stream;
+}
+#endif
+
 // Count the entries of an output table before its { 0 } terminator. A NULL
 // table is empty.
 #define TableCount(table, count)                            \
@@ -241,7 +255,6 @@ FILE* TextFile_Stream(int id)
     if (!state->stream && !(state->stream = open_memstream(&state->buffer, &state->size))) {
         abort();
     }
-
     return state->stream;
 }
 
