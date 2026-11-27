@@ -2575,7 +2575,14 @@ static void GetTargetSlotFlags(BattleSubscreen *btlSubscreen, u8 *outFlags, BOOL
     TargetSelectData *targetSelectData = &btlSubscreen->activeMenuData.targetSelectData;
     BattleSystem_SetBattlersByType(btlSubscreen->battleSys, battlersByType);
 
-    for (int i = 0; i < SNELEMS(outFlags); i++) {
+    for (int i = 0; i < 
+        #ifdef SDK_BUILD_ARM
+        SNELEMS(outFlags)
+        #else
+        4
+        #endif
+        ;
+         i++) {
         int battlerIdx = battlersByType[2 + i];
 
         if (checkPresence == TRUE && !targetSelectData->targetMonData[battlerIdx].isPresent) {
