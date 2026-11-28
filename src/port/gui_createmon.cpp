@@ -18,6 +18,8 @@ namespace SIM::GUI {
 static std::vector<std::string> sSpeciesNames;
 static int sSpeciesNum = 0;
 static int sLevel = 1;
+static bool sShiny = false;
+static bool sPerfectIVs = false;
 
 static constexpr ImVec2 BtnSize = {100, 20};
 
@@ -51,8 +53,11 @@ void CreateMonMain(bool * openState) {
         sLevel = 100;
     }
 
+    ImGui::Checkbox("Shiny", &sShiny);
+    ImGui::Checkbox("Perfect IVs", &sPerfectIVs);
+
     if(ImGui::Button("Gen Pokemon", BtnSize)) {
-        GUI_CreateMon_GenPokemon(sSpeciesNum, sLevel);
+        GUI_CreateMon_GenPokemon(sSpeciesNum, sLevel, sShiny, sPerfectIVs);
     }
 
     ImGui::End();
