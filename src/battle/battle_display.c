@@ -79,6 +79,10 @@
 
 #include "res/text/bank/battle_strings.h"
 
+#ifdef SDK_PORT
+#include "port/sim_config_prj.h"
+#endif
+
 typedef struct TrainerEncounterData {
     BattleSystem *battleSys;
     Terrain *terrain;
@@ -2969,7 +2973,20 @@ static void Task_ThrowTrainerBall(SysTask *task, void *data)
                 ov12_02237E0C(trainerThrowBallData->battlerData->ballRotation, 1);
                 ov12_02237E18(trainerThrowBallData->battlerData->ballRotation, x + v5[trainerThrowBallData->backSpriteIdx][animFrame][0], y + v5[trainerThrowBallData->backSpriteIdx][animFrame][1]);
 
-                if (animFrame == 3 && ov12_02237890(trainerThrowBallData->battlerData->ballRotation) != 0) {
+                #ifdef SDK_PORT
+                int maxAnimFrame = 3;
+                SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+                if(myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+                    maxAnimFrame = 1;
+                }
+                #endif
+                if (
+                    #ifdef SDK_PORT
+                    animFrame >= maxAnimFrame
+                    #else
+                    animFrame == 3 
+                    #endif
+                    && ov12_02237890(trainerThrowBallData->battlerData->ballRotation) != 0) {
                     ov12_0223786C(trainerThrowBallData->battlerData->ballRotation, 0);
                     ov12_02237E30(trainerThrowBallData->battlerData->ballRotation, 1);
 
