@@ -1254,6 +1254,15 @@ static BOOL TitleScreen_RenderMain(TitleScreen *titleScreen, BgConfig *bgConfig,
 {
     BOOL result = FALSE;
 
+    #ifdef SDK_PORT
+    SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+
+    int titleScreenBlinkMax = 32;
+    if(myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+        titleScreenBlinkMax = 64;
+    }
+    #endif
+
     switch (titleScreen->state) {
     case MAIN_STATE_CONFIGURE_BGS:
         Camera_SetTarget(&titleScreen->titleCamEndTarget, titleScreen->graphics.titleCamera);
@@ -1279,13 +1288,25 @@ static BOOL TitleScreen_RenderMain(TitleScreen *titleScreen, BgConfig *bgConfig,
         if (titleScreen->enableInputs == 1) {
             if (titleScreen->blinkCounter == 0) {
                 TogglePressStartLayer(TRUE);
-            } else if (titleScreen->blinkCounter == 16) {
+            } else if (
+                #ifdef SDK_PORT
+                titleScreen->blinkCounter >= titleScreenBlinkMax / 2
+                #else
+                titleScreen->blinkCounter == 16
+                #endif
+            ) {
                 TogglePressStartLayer(FALSE);
             }
         }
 
         titleScreen->blinkCounter++;
+        #ifdef SDK_PORT
+        if(titleScreen->blinkCounter > titleScreenBlinkMax) {
+            titleScreen->blinkCounter = 0;
+        }
+        #else
         titleScreen->blinkCounter &= 31;
+        #endif
 
         result = TRUE;
         break;

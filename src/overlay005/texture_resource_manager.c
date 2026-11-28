@@ -2,7 +2,6 @@
 
 #include <nitro.h>
 #include <string.h>
-#include "simulator/sim.h"
 
 #include "billboard_vram_transfer.h"
 #include "heap.h"
