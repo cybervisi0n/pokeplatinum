@@ -399,7 +399,21 @@ static BOOL TitleScreen_Main(ApplicationManager *appMan, int *state)
             break;
         }
 
-        if (appData->titleScreenTimer > TITLE_SCREEN_REPLAY_OPENING_FRAMES) {
+        #ifdef SDK_PORT
+        int titleScreenMaxFrames = TITLE_SCREEN_REPLAY_OPENING_FRAMES;
+        SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+
+        if(myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+            titleScreenMaxFrames <<= 1;
+        }
+        #endif
+        if (appData->titleScreenTimer > 
+            #ifdef SDK_PORT
+            titleScreenMaxFrames
+            #else
+            TITLE_SCREEN_REPLAY_OPENING_FRAMES
+            #endif
+        ) {
             appData->nextApp = NEXT_APP_REPLAY_OPENING;
             gSystem.showTitleScreenIntro = TRUE;
 
