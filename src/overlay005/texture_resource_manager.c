@@ -2,12 +2,17 @@
 
 #include <nitro.h>
 #include <string.h>
+#include "simulator/sim.h"
 
 #include "billboard_vram_transfer.h"
 #include "heap.h"
 #include "narc.h"
 #include "particle_system.h"
 #include "vram_transfer.h"
+
+#ifdef SDK_PORT
+#include "port/sim_config_prj.h"
+#endif
 
 typedef struct {
     char name[16];
@@ -121,7 +126,22 @@ void TextureResourceManager_Free(FieldTextureManager *textureManager)
             continue;
         }
 
-        if (textureSlot->animationData->animationData[textureSlot->currentFrame][1] <= textureSlot->frameCounter) {
+        #ifdef SDK_PORT
+        u16 frameCounter = textureSlot->frameCounter;
+
+        SIM_Config_prj_type * myConfig = SIM_Config_prj_GetConfig();
+        if (myConfig->enable60fps && myConfig->enable60fpsSpeedFix) {
+            frameCounter >>= 1;
+        }
+        #endif
+        if (textureSlot->animationData->animationData[textureSlot->currentFrame][1] <= 
+            
+            #ifdef SDK_PORT
+            frameCounter
+            #else
+            textureSlot->frameCounter
+            #endif
+        ) {
             textureSlot->frameCounter = 0;
             textureSlot->currentFrame++;
 
